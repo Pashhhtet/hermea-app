@@ -12,8 +12,8 @@ ru: {
   cl_today: "сегодня", cl_tomorrow: "завтра", cl_overdue: "с {d}", cl_no_phone: "нет телефона", cl_no_title: "Без названия",
   cl_phone: "Телефон", cl_note: "Заметка", cl_when: "Перезвонить:", cl_w_today: "Сегодня", cl_w_tomorrow: "Завтра", cl_w_fri: "Пятница", cl_w_week: "Через неделю", cl_w_none: "Без даты",
   cl_done: "Позвонил ✓", cl_reopen: "Вернуть", cl_copy_phone: "Копировать номер", cl_delete: "Удалить", cl_to_calls: "В перезвоны", cl_added: "Добавлено в «Перезвоны»",
-  ow_title: "Собственники", ow_sub: "Частные объявления Otodom по 18 районам. Сверху те, кому агент нужнее всего. Обновляется раз в день, пока программа открыта.",
-  ow_last: "проверено {d}", ow_refresh: "Обновить сейчас", ow_running: "Собираю районы: {n} из {t}…", ow_reading: "Читаю объявления: {n} из {t}…",
+  ow_title: "Собственники", ow_sub: "Частные объявления Otodom по 18 районам и OLX по всей Варшаве. Сверху те, кому агент нужнее всего. Обновляется раз в день, пока программа открыта.",
+  ow_last: "проверено {d}", ow_refresh: "Обновить сейчас", ow_running: "Собираю районы: {n} из {t}…", ow_reading: "Читаю объявления: {n} из {t}…", ow_olx_run: "Собираю OLX: {n} из {t}…", sms_title: "SMS собственнику", st_calls: "звонков за неделю", st_agreed: "согласились", st_refused: "отказ", st_nocall: "не дозвонился", st_best: "Лучше всего идут:", st_of: "{a} из {n}", sms_k_miss: "Не дозвонился", sms_k_after: "После разговора", sms_k_photo: "Прислать фото", sms_copy: "Скопировать SMS", sms_hint: "Текст на польском, с адресом и ценой. Скопируй и отправь со своего телефона.", ow_open_olx: "Открыть на OLX", ow_src_all: "Otodom и OLX", ow_src_oto: "Только Otodom", ow_src_olx: "Только OLX",
   ow_empty_t: "Список ещё не собран", ow_empty: "Программа пройдёт по частным объявлениям во всех районах Варшавы (5–10 минут) и отсортирует собственников по шансу на сотрудничество.",
   ow_f_new: "К звонку", ow_f_called: "Звонил", ow_f_agreed: "Согласны", ow_f_refused: "Отказ", ow_f_hidden: "Скрытые",
   ow_all: "Все районы", ow_price_all: "Любая цена", ow_price_to: "до {n} zł", ow_price_from: "от {n} zł", ow_find: "Улица или район", ow_more: "Показать ещё", ow_none: "Здесь пока пусто.",
@@ -37,8 +37,8 @@ uk: {
   cl_today: "сьогодні", cl_tomorrow: "завтра", cl_overdue: "з {d}", cl_no_phone: "немає телефону", cl_no_title: "Без назви",
   cl_phone: "Телефон", cl_note: "Нотатка", cl_when: "Передзвонити:", cl_w_today: "Сьогодні", cl_w_tomorrow: "Завтра", cl_w_fri: "П'ятниця", cl_w_week: "Через тиждень", cl_w_none: "Без дати",
   cl_done: "Подзвонив ✓", cl_reopen: "Повернути", cl_copy_phone: "Копіювати номер", cl_delete: "Видалити", cl_to_calls: "У передзвони", cl_added: "Додано в «Передзвони»",
-  ow_title: "Власники", ow_sub: "Приватні оголошення Otodom по 18 районах. Зверху ті, кому агент потрібен найбільше. Оновлюється раз на день, поки програма відкрита.",
-  ow_last: "перевірено {d}", ow_refresh: "Оновити зараз", ow_running: "Збираю райони: {n} з {t}…", ow_reading: "Читаю оголошення: {n} з {t}…",
+  ow_title: "Власники", ow_sub: "Приватні оголошення Otodom по 18 районах і OLX по всій Варшаві. Зверху ті, кому агент потрібен найбільше. Оновлюється раз на день, поки програма відкрита.",
+  ow_last: "перевірено {d}", ow_refresh: "Оновити зараз", ow_running: "Збираю райони: {n} з {t}…", ow_reading: "Читаю оголошення: {n} з {t}…", ow_olx_run: "Збираю OLX: {n} з {t}…", sms_title: "SMS власнику", st_calls: "дзвінків за тиждень", st_agreed: "погодились", st_refused: "відмова", st_nocall: "не додзвонився", st_best: "Найкраще йдуть:", st_of: "{a} з {n}", sms_k_miss: "Не додзвонився", sms_k_after: "Після розмови", sms_k_photo: "Попросити фото", sms_copy: "Скопіювати SMS", sms_hint: "Текст польською, з адресою і ціною. Скопіюй і надішли зі свого телефону.", ow_open_olx: "Відкрити на OLX", ow_src_all: "Otodom і OLX", ow_src_oto: "Лише Otodom", ow_src_olx: "Лише OLX",
   ow_empty_t: "Список ще не зібраний", ow_empty: "Програма пройде по приватних оголошеннях у всіх районах Варшави (5–10 хвилин) і відсортує власників за шансом на співпрацю.",
   ow_f_new: "До дзвінка", ow_f_called: "Дзвонив", ow_f_agreed: "Згодні", ow_f_refused: "Відмова", ow_f_hidden: "Приховані",
   ow_all: "Усі райони", ow_price_all: "Будь-яка ціна", ow_price_to: "до {n} zł", ow_price_from: "від {n} zł", ow_find: "Вулиця або район", ow_more: "Показати ще", ow_none: "Тут поки порожньо.",
@@ -62,8 +62,8 @@ pl: {
   cl_today: "dziś", cl_tomorrow: "jutro", cl_overdue: "od {d}", cl_no_phone: "brak telefonu", cl_no_title: "Bez tytułu",
   cl_phone: "Telefon", cl_note: "Notatka", cl_when: "Oddzwonić:", cl_w_today: "Dziś", cl_w_tomorrow: "Jutro", cl_w_fri: "Piątek", cl_w_week: "Za tydzień", cl_w_none: "Bez daty",
   cl_done: "Zadzwoniłem ✓", cl_reopen: "Przywróć", cl_copy_phone: "Kopiuj numer", cl_delete: "Usuń", cl_to_calls: "Do oddzwonienia", cl_added: "Dodano do „Oddzwonić”",
-  ow_title: "Właściciele", ow_sub: "Prywatne ogłoszenia z Otodom w 18 dzielnicach. Na górze ci, którym agent jest najbardziej potrzebny. Odświeżane raz dziennie, gdy program jest otwarty.",
-  ow_last: "sprawdzono {d}", ow_refresh: "Odśwież teraz", ow_running: "Zbieram dzielnice: {n} z {t}…", ow_reading: "Czytam ogłoszenia: {n} z {t}…",
+  ow_title: "Właściciele", ow_sub: "Prywatne ogłoszenia z Otodom w 18 dzielnicach i z OLX w całej Warszawie. Na górze ci, którym agent jest najbardziej potrzebny. Odświeżane raz dziennie, gdy program jest otwarty.",
+  ow_last: "sprawdzono {d}", ow_refresh: "Odśwież teraz", ow_running: "Zbieram dzielnice: {n} z {t}…", ow_reading: "Czytam ogłoszenia: {n} z {t}…", ow_olx_run: "Zbieram OLX: {n} z {t}…", sms_title: "SMS do właściciela", st_calls: "telefonów w tygodniu", st_agreed: "zgoda", st_refused: "odmowa", st_nocall: "nie odebrał", st_best: "Najlepiej idą:", st_of: "{a} z {n}", sms_k_miss: "Nie odebrał", sms_k_after: "Po rozmowie", sms_k_photo: "Poproś o zdjęcia", sms_copy: "Kopiuj SMS", sms_hint: "Tekst po polsku, z adresem i ceną. Skopiuj i wyślij ze swojego telefonu.", ow_open_olx: "Otwórz na OLX", ow_src_all: "Otodom i OLX", ow_src_oto: "Tylko Otodom", ow_src_olx: "Tylko OLX",
   ow_empty_t: "Lista nie jest jeszcze zebrana", ow_empty: "Program przejdzie przez prywatne ogłoszenia we wszystkich dzielnicach Warszawy (5–10 minut) i ułoży właścicieli według szansy na współpracę.",
   ow_f_new: "Do telefonu", ow_f_called: "Dzwoniłem", ow_f_agreed: "Zgoda", ow_f_refused: "Odmowa", ow_f_hidden: "Ukryte",
   ow_all: "Wszystkie dzielnice", ow_price_all: "Każda cena", ow_price_to: "do {n} zł", ow_price_from: "od {n} zł", ow_find: "Ulica lub dzielnica", ow_more: "Pokaż więcej", ow_none: "Na razie pusto.",
@@ -119,7 +119,7 @@ function owHeat(s) { return s >= 70 ? "hot" : s >= 50 ? "warm" : "cold"; }
 
 function owScript(a) {
   const nm = owName();
-  const where = a.street ? `przy ul. ${a.street}` : `w dzielnicy ${a.district}`;
+  const where = a.street ? `przy ul. ${a.street}` : a.district ? `w dzielnicy ${a.district}` : "w Warszawie";
   const why = Object.fromEntries((a.why || []).map((w) => [w[0], w[1]]));
   let hook = `Mamy sprawdzonych klientów, którzy szukają mieszkania właśnie w tej okolicy.`;
   if (why.empty) hook = `Rozumiem, że mieszkanie już stoi wolne, a każdy miesiąc bez najemcy to strata. Dlatego dzwonię z konkretną propozycją: mamy klientów, którzy szukają w tej okolicy.`;
@@ -135,6 +135,45 @@ Pracujemy tak: robimy prezentacje, sprawdzamy najemców i ich dokumenty, przygot
 
 Czy mogę zaprosić naszych klientów na prezentację? Kiedy byłoby wygodnie pokazać mieszkanie?`;
 }
+// SMS собственнику: не дозвонился / после разговора / попросить фото
+const SMS_KINDS = ["miss", "after", "photo"];
+function owSms(x, kind) {
+  const nm = owName();
+  const rooms = x.rooms ? `${x.rooms}-pok.` : "";
+  const area = x.area ? `${Math.round(parseFloat(String(x.area).replace(",", ".")))} m²` : "";
+  const price = (x.total || x.price || 0) + (x.total ? 0 : (x.rent || 0));
+  const flat = ["mieszkania", rooms, area].filter(Boolean).join(" ")
+    + (x.street ? ` przy ul. ${x.street}` : x.district ? ` (${x.district})` : "")
+    + (price ? `, ${zl(price)} zł` : "");
+  const sign = `${nm}, Hermea Nieruchomości`;
+  if (kind === "after") return `Dzień dobry, dziękuję za rozmowę w sprawie ${flat}. Tak jak mówiłem: przyprowadzamy sprawdzonych najemców z dokumentami, przygotowujemy umowę, a wynagrodzenie to 50% jednego czynszu + 23% VAT, płatne dopiero po podpisaniu umowy z najemcą. Odezwę się z terminem prezentacji. Pozdrawiam, ${sign}`;
+  if (kind === "photo") return `Dzień dobry, mam klientów zainteresowanych ${flat}. Czy mógłby Pan/mogłaby Pani przesłać kilka aktualnych zdjęć i informację, od kiedy mieszkanie jest wolne? Dziękuję, ${sign}`;
+  return `Dzień dobry, dzwoniłem w sprawie ogłoszenia ${flat}. Mamy klientów, którzy szukają właśnie w tej okolicy. Współpracujemy za 50% jednego czynszu + VAT, płatne dopiero po podpisaniu umowy z najemcą. Kiedy mogę zadzwonić? Pozdrawiam, ${sign}`;
+}
+function smsBox(x, key) {
+  const k = OW.smsKind || "miss";
+  return `<div class="sms-box" data-sms="${esc(key)}">
+    <div class="sms-head"><b>${t("sms_title")}</b><div class="seg seg-sm">${SMS_KINDS.map((s) => `<button type="button" data-smsk="${s}" aria-pressed="${s === k}">${t("sms_k_" + s)}</button>`).join("")}</div></div>
+    <pre class="sms-txt">${esc(owSms(x, k))}</pre>
+    <div class="sms-foot"><button class="btn sm" type="button" data-smscopy="1">${ICON.copy} ${t("sms_copy")}</button><span class="hint">${t("sms_hint")}</span></div></div>`;
+}
+// одна обработка на весь документ: переключить вид SMS и скопировать
+document.addEventListener("click", async (e) => {
+  const box = e.target.closest(".sms-box"); if (!box) return;
+  const key = box.dataset.sms;
+  const x = (OW.data && OW.data.items.find((a) => a.id === key)) || (OW.calls && OW.calls.items.find((c) => c.id === key));
+  if (!x) return;
+  const kb = e.target.closest("[data-smsk]");
+  if (kb) {
+    OW.smsKind = kb.dataset.smsk;
+    box.querySelectorAll("[data-smsk]").forEach((b) => b.setAttribute("aria-pressed", String(b === kb)));
+    box.querySelector(".sms-txt").textContent = owSms(x, OW.smsKind);
+    return;
+  }
+  if (e.target.closest("[data-smscopy]")) {
+    try { await navigator.clipboard.writeText(owSms(x, OW.smsKind || "miss")); toast(t("ow_copied")); } catch (err) { toast(err.message, true); }
+  }
+});
 function owObjections() {
   return [
     ["Mam dużo telefonów", "Rozumiem. My przyprowadzamy już sprawdzonych najemców z dokumentami, więc oszczędza Pan/Pani czas na niepotrzebnych prezentacjach."],
@@ -149,7 +188,7 @@ function drawOwners(first) {
   if (!box || !d) return;
   const st = d.state || {};
   const run = st.state === "running";
-  const runTxt = run ? (st.phase === "detail" ? t("ow_reading", { n: st.done, t: st.total }) : t("ow_running", { n: st.done, t: st.total || 18 })) : t("ow_refresh");
+  const runTxt = run ? (st.phase === "detail" ? t("ow_reading", { n: st.done, t: st.total }) : st.phase === "olx" ? t("ow_olx_run", { n: st.done, t: st.total }) : t("ow_running", { n: st.done, t: st.total || 18 })) : t("ow_refresh");
   const dd = (s) => (s ? parseIso(s).toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "long" }) : "");
   if (OW.filter === "calls") return drawCalls(first);
   if (!d.last_scan && !d.items.length) {
@@ -168,6 +207,7 @@ function drawOwners(first) {
   let rows = d.items.filter((a) => groups.includes(a.status || "new"));
   if (OW.filter === "new") rows = rows.filter((a) => !a.gone);
   if (OW.district) rows = rows.filter((a) => (a.district || "") === OW.district);
+  if (OW.src) rows = rows.filter((a) => (a.src === "olx") === (OW.src === "olx"));
   if (OW.price) { const [lo, hi] = OW.price.split("-").map(Number); rows = rows.filter((a) => { const v = a.total || a.price || 0; return v >= lo && v <= hi; }); }
   if (q) rows = rows.filter((a) => `${a.street} ${a.district} ${a.sub} ${a.title}`.toLowerCase().includes(q));
   const dists = [...new Set(d.items.map((a) => a.district).filter(Boolean))].sort((a, b) => a.localeCompare(b));
@@ -178,10 +218,12 @@ function drawOwners(first) {
     <div class="ow-bar">
       <div class="seg" id="owSeg">${Object.keys(OW_GROUP).map((g) => `<button type="button" data-g="${g}" aria-pressed="${g === OW.filter}">${t("ow_f_" + g)} <small>${cnt(g)}</small></button>`).join("")}</div>
       <select class="pop-in ow-sel" id="owDist"><option value="">${t("ow_all")}</option>${dists.map((x) => `<option ${x === OW.district ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>
+      <select class="pop-in ow-sel" id="owSrc">${["", "oto", "olx"].map((k) => `<option value="${k}" ${k === (OW.src || "") ? "selected" : ""}>${t("ow_src_" + (k || "all"))}</option>`).join("")}</select>
       <select class="pop-in ow-sel" id="owPrice">${OW_PRICES.map((p) => `<option value="${p}" ${p === OW.price ? "selected" : ""}>${owPriceLabel(p)}</option>`).join("")}</select>
       <input class="pop-in ow-q" id="owQ" type="search" placeholder="${esc(t("ow_find"))}" value="${esc(OW.q)}">
       <label class="ow-name">${t("ow_name")} <input class="pop-in" id="owName" value="${esc(owName())}" maxlength="40"></label>
     </div>
+    ${owStats(d.stats)}
     <ol class="ow-list" id="owList">${rows.slice(0, OW.shown).map(owRow).join("") || `<li class="ow-none">${t("ow_none")}</li>`}</ol>
     ${rows.length > OW.shown ? `<button class="btn ow-more" type="button" id="owMore">${t("ow_more")} (${rows.length - OW.shown})</button>` : ""}
   </div>`;
@@ -190,6 +232,7 @@ function drawOwners(first) {
   $("#owGo").onclick = owScan;
   $("#owSeg").onclick = owSegClick;
   $("#owDist").onchange = (e) => { OW.district = e.target.value; OW.shown = 40; drawOwners(true); };
+  $("#owSrc").onchange = (e) => { OW.src = e.target.value; OW.shown = 40; drawOwners(true); };
   $("#owPrice").onchange = (e) => { OW.price = e.target.value; OW.shown = 40; try { localStorage.setItem("hermea_ow_price", OW.price); } catch (err) {} drawOwners(true); };
   $("#owQ").oninput = (e) => { OW.q = e.target.value; clearTimeout(OW.qt); OW.qt = setTimeout(() => { drawOwners(); const i = $("#owQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
   $("#owName").onchange = (e) => { try { localStorage.setItem("hermea_ow_name", e.target.value.trim() || "Paweł"); } catch (err) {} drawOwners(); };
@@ -198,6 +241,26 @@ function drawOwners(first) {
   $("#owList").addEventListener("change", owNote);
 }
 
+// статистика звонков за неделю
+function owStats(st) {
+  if (!st || !st.calls) return "";
+  const T = st.total, max = Math.max(1, ...st.days.map((d) => d.called + d.nocall + d.agreed + d.refused));
+  const bars = st.days.map((d) => {
+    const n = d.called + d.nocall + d.agreed + d.refused;
+    const wd = parseIso(d.day).toLocaleDateString(LOCALE[LANG], { weekday: "short" }).replace(".", "");
+    return `<div class="ow-bar-d" title="${esc(wd)}: ${n}"><div class="ow-bar-c" style="height:${Math.round(n / max * 100)}%">
+      ${d.agreed ? `<i class="ok" style="flex:${d.agreed}"></i>` : ""}${d.called + d.refused + d.nocall ? `<i style="flex:${d.called + d.refused + d.nocall}"></i>` : ""}</div><small>${esc(wd)}</small></div>`;
+  }).join("");
+  const best = (st.districts || []).filter((x) => x.name !== "?").map((x) => `${esc(x.name)} ${t("st_of", { a: x.agreed, n: x.n })}`).join(" · ");
+  return `<section class="ow-stats rise">
+    <div class="ow-st"><b>${st.calls}</b><span>${t("st_calls")}</span></div>
+    <div class="ow-st ok"><b>${T.agreed}</b><span>${t("st_agreed")}${st.rate != null ? ` · ${st.rate}%` : ""}</span></div>
+    <div class="ow-st"><b>${T.refused}</b><span>${t("st_refused")}</span></div>
+    <div class="ow-st"><b>${T.nocall}</b><span>${t("st_nocall")}</span></div>
+    <div class="ow-bars">${bars}</div>
+    ${best ? `<p class="ow-best">${t("st_best")} ${best}</p>` : ""}
+  </section>`;
+}
 function owRow(a) {
   const s = a.score || 0, heat = owHeat(s);
   const open = OW.open === a.id;
@@ -215,18 +278,20 @@ function owRow(a) {
       <div class="ow-score" title="${t("ow_" + heat)}"><b>${s}</b><i style="--k:${s / 100}"></i></div>
       ${a.img ? `<img class="ow-img" src="${esc(a.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="ow-img"></div>`}
       <div class="ow-info">
-        <div class="ow-t"><b>${esc(a.district || "")}${a.street ? ", " + esc(a.street) : ""}</b><span>${esc([rooms, a.area ? Math.round(a.area) + " м²" : ""].filter(Boolean).join(" · "))}</span>${a.gone ? `<em>${t("ow_gone")}</em>` : ""}</div>
+        <div class="ow-t"><b>${esc(a.district || "")}${a.street ? ", " + esc(a.street) : ""}</b><span>${esc([rooms, a.area ? Math.round(a.area) + " м²" : ""].filter(Boolean).join(" · "))}</span>${a.src === "olx" ? `<i class="ow-src">OLX</i>` : ""}${a.gone ? `<em>${t("ow_gone")}</em>` : ""}</div>
+        ${a.src === "olx" && a.title ? `<div class="cl-sub">${esc(a.title)}</div>` : ""}
         <div class="ow-p"><span class="fact">${zl(a.total || a.price)} zł</span>${mk}${a.name ? `<span class="hint">${esc(a.name)}</span>` : ""}</div>
         <div class="ow-whys">${(a.why || []).map(owWhy).join("")}</div>
       </div>
       <div class="ow-acts">
-        <button class="btn" type="button" data-act="url">${ICON.web} ${t("ow_open")}</button>
+        <button class="btn" type="button" data-act="url">${ICON.web} ${t(a.src === "olx" ? "ow_open_olx" : "ow_open")}</button>
         <button class="btn" type="button" data-act="script">${open ? t("ow_close") : t("ow_script")}</button>
       </div>
     </div>
     ${open ? `<div class="ow-more-box">
       <div class="ow-script"><pre id="owTxt">${esc(owScript(a))}</pre>
-        <button class="text-btn" type="button" data-act="copy">${t("ow_copy")}</button></div>
+        <button class="text-btn" type="button" data-act="copy">${t("ow_copy")}</button>
+        ${smsBox(a, a.id)}</div>
       <div class="ow-side">
         ${a.detail && a.detail.snippet ? `<p class="ow-snip">${esc(a.detail.snippet.replace(/[.\s…]+$/, ""))}…</p>` : ""}
         <h4>${t("ow_obj")}</h4>
@@ -240,6 +305,7 @@ function owRow(a) {
 async function owClick(e) {
   const li = e.target.closest(".ow-row"); if (!li) return;
   const id = li.dataset.id, a = OW.data.items.find((x) => x.id === id); if (!a) return;
+  if (e.target.closest(".sms-box")) return;
   const act = e.target.closest("[data-act]"), stb = e.target.closest("[data-st]");
   if (act) {
     const k = act.dataset.act;
@@ -339,7 +405,8 @@ function clRow(c) {
         ${c.url ? `<button class="btn" type="button" data-cl="url">${ICON.web} Otodom</button>` : ""}
         ${c.phone ? `<button class="btn" type="button" data-cl="copy">${t("cl_copy_phone")}</button>` : ""}
         <button class="text-btn ow-no" type="button" data-cl="del">${t("cl_delete")}</button>
-      </div></div>` : ""}
+      </div>
+      ${smsBox(c, c.id)}</div>` : ""}
   </li>`;
 }
 function clEmpty() {
@@ -398,7 +465,7 @@ async function clClick(e) {
   const li = e.target.closest(".cl-row"); if (!li) return;
   const id = li.dataset.id, c = OW.calls.items.find((x) => x.id === id); if (!c) return;
   const w = e.target.closest("[data-when]"), b = e.target.closest("[data-cl]");
-  if (e.target.closest("a.cl-tel")) return;
+  if (e.target.closest("a.cl-tel, .sms-box")) return;
   if (w) {
     const k = w.dataset.when, td = parseIso(OW.calls.today);
     const add = (n) => { const d = new Date(td); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };

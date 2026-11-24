@@ -154,3 +154,24 @@ def mark_contract(cid):
                 _save(d)
                 return c, ([{"op": "add", "m": "coop", "d": 1, "note": c.get("name") or ""}] if first else [])
     raise KeyError(cid)
+
+
+def all_clients():
+    with LOCK:
+        return list(_load()["clients"])
+
+
+def match_mark(cid, seen=None, skip=None):
+    """Подбор: отметить показанные варианты (seen) или убрать неподходящий (skip)."""
+    with LOCK:
+        d = _load()
+        for c in d["clients"]:
+            if c.get("id") != cid:
+                continue
+            if seen:
+                c["match_seen"] = list(dict.fromkeys((c.get("match_seen") or []) + [str(x) for x in seen]))[-1500:]
+            if skip:
+                c["match_skip"] = list(dict.fromkeys((c.get("match_skip") or []) + [str(skip)]))[-1500:]
+            _save(d)
+            return c
+    raise KeyError(cid)

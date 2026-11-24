@@ -17,7 +17,9 @@ import app_searches
 
 FILE = None
 LOCK = threading.RLock()
-DATA = {"days": {}}          # {"2026-11-24": {"bemowo": {...}, ...}}
+DATA = {"days": {}}
+LATEST_KEYS = ("id", "title", "url", "img", "price", "rent", "total", "area", "rooms", "district", "sub", "street",
+               "owner", "agency", "created", "tags")          # {"2026-11-24": {"bemowo": {...}, ...}}
 BASE = "https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/mazowieckie/warszawa/warszawa/warszawa/{d}?limit=72&by=LATEST&direction=DESC"
 DISTRICTS = {
     "bemowo": "Bemowo", "bialoleka": "Białołęka", "bielany": "Bielany", "mokotow": "Mokotów",
@@ -111,7 +113,7 @@ def snapshot(http_factory, log=print, pause=4.0):
     day = dt.date.today().isoformat()
     STATE.update(state="running", done=0, error="")
     sess = http_factory()
-    res = {}
+    res, fresh = {}, []
     for d in DISTRICTS:
         try:
             r = sess.get(BASE.format(d=url_slug(d)), timeout=40)
@@ -119,6 +121,7 @@ def snapshot(http_factory, log=print, pause=4.0):
                 raise RuntimeError(f"HTTP {r.status_code}")
             r.raise_for_status()
             _, items, total = app_searches.parse(r.text)
+            fresh += [{k: i.get(k) for k in LATEST_KEYS} for i in items]
             st = stats(items)
             st["total"] = total
             res[d] = st
@@ -130,6 +133,8 @@ def snapshot(http_factory, log=print, pause=4.0):
     if res:
         with LOCK:
             DATA.setdefault("days", {})[day] = res
+            # самые новые объявления всех районов — для подбора квартир клиентам
+            DATA["latest"] = {"day": day, "items": fresh}
             _save()
     STATE.update(state="idle")
     return res
@@ -201,9 +206,15 @@ def loop(http_factory, log):
     time.sleep(90)
     while True:
         try:
-            if dt.date.today().isoformat() not in (DATA.get("days") or {}):
+            if dt.date.today().isoformat() not in (DATA.get("days") or {}) or not DATA.get("latest"):
                 snapshot(http_factory, log)
         except Exception as e:
             log("рынок:", e)
             STATE.update(state="idle", error=str(e)[:120])
         time.sleep(3600)
+
+
+def latest():
+    """Последний снимок объявлений (до 72 самых новых в каждом районе)."""
+    with LOCK:
+        return list(((DATA.get("latest") or {}).get("items")) or [])

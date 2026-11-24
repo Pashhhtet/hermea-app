@@ -122,6 +122,34 @@ pl: {
 },
 };
 Object.assign(L.ru, CL.ru); Object.assign(L.uk, CL.uk); Object.assign(L.pl, CL.pl);
+// подбор квартир
+Object.assign(L.ru, {
+  mt_title: "Подходящие квартиры", mt_of: "{n} из {t}", mt_refresh: "Обновить", mt_new: "новая", mt_owner: "собственник", mt_agency: "агентство",
+  mt_agreed: "согласен на 50%", mt_days: "{d} дн. на сайте", mt_today: "сегодня", mt_open: "Открыть", mt_photo: "Обработать фото", mt_skip: "Не подходит",
+  mt_need: "Заполни в запросе бюджет, районы или комнаты, и здесь появятся квартиры из того, что Hermea уже собрала: собственники Otodom и OLX, свежие объявления всех районов и твои поиски.",
+  mt_none: "Сейчас ничего не подходит. Можно поднять бюджет или добавить районы. Объявления обновляются каждый день.",
+  mt_copy: "Скопировать подборку ({n})", mt_links: "со ссылками", mt_pick: "Отметь квартиры галочками, текст будет на языке клиента.",
+  mt_copied: "Подборка скопирована", mt_photo_ok: "Фото обрабатываются, смотри «Обработка фото»", mt_upto: "до {b} zł", mt_from: "от {a} м²", mt_rooms: "{r} комн.",
+  mt_parking: "паркинг", mt_pets: "с животными", mt_loading: "Подбираю…",
+});
+Object.assign(L.uk, {
+  mt_title: "Підходящі квартири", mt_of: "{n} з {t}", mt_refresh: "Оновити", mt_new: "нова", mt_owner: "власник", mt_agency: "агентство",
+  mt_agreed: "згоден на 50%", mt_days: "{d} дн. на сайті", mt_today: "сьогодні", mt_open: "Відкрити", mt_photo: "Обробити фото", mt_skip: "Не підходить",
+  mt_need: "Заповни в запиті бюджет, райони або кімнати, і тут з'являться квартири з того, що Hermea вже зібрала: власники Otodom і OLX, свіжі оголошення всіх районів і твої пошуки.",
+  mt_none: "Зараз нічого не підходить. Можна підняти бюджет або додати райони. Оголошення оновлюються щодня.",
+  mt_copy: "Скопіювати добірку ({n})", mt_links: "з посиланнями", mt_pick: "Відміть квартири галочками, текст буде мовою клієнта.",
+  mt_copied: "Добірку скопійовано", mt_photo_ok: "Фото обробляються, дивись «Обробка фото»", mt_upto: "до {b} zł", mt_from: "від {a} м²", mt_rooms: "{r} кімн.",
+  mt_parking: "паркінг", mt_pets: "з тваринами", mt_loading: "Підбираю…",
+});
+Object.assign(L.pl, {
+  mt_title: "Pasujące mieszkania", mt_of: "{n} z {t}", mt_refresh: "Odśwież", mt_new: "nowe", mt_owner: "właściciel", mt_agency: "agencja",
+  mt_agreed: "zgoda na 50%", mt_days: "{d} dni w sieci", mt_today: "dziś", mt_open: "Otwórz", mt_photo: "Obrób zdjęcia", mt_skip: "Nie pasuje",
+  mt_need: "Uzupełnij w zapytaniu budżet, dzielnice lub liczbę pokoi, a pojawią się tu mieszkania z tego, co Hermea już zebrała: właściciele z Otodom i OLX, świeże ogłoszenia ze wszystkich dzielnic i Twoje wyszukiwania.",
+  mt_none: "Teraz nic nie pasuje. Można podnieść budżet lub dodać dzielnice. Ogłoszenia odświeżają się codziennie.",
+  mt_copy: "Kopiuj wybór ({n})", mt_links: "z linkami", mt_pick: "Zaznacz mieszkania, tekst będzie w języku klienta.",
+  mt_copied: "Skopiowano", mt_photo_ok: "Zdjęcia w obróbce, zobacz «Obróbka zdjęć»", mt_upto: "do {b} zł", mt_from: "od {a} m²", mt_rooms: "{r} pok.",
+  mt_parking: "parking", mt_pets: "ze zwierzętami", mt_loading: "Szukam…",
+});
 
 // ================================================================ общие помощники
 const zl = (v) => (v == null || v === "" || isNaN(v) ? "0" : String(Math.round(+v)).replace(/\B(?=(\d{3})+(?!\d))/g, " "));
@@ -133,7 +161,7 @@ const PRICE = {
 };
 const TRANSLATOR = 300;
 
-const CLS = { list: [], q: "", id: null, c: null, tab: "card", tpl: "s1", tplLang: null, vars: {}, saveT: 0, pend: {}, template: false, calcOnly: false };
+const CLS = { mnew: {}, match: null, mpick: new Set(), mlinks: false, list: [], q: "", id: null, c: null, tab: "card", tpl: "s1", tplLang: null, vars: {}, saveT: 0, pend: {}, template: false, calcOnly: false };
 const CALC_KEY = "hermea_calc_";
 function calcState(id) {
   const def = { rent: "", admin: "", deposit: "", pkg: "SMART", repeat: false, addons: {}, notary: false, translator: false, owner: 0 };
@@ -159,7 +187,7 @@ function calc(st) {
 async function clientsOpen() {
   try {
     const d = await api("/api/clients");
-    CLS.list = d.clients; CLS.template = d.template;
+    CLS.list = d.clients; CLS.template = d.template; CLS.mnew = d.match_new || {};
     if (CLS.id && !CLS.list.find((c) => c.id === CLS.id)) { CLS.id = null; CLS.c = null; }
     if (!CLS.id && !CLS.calcOnly && CLS.list.length) CLS.id = CLS.list[0].id;
     if (CLS.id && (!CLS.c || CLS.c.id !== CLS.id)) CLS.c = (await api("/api/client?id=" + CLS.id)).client;
@@ -192,7 +220,7 @@ function drawList() {
     <button class="cl-item" type="button" data-cid="${c.id}" aria-current="${c.id === CLS.id}">
       <span class="cl-av">${esc((c.name || "?").trim().slice(0, 1).toUpperCase())}</span>
       <span class="cl-txt"><b>${c.name ? esc(c.name) : `<span class="cl-noname">${esc(t("c_noname"))}</span>`}</b>
-        <span><i class="st st-${c.status}">${esc(statusName(c.status))}</i>${c.budget ? ` ${esc(zl(c.budget))} zł` : ""}${c.package ? ` · ${esc(c.package)}` : ""}</span></span>
+        <span>${CLS.mnew[c.id] ? `<i class="mt-badge" title="${esc(t("mt_title"))}">+${CLS.mnew[c.id]}</i>` : ""}<i class="st st-${c.status}">${esc(statusName(c.status))}</i>${c.budget ? ` ${esc(zl(c.budget))} zł` : ""}${c.package ? ` · ${esc(c.package)}` : ""}</span></span>
     </button>`).join("") : `<p class="cl-empty">${t("c_empty")}</p>`;
   $("#clItems").onclick = async (e) => {
     const b = e.target.closest("[data-cid]");
@@ -308,9 +336,11 @@ function drawCard(body) {
         ${inp("must", t("f_must"), { area: true })}${inp("not_considered", t("f_not"), { area: true })}${inp("extra", t("f_extra"), { area: true })}
         ${inp("notes", t("f_notes"), { area: true, cls: "w3" })}
       </div></section>
+      <section class="cl-card w-full mt-card" id="clMatch"></section>
       <section class="cl-card w-full"><h3>${t("g_viewed")}</h3><div id="clViewed"></div></section>
     </div>`;
   drawViewed();
+  loadMatch();
   body.querySelectorAll("[data-f]").forEach((el) => el.addEventListener("input", () => setField(el.dataset.f, el.value)));
   body.querySelectorAll("[data-seg]").forEach((sg) => sg.addEventListener("click", (e) => {
     const b = e.target.closest("[data-v]");
@@ -375,6 +405,7 @@ async function flushSave() {
     svkToast(r.svk);
     const s = $("#clSaved"); if (s) s.textContent = t("saved");
     refreshListItem();
+    if (["budget", "location", "type", "area", "parking", "pets", "must"].some((k) => k in data)) loadMatch();
   } catch (e) { toast(e.message, true); }
 }
 function refreshListItem() {
@@ -629,3 +660,114 @@ MODE_OPEN.market = () => marketOpen();
 window.addEventListener("beforeunload", () => { if (Object.keys(CLS.pend).length) flushSave(); });
 applyStatic();
 if (SV.mode === "clients" || SV.mode === "market") setMode(SV.mode, true);
+
+
+// ================================================================ подбор квартир под клиента
+async function loadMatch() {
+  const box = $("#clMatch"), c = CLS.c;
+  if (!box || !c) return;
+  const cid = c.id;
+  if (!CLS.match || CLS.match.cid !== cid) { CLS.mpick = new Set(); box.innerHTML = `<h3>${t("mt_title")}</h3><p class="mt-empty">${t("mt_loading")}</p>`; }
+  try {
+    const r = await api("/api/match?id=" + encodeURIComponent(cid));
+    if (!CLS.c || CLS.c.id !== cid) return;
+    CLS.match = Object.assign(r, { cid });
+    drawMatch();
+    const fresh = r.items.filter((i) => i.new).map((i) => i.id);
+    if (fresh.length) setTimeout(() => {
+      if (!CLS.c || CLS.c.id !== cid) return;
+      api("/api/match", { id: cid, seen: fresh }).catch(() => {});
+      if (CLS.mnew[cid]) { delete CLS.mnew[cid]; drawList(); }
+    }, 2500);
+  } catch (e) { box.innerHTML = `<h3>${t("mt_title")}</h3><p class="mt-empty">${esc(e.message)}</p>`; }
+}
+function mtCrit(cr) {
+  const out = [];
+  if (cr.budget) out.push(t("mt_upto", { b: zl(cr.budget) }));
+  if (cr.rooms && cr.rooms.length) out.push(t("mt_rooms", { r: cr.rooms.join("–") }));
+  if (cr.districts && cr.districts.length) out.push(cr.districts.map((d) => MT_DIST[d] || d).join(", "));
+  if (cr.area) out.push(t("mt_from", { a: cr.area }));
+  if (cr.parking) out.push(t("mt_parking"));
+  if (cr.pets) out.push(t("mt_pets"));
+  return out.map((x) => `<span>${esc(x)}</span>`).join("");
+}
+const MT_DIST = { bemowo: "Bemowo", bialoleka: "Białołęka", bielany: "Bielany", mokotow: "Mokotów", ochota: "Ochota", "praga-polnoc": "Praga-Północ",
+  "praga-poludnie": "Praga-Południe", rembertow: "Rembertów", srodmiescie: "Śródmieście", targowek: "Targówek", ursus: "Ursus", ursynow: "Ursynów",
+  wawer: "Wawer", wesola: "Wesoła", wilanow: "Wilanów", wlochy: "Włochy", wola: "Wola", zoliborz: "Żoliborz" };
+function mtRow(i) {
+  const rooms = i.rooms ? t("mt_rooms", { r: i.rooms }) : "";
+  const area = i.area ? Math.round(i.area) + " м²" : "";
+  const who = i.agreed ? `<i class="mt-tag ok">${t("mt_agreed")}</i>` : i.private ? `<i class="mt-tag">${t("mt_owner")}</i>` : `<i class="mt-tag dim">${esc(i.agency || t("mt_agency"))}</i>`;
+  const age = i.days == null ? "" : i.days <= 0 ? t("mt_today") : t("mt_days", { d: i.days });
+  const on = CLS.mpick.has(i.id);
+  return `<li class="mt-row${on ? " on" : ""}" data-mid="${esc(i.id)}">
+    <label class="mt-chk"><input type="checkbox" ${on ? "checked" : ""} data-mpick="${esc(i.id)}" aria-label="✓"></label>
+    ${i.img ? `<img class="mt-img" src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="mt-img"></div>`}
+    <div class="mt-info">
+      <div class="mt-t"><b>${esc(i.district || "")}${i.street ? ", " + esc(i.street) : ""}</b>${i.new ? `<i class="mt-new">${t("mt_new")}</i>` : ""}${i.src === "olx" ? `<i class="ow-src">OLX</i>` : ""}</div>
+      <div class="mt-p"><b>${zl(i.total)} zł</b><span>${esc([rooms, area].filter(Boolean).join(" · "))}</span>${who}${age ? `<span class="hint">${esc(age)}</span>` : ""}</div>
+    </div>
+    <div class="mt-acts">
+      <button class="btn sm" type="button" data-mact="open">${ICON.web} ${t("mt_open")}</button>
+      <button class="btn sm" type="button" data-mact="photo">${t("mt_photo")}</button>
+      <button class="icon-x sm" type="button" data-mact="skip" title="${esc(t("mt_skip"))}" aria-label="${esc(t("mt_skip"))}">×</button>
+    </div></li>`;
+}
+function drawMatch() {
+  const box = $("#clMatch"), m = CLS.match;
+  if (!box || !m) return;
+  const head = `<h3>${t("mt_title")}${m.total ? ` <small>${t("mt_of", { n: m.items.length, t: m.total })}</small>` : ""}
+    <button class="text-btn" type="button" id="mtRef">${ICON.refresh} ${t("mt_refresh")}</button></h3>
+    ${m.criteria ? `<div class="mt-crit">${mtCrit(m.criteria)}</div>` : ""}`;
+  if (!m.items.length) {
+    box.innerHTML = head + `<p class="mt-empty">${t(m.empty === "need" ? "mt_need" : "mt_none")}</p>`;
+  } else {
+    const n = CLS.mpick.size;
+    box.innerHTML = head + `<ol class="mt-list">${m.items.map(mtRow).join("")}</ol>
+      <div class="mt-foot"><button class="btn-primary" type="button" id="mtCopy" ${n ? "" : "disabled"}>${ICON.copy} ${t("mt_copy", { n })}</button>
+        <label class="mt-links"><input type="checkbox" id="mtLinks" ${CLS.mlinks ? "checked" : ""}> ${t("mt_links")}</label>
+        <span class="hint">${t("mt_pick")}</span></div>`;
+  }
+  $("#mtRef").onclick = () => loadMatch();
+  box.onchange = (e) => {
+    const p = e.target.closest("[data-mpick]");
+    if (p) { p.checked ? CLS.mpick.add(p.dataset.mpick) : CLS.mpick.delete(p.dataset.mpick); drawMatch(); }
+    if (e.target.id === "mtLinks") CLS.mlinks = e.target.checked;
+  };
+  box.onclick = async (e) => {
+    const b = e.target.closest("[data-mact]"); if (!b) return;
+    const id = b.closest("[data-mid]").dataset.mid, i = m.items.find((x) => x.id === id); if (!i) return;
+    if (b.dataset.mact === "open") return api("/api/open", { what: "url", url: i.url }).catch(() => window.open(i.url, "_blank"));
+    if (b.dataset.mact === "photo") {
+      try { await api("/api/create", { text: i.url, force: false, telegram: true, no_fee: !!i.agreed }); toast(t("mt_photo_ok")); }
+      catch (err) { toast(err.message, true); }
+      return;
+    }
+    if (b.dataset.mact === "skip") {
+      const li = b.closest(".mt-row"); li.classList.add("out");
+      CLS.mpick.delete(id);
+      await api("/api/match", { id: CLS.c.id, skip: id }).catch(() => {});
+      setTimeout(loadMatch, 250);
+    }
+  };
+  const cp = $("#mtCopy");
+  if (cp) cp.onclick = async () => {
+    const txt = mtText(m.items.filter((x) => CLS.mpick.has(x.id)));
+    try { await navigator.clipboard.writeText(txt); toast(t("mt_copied")); } catch (err) { toast(err.message, true); }
+  };
+}
+function mtText(list) {
+  const lang = (CLS.c && CLS.c.lang) || "ua";
+  const W = {
+    ua: { hi: "Підібрав для вас кілька варіантів:", r: "кімн.", m: "/міс. разом з czynsz", end: "Який з них подивимось? Можу організувати перегляд найближчими днями." },
+    ru: { hi: "Подобрал для вас несколько вариантов:", r: "комн.", m: "/мес. вместе с czynsz", end: "Какой из них посмотрим? Могу организовать просмотр в ближайшие дни." },
+    pl: { hi: "Wybrałem dla Pana/Pani kilka propozycji:", r: "pok.", m: "/mies. razem z czynszem", end: "Które z nich chciałby Pan/chciałaby Pani zobaczyć? Mogę umówić oglądanie w najbliższych dniach." },
+  }[lang] || null;
+  const w = W || { hi: "Підібрав для вас кілька варіантів:", r: "кімн.", m: "/міс. разом з czynsz", end: "Який з них подивимось?" };
+  const rows = list.map((i, k) => {
+    const place = [i.district, i.street].filter(Boolean).join(", ");
+    const parts = [i.rooms ? `${i.rooms} ${w.r}` : "", i.area ? `${Math.round(i.area)} м²` : ""].filter(Boolean).join(", ");
+    return `${k + 1}. ${place}${parts ? `, ${parts}` : ""}, ${zl(i.total)} zł${w.m}${CLS.mlinks && i.url ? `\n${i.url}` : ""}`;
+  });
+  return `${w.hi}\n\n${rows.join("\n\n")}\n\n${w.end}`;
+}

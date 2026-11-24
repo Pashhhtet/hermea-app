@@ -25,10 +25,16 @@ STATE = {"state": "idle", "done": 0, "total": 0, "error": "", "phase": ""}
 BASE = ("https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/mazowieckie/warszawa/warszawa/warszawa/{d}"
         "?limit=72&by=LATEST&direction=DESC&isPrivateOwner=true&page={p}")
 MAX_PAGES = 6            # до 432 частных объявлений на район
+# OLX: открытый список объявлений сайта, только частные лица, самые новые; описание приходит сразу
+OLX_API = ("https://www.olx.pl/api/v1/offers/?offset={o}&limit=50&category_id=15&city_id=17871"
+           "&owner_type=private&sort_by=created_at:desc")
+OLX_PAGES = 20           # OLX отдаёт не больше 1000 объявлений на один поиск
+OLX_ROOMS = {"one": "1", "two": "2", "three": "3", "four": "4"}
 DETAIL_PER_DAY = 45      # сколько страниц объявлений открываем за проход (лучшие кандидаты)
 DETAIL_TTL = 7           # дней — потом текст перечитываем
 GONE_KEEP = 45           # снятые объявления храним столько дней (чтобы узнать повторную публикацию)
 STATUSES = ("new", "called", "nocall", "agreed", "refused", "hidden")
+CALL_STATUSES = ("called", "nocall", "agreed", "refused")
 
 NEG = [r"bez\s+po[sś]rednik", r"bez\s+biur", r"bez\s+agencj", r"biura\s+(nieruchomo[sś]ci\s+)?prosz[eę]\s+(o\s+)?nie",
        r"agencj\w*\s+prosz[eę]\s+(o\s+)?nie", r"po[sś]rednik\w*\s+prosz[eę]\s+(o\s+)?nie",
@@ -107,6 +113,63 @@ def parse_list(html):
             pass
     pages = ((sa.get("pagination") or {}).get("totalPages")) or 1
     return out, pages
+
+
+def _olx_param(ad, key):
+    for p in ad.get("params") or []:
+        if p.get("key") == key:
+            return p.get("value") or {}
+    return {}
+
+
+def _desc_detail(desc, today, others=0, free_from=""):
+    low = desc.lower()
+    return {"desc_len": len(desc), "neg": any(re.search(p, low) for p in NEG),
+            "pos": any(re.search(p, low) for p in POS), "free_from": free_from, "deposit": None,
+            "owner_id": "", "others": others, "snippet": desc[:280], "checked": today}
+
+
+def parse_olx(data, today=None):
+    """Ответ OLX (/api/v1/offers) -> объявления в том же виде, что и Otodom (id с приставкой olx-)."""
+    today = today or _today()
+    out = []
+    for ad in data.get("data") or []:
+        try:
+            if ad.get("business") or "otodom.pl" in str(ad.get("external_url") or ""):
+                continue                      # агентство или копия объявления с Otodom (его мы уже видим)
+            if re.search(r"\b(lokal|biur[oa]|gara[zż]|magazyn|pok[oó]j\s+(do|dla|w\s+mieszkaniu)|miejsce\s+postojowe)\b",
+                         (ad.get("title") or "").lower()) and not re.search(r"mieszkani|kawalerk|apartament", (ad.get("title") or "").lower()):
+                continue                      # не квартира (помещение, комната, гараж)
+            price = _num(_olx_param(ad, "price").get("value"))
+            rent = _num(_olx_param(ad, "rent").get("key"))
+            rent = rent if rent and rent > 1 else None
+            area = _num(_olx_param(ad, "m").get("key"))
+            rooms = OLX_ROOMS.get(str(_olx_param(ad, "rooms").get("key") or ""), "")
+            photos = ad.get("photos") or []
+            img = None
+            if photos:
+                img = (photos[0].get("link") or "").replace(":443", "").replace("{width}x{height}", "640x480") or None
+            loc = ad.get("location") or {}
+            created = (ad.get("created_time") or "")[:10]
+            refreshed = (ad.get("last_refresh_time") or "")[:10]
+            promo = ad.get("promotion") or {}
+            desc = _text(ad.get("description") or "")
+            pets = str(_olx_param(ad, "pets").get("key") or "").lower()
+            out.append({
+                "id": "olx-" + str(ad.get("id")), "src": "olx",
+                "title": ad.get("title") or "", "url": ad.get("url") or "", "img": img,
+                "price": price, "rent": rent, "total": (price or 0) + (rent or 0) if price else None,
+                "area": area, "rooms": rooms,
+                "district": ((loc.get("district") or {}).get("name") or ""), "sub": "", "street": "",
+                "created": created, "pushed": refreshed if refreshed and refreshed > created else "",
+                "promoted": bool(promo.get("top_ad") or promo.get("highlighted") or promo.get("urgent")),
+                "photos": len(photos), "name": ((ad.get("user") or {}).get("name") or "").strip(),
+                "slug": "", "tags": ["pets"] if pets in ("tak", "yes") else [],
+                "_user": str((ad.get("user") or {}).get("id") or ""), "_desc": desc,
+            })
+        except Exception:
+            pass
+    return out
 
 
 def _text(s):
@@ -237,14 +300,14 @@ def merge(items, today=None):
         # отпечаток квартиры: улица + площадь + комнаты (для повторной публикации с новым id)
         prints = {}
         for a in ads.values():
-            if a.get("last_seen", "") < today:
+            if a.get("last_seen", "") < today and _print(a):
                 prints.setdefault(_print(a), []).append(a)
         for i in items:
             a = ads.get(i["id"])
             tot = i.get("total") or i.get("price")
             if a is None:
                 a = ads[i["id"]] = {"id": i["id"], "first_seen": today, "status": "new", "prices": []}
-                old = [o for o in prints.get(_print(i), []) if o["id"] != i["id"]]
+                old = [o for o in prints.get(_print(i), []) if o["id"] != i["id"]] if _print(i) else []
                 if old:
                     a["relisted"] = max(len(old), 1)
                     a["first_seen"] = min(o.get("first_seen", today) for o in old)
@@ -252,8 +315,10 @@ def merge(items, today=None):
                     if old[0].get("status") not in (None, "new"):
                         a["status"], a["note"] = old[0]["status"], old[0].get("note", "")
             for k in ("title", "url", "img", "price", "rent", "total", "area", "rooms", "district", "sub",
-                      "street", "created", "pushed", "promoted", "photos", "name", "slug", "tags"):
+                      "street", "created", "pushed", "promoted", "photos", "name", "slug", "tags", "src"):
                 a[k] = i.get(k)
+            if i.get("_detail"):                       # OLX: описание пришло вместе со списком
+                a["detail"] = i["_detail"]
             a["last_seen"] = today
             if tot and (not a["prices"] or a["prices"][-1][1] != tot):
                 a["prices"].append([today, tot])
@@ -269,7 +334,10 @@ def merge(items, today=None):
 
 
 def _print(a):
-    return ((a.get("street") or "").lower().strip(), round(float(a.get("area") or 0)), a.get("rooms") or "")
+    street = (a.get("street") or "").lower().strip()
+    if not street:                    # без улицы (OLX) не угадать, та ли это квартира
+        return None
+    return (street, round(float(a.get("area") or 0)), a.get("rooms") or "")
 
 
 def scan(http_factory, log=print, pause=3.5):
@@ -295,6 +363,33 @@ def scan(http_factory, log=print, pause=3.5):
                 p += 1
                 time.sleep(pause)
             STATE["done"] += 1
+        # OLX: частные объявления всей Варшавы
+        STATE.update(phase="olx", done=0, total=OLX_PAGES)
+        olx = []
+        for k in range(OLX_PAGES):
+            try:
+                got = parse_olx(json.loads(_get(sess, OLX_API.format(o=k * 50))))
+                olx += got
+                ok += 1
+                if not got:
+                    break
+            except Exception as e:
+                log("собственники OLX:", k, e)
+                STATE["error"] = str(e)[:120]
+                break
+            STATE["done"] += 1
+            time.sleep(pause)
+        users = {}
+        for i in olx:
+            if i["_user"]:
+                users[i["_user"]] = users.get(i["_user"], 0) + 1
+        seen_ids = set()
+        for i in olx:
+            if i["id"] in seen_ids:
+                continue
+            seen_ids.add(i["id"])
+            i["_detail"] = _desc_detail(i.pop("_desc"), _today(), others=max(0, users.get(i.pop("_user"), 1) - 1))
+            items.append(i)
         if ok:
             merge(items)
             DATA["last_scan"] = _today()
@@ -303,6 +398,7 @@ def scan(http_factory, log=print, pause=3.5):
         STATE.update(phase="detail", done=0)
         with LOCK:
             cand = [a for a in DATA["ads"].values() if a.get("last_seen") == _today() and a.get("status") in ("new", None)
+                    and a.get("src") != "olx"
                     and (not a.get("detail") or (_days(a["detail"].get("checked")) or 0) > DETAIL_TTL)]
             cand.sort(key=lambda a: -a.get("score", 0))
             cand = cand[:DETAIL_PER_DAY]
@@ -349,7 +445,7 @@ def public(limit=200):
         a["gone"] = a.get("last_seen") != DATA.get("last_scan")
     counts = {s: sum(1 for a in ads if a.get("status") == s) for s in STATUSES}
     return {"items": live[:limit], "total": len(live), "counts": counts, "last_scan": DATA.get("last_scan"),
-            "today": today, "state": STATE, "districts": app_market.DISTRICTS}
+            "today": today, "state": STATE, "districts": app_market.DISTRICTS, "stats": stats(7)}
 
 
 def set_status(ad_id, status=None, note=None):
@@ -363,7 +459,61 @@ def set_status(ad_id, status=None, note=None):
                 raise ValueError(status)
             a["status"] = status
             a["status_at"] = _today()
+            if status in CALL_STATUSES and status != prev:      # журнал звонков для статистики
+                DATA.setdefault("log", []).append([_today(), status, a.get("district") or "", a.get("src") or "otodom", str(ad_id)])
+                DATA["log"] = DATA["log"][-5000:]
         if note is not None:
             a["note"] = str(note)[:500]
         _save()
         return prev, a.get("status")
+
+
+def stats(days=7):
+    """Звонки собственникам за последние дни: по дням, итоги, районы. Одно объявление = один итог
+    (последний статус за период), чтобы «не дозвонился → согласен» не считался дважды."""
+    today = dt.date.today()
+    span = [(today - dt.timedelta(days=k)).isoformat() for k in range(days - 1, -1, -1)]
+    with LOCK:
+        log = list(DATA.get("log") or [])
+        logged = {e[4] for e in log}
+        # статусы, поставленные до появления журнала
+        for a in DATA["ads"].values():
+            if a.get("status") in CALL_STATUSES and a.get("status_at") and str(a.get("id")) not in logged:
+                log.append([a["status_at"], a["status"], a.get("district") or "", a.get("src") or "otodom", str(a.get("id"))])
+    last = {}
+    for e in log:
+        if e[0] >= span[0]:
+            last[e[4]] = e                       # журнал идёт по времени: остаётся последний итог
+    per_day = {d: {k: 0 for k in CALL_STATUSES} for d in span}
+    tot = {k: 0 for k in CALL_STATUSES}
+    dist = {}
+    for e in last.values():
+        if e[0] in per_day:
+            per_day[e[0]][e[1]] += 1
+        tot[e[1]] += 1
+        x = dist.setdefault(e[2] or "?", {"n": 0, "agreed": 0})
+        x["n"] += 1
+        x["agreed"] += e[1] == "agreed"
+    talked = tot["called"] + tot["agreed"] + tot["refused"]
+    top = sorted(dist.items(), key=lambda kv: (-kv[1]["agreed"], -kv[1]["n"]))[:4]
+    return {"days": [{"day": d, **per_day[d]} for d in span], "total": tot, "calls": sum(tot.values()),
+            "talked": talked, "rate": round(tot["agreed"] * 100 / talked) if talked else None,
+            "districts": [{"name": k, **v} for k, v in top]}
+
+
+def new_strong(threshold=75):
+    """Сколько сильных собственников (оценка ≥ 75) появилось с прошлого утра. Первый раз (и при первом
+    появлении OLX) только запоминаем, чтобы не объявить сразу сотни «новых»."""
+    with LOCK:
+        last = DATA.get("last_scan")
+        strong = {k: a for k, a in DATA["ads"].items() if a.get("last_seen") == last
+                  and (a.get("score") or 0) >= threshold and a.get("status") in (None, "new")}
+        first = "announced" not in DATA
+        ann = set(DATA.get("announced") or [])
+        olx_first = not DATA.get("olx_seen") and any(a.get("src") == "olx" for a in strong.values())
+        fresh = [] if first else [k for k, a in strong.items() if k not in ann and not (olx_first and a.get("src") == "olx")]
+        DATA["announced"] = list(ann | set(strong))[-6000:]
+        if any(a.get("src") == "olx" for a in DATA["ads"].values()):
+            DATA["olx_seen"] = True
+        _save()
+    return len(fresh)

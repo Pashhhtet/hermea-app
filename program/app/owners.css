@@ -127,3 +127,31 @@
 .cb-empty p { margin: 4px 0 12px; color: var(--muted); font-size: 14px; }
 .cb-ex { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .cb-ex span { font-size: 13.5px; padding: 5px 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
+.ow-src { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 1px 6px; border-radius: 6px; color: var(--text); background: color-mix(in srgb, #23E5DB 24%, transparent); }
+
+/* SMS собственнику */
+.sms-box { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface-2); }
+.sms-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.sms-head b { font-size: 14px; }
+.sms-head .seg { width: auto; }
+.sms-txt { white-space: pre-wrap; font: 14px/1.5 var(--sans); margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line-soft); }
+.sms-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.sms-foot .btn.sm { height: 32px; padding: 0 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+.sms-foot .hint { font-size: 12.5px; }
+
+/* статистика звонков */
+.ow-stats {
+  display: grid; grid-template-columns: repeat(4, auto) minmax(160px, 1fr); gap: 6px 26px; align-items: end;
+  padding: 14px 18px; margin: 0 0 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+}
+.ow-st b { display: block; font-family: var(--serif); font-size: 32px; font-weight: 600; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.ow-st span { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.ow-st.ok b { color: var(--ok); }
+.ow-bars { display: flex; gap: 6px; align-items: flex-end; height: 58px; justify-self: end; width: 100%; max-width: 260px; }
+.ow-bar-d { flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; }
+.ow-bar-c { width: 100%; min-height: 2px; display: flex; flex-direction: column-reverse; border-radius: 3px 3px 0 0; overflow: hidden; background: var(--line-soft); }
+.ow-bar-c i { display: block; background: var(--accent); }
+.ow-bar-c i.ok { background: var(--ok); }
+.ow-bar-d small { font-size: 10.5px; color: var(--muted); }
+.ow-best { grid-column: 1 / -1; margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .ow-stats { grid-template-columns: repeat(4, 1fr); } .ow-bars { grid-column: 1 / -1; max-width: none; justify-self: stretch; } }

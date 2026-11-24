@@ -1,9 +1,9 @@
 {
- "version": "1.7.2",
+ "version": "1.8.0",
  "notes": {
-  "ru": "Список клиентов слева теперь на всю высоту окна при любом масштабе интерфейса. Шапка СВК снова в одну строку. Заголовок окна больше не сбрасывается.",
-  "uk": "Список клієнтів ліворуч тепер на всю висоту вікна за будь-якого масштабу інтерфейсу. Шапка СВК знову в один рядок. Заголовок вікна більше не скидається.",
-  "pl": "Lista klientów po lewej sięga teraz do dołu okna przy każdej skali interfejsu. Nagłówek raportu znów w jednym wierszu. Tytuł okna już się nie resetuje."
+  "ru": "Подбор квартир: в карточке клиента появился блок «Подходящие квартиры» по его бюджету, районам и комнатам, с отметкой новых и готовым текстом подборки на языке клиента. «Собственники» теперь и с OLX, есть статистика звонков за неделю и готовые SMS собственнику на польском. Утром одно уведомление: перезвоны, новые квартиры, сильные собственники и подбор для клиентов.",
+  "uk": "Добірка квартир: у картці клієнта з'явився блок «Підходящі квартири» за його бюджетом, районами і кімнатами, з позначкою нових і готовим текстом добірки мовою клієнта. «Власники» тепер і з OLX, є статистика дзвінків за тиждень і готові SMS власнику польською. Зранку одне сповіщення: передзвони, нові квартири, сильні власники і добірка для клієнтів.",
+  "pl": "Dobór mieszkań: w karcie klienta jest blok «Pasujące mieszkania» według budżetu, dzielnic i liczby pokoi, z oznaczeniem nowych i gotowym tekstem w języku klienta. «Właściciele» także z OLX, statystyka telefonów z tygodnia i gotowe SMS do właściciela. Rano jedno powiadomienie: oddzwonienia, nowe mieszkania, mocni właściciele i dobór dla klientów."
  },
  "pip": [
   "pypdf>=4",
@@ -43,13 +43,13 @@
   {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
-   "sha256": "54ac4f6b2a639821e3c0f5df67432bd7664a888ef9ecef2e51308cc200457b46",
+   "sha256": "88c10ed5c4dc6f64fbb3c68ac533b492be8f2480eb6908e11ef303f6bf73d903",
    "exec": false
   },
   {
    "path": "app/clients.js",
    "src": "program/app/clients.js",
-   "sha256": "3a17e15570e8d2156ad1a83c5c31a743dfb9050ad93433de3ce4d658efff4506",
+   "sha256": "2be056e52cf6c1095864b2249cc0a037becf4d2d7f26d4ea15fa2ca64894980e",
    "exec": false
   },
   {
@@ -85,13 +85,13 @@
   {
    "path": "app/owners.css",
    "src": "program/app/owners.css",
-   "sha256": "08b298c2ccfe1f28dc318e4871a64599ed3a79ec0fe7ba3ef0407eb1d61e4631",
+   "sha256": "d01bdbda06bca0127875e4f13f41c872154f1712038d10c58e797ab2b7c2ae95",
    "exec": false
   },
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "8d9bef69296f22c76ca8a4c978d7f693d1ece8156a08b9cc75c4ff1801187a7f",
+   "sha256": "559bbd6c5c2803602c618ae680afe1a4db08afc64ed7b30881710d38e3351adc",
    "exec": false
   },
   {
@@ -121,7 +121,7 @@
   {
    "path": "app_clients.py",
    "src": "program/app_clients.py",
-   "sha256": "b1f3c70e51de787e5badab119c13cc5fd9f73b95860cfa89a96b768ed35cba51",
+   "sha256": "3fb56dc1aa597f83192a620801d9e9d823f2f0fff3e73b5ebf7f547ab425d907",
    "exec": false
   },
   {
@@ -133,19 +133,25 @@
   {
    "path": "app_i18n.py",
    "src": "program/app_i18n.py",
-   "sha256": "3a66642da0e7249569b09739ba8f4e2a8a70d6a50c561eacb12ede67d43c5f61",
+   "sha256": "0fb6eac87d067f7fb32c039861bf782ff488c4595cc512ddec757bb4d8253c8a",
    "exec": false
   },
   {
    "path": "app_market.py",
    "src": "program/app_market.py",
-   "sha256": "846c08a0da9545486ff907fa068178e157cdc81ec37cfe7b6024610c878800af",
+   "sha256": "519f2df1af975dbc3a84ecb7774c721aa94d6e0fd59e85df6e1181c45dfc2628",
+   "exec": false
+  },
+  {
+   "path": "app_match.py",
+   "src": "program/app_match.py",
+   "sha256": "957e281ad97582e2f7d19ed5f9c06f6ba125ca5c785a5278a9d173c34254bdfc",
    "exec": false
   },
   {
    "path": "app_owners.py",
    "src": "program/app_owners.py",
-   "sha256": "7a6006ef22dc729f787edb97292bc6cd3dd51b88271fedc7015657a3c1d85744",
+   "sha256": "f09a1685b861037c79164f973555544ce7b418fce8bc673f09655cf8effd0612",
    "exec": false
   },
   {
@@ -157,7 +163,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "7afc6152c82aa4574cc44f1aebb8483b4847c5413f544da141ccd20472410cad",
+   "sha256": "0790adbc102e444ec5381e9001a140941810b95b935486e6ad4e8647253293ef",
    "exec": false
   },
   {

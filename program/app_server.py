@@ -31,6 +31,7 @@ import app_contract
 import app_market
 import app_owners
 import app_calls
+import app_match
 import app_update
 from app_i18n import tr
 
@@ -52,6 +53,7 @@ JOBS = []                 # все задания этого запуска (н�
 Q = queue.Queue()
 CURRENT = None            # задание, которое обрабатывается сейчас
 LAST_SEEN = time.time()
+START_AT = time.time()
 CLOSED_AT = 0.0           # окно закрыли (страница прислала «пока»)
 FLATS_VERSION = 1
 TG = {"state": "checking", "key": "tg_checking", "hint_key": "", "bot": "", "detail": ""}
@@ -819,6 +821,58 @@ def calls_notify(n, names):
     notify(tr("calls_title", n=n), ", ".join(names), {"mode": "owners", "calls": 1})
 
 
+def morning_digest():
+    """Одно утреннее сообщение: перезвоны, новые квартиры в поисках, сильные собственники, подбор клиентам."""
+    parts, target = [], None
+    due = app_calls.due()
+    if due:
+        parts.append(tr("dg_calls", n=len(due)))
+        target = {"mode": "owners", "calls": 1}
+    try:
+        n = sum(app_searches.new_count(s) for s in app_searches.DATA.get("searches") or [])
+        if n:
+            parts.append(tr("dg_search", n=n))
+            target = target or {"mode": "photo"}
+    except Exception:
+        pass
+    try:
+        strong = app_owners.new_strong()
+        if strong:
+            parts.append(tr("dg_owners", n=strong))
+            target = target or {"mode": "owners"}
+    except Exception:
+        pass
+    m = match_new_counts()
+    if m:
+        names = {c["id"]: (c.get("name") or "").split()[0] for c in app_clients.all_clients()}
+        lst = ", ".join(f"{names.get(cid) or '?'} {n}" for cid, n in sorted(m.items(), key=lambda kv: -kv[1])[:4])
+        parts.append(tr("dg_clients", list=lst))
+        target = target or {"mode": "clients"}
+    if parts:
+        txt = " · ".join(parts)
+        notify(tr("dg_title"), txt[:1].upper() + txt[1:], target)
+
+
+def digest_loop():
+    """В 9:30 (или при первом открытии позже) — один раз в день."""
+    import datetime as _dt
+    time.sleep(30)
+    while True:
+        try:
+            now = _dt.datetime.now()
+            d = now.date().isoformat()
+            if (now.hour, now.minute) >= app_calls.REMIND_AT and app_calls.DATA.get("notified") != d:
+                # ждём утренние проверки собственников и рынка, но не дольше 20 минут после открытия
+                busy = app_owners.STATE.get("state") == "running" or app_market.STATE.get("state") == "running"
+                if not busy or time.time() - START_AT > 1200:
+                    app_calls.DATA["notified"] = d
+                    app_calls._save()
+                    morning_digest()
+        except Exception as e:
+            log("утро:", e)
+        time.sleep(60)
+
+
 def calls_fetch(url):
     info = hermea.sites.get_listing(session(), hermea.clean_url(url))
     info = dict(info)
@@ -1005,7 +1059,11 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/svk":
                 return self._send(200, app_svk.get((q.get("from") or [""])[0], (q.get("to") or [""])[0]))
             if path == "/api/clients":
-                return self._send(200, {"clients": app_clients.summary(), "template": app_contract.available()})
+                return self._send(200, {"clients": app_clients.summary(), "template": app_contract.available(),
+                                        "match_new": match_new_counts()})
+            if path == "/api/match":
+                c = app_clients.get((q.get("id") or [""])[0])
+                return self._send(200, app_match.match(c, match_pools())) if c else self._send(404, {"error": tr("client_not_found")})
             if path == "/api/client":
                 c = app_clients.get((q.get("id") or [""])[0])
                 return self._send(200, {"client": c}) if c else self._send(404, {"error": tr("client_not_found")})
@@ -1085,6 +1143,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True})
             if path == "/api/svk":
                 return self._send(200, app_svk.apply(body))
+            if path == "/api/match":
+                try:
+                    app_clients.match_mark(body.get("id"), seen=body.get("seen"), skip=body.get("skip"))
+                except KeyError:
+                    return self._send(404, {"error": tr("client_not_found")})
+                return self._send(200, {"ok": True})
             if path == "/api/calls":
                 op = body.get("op")
                 try:
@@ -1272,6 +1336,34 @@ def shutdown():
     os._exit(0)
 
 
+def match_pools():
+    """Все объявления, которые программа уже собрала, — для подбора клиентам."""
+    with app_owners.LOCK:
+        last = app_owners.DATA.get("last_scan")
+        live = [a for a in app_owners.DATA["ads"].values() if a.get("last_seen") == last or a.get("status") == "agreed"]
+    with app_searches.LOCK:
+        srch = [i for s in app_searches.DATA.get("searches") or [] for i in (s.get("items") or [])]
+    return [([a for a in live if a.get("src") != "olx"], "owner"), ([a for a in live if a.get("src") == "olx"], "olx"),
+            (srch, "search"), (app_market.latest(), "market")]
+
+
+def match_new_counts():
+    """Сколько новых подходящих квартир у каждого клиента в работе."""
+    out = {}
+    try:
+        pools = match_pools()
+        for c in app_clients.all_clients():
+            if c.get("status") in ("deal", "lost"):
+                continue
+            r = app_match.match(c, pools)
+            n = sum(1 for i in r["items"] if i["new"])
+            if n:
+                out[c["id"]] = n
+    except Exception as e:
+        log("подбор:", e)
+    return out
+
+
 def watchdog():
     """Закрываемся, когда окна нет и работы нет: сразу после закрытия окна или через 3 минуты тишины."""
     while True:
@@ -1323,7 +1415,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     threading.Thread(target=svk_reminder_loop, daemon=True).start()
     threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
     threading.Thread(target=app_owners.loop, args=(search_session, log), daemon=True).start()
-    threading.Thread(target=app_calls.loop, args=(calls_notify, log), daemon=True).start()
+    threading.Thread(target=digest_loop, daemon=True).start()
     url = f"http://127.0.0.1:{PORT}/?t={TOKEN}"
     if open_window_fn:
         threading.Thread(target=open_window_fn, args=(url,), daemon=True).start()
