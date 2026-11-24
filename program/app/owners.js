@@ -7,7 +7,7 @@ ru: {
   m_owners: "Собственники",
   ow_f_calls: "Перезвоны", cl_sub: "Вставь ссылку с Otodom, можно сразу с телефоном и «в пятницу перезвонить». Утром в нужный день придёт напоминание.",
   cl_ph: "Ссылка на объявление, телефон и заметка, например: https://www.otodom.pl/… tel 535 016 721 в пятницу перезвонить",
-  cl_add: "Добавить", cl_adding: "Открываю объявление…", cl_find: "Номер телефона или улица", cl_empty: "Пока пусто. Вставь ссылку выше, как в канал «Перезвоны».",
+  cl_add: "Добавить", cl_empty_t: "Перезвонов пока нет", cl_empty_d: "Вставь ссылку и напиши, когда перезвонить. Номер и квартиру подтяну сам:", cl_ex: ["…ID4D1uR 535 016 721 завтра", "…ID4DGdT в пятницу, хочет 50%", "…ID4Cx9a через 3 дня"], cl_adding: "Открываю объявление…", cl_find: "Номер телефона или улица", cl_empty: "Пока пусто. Вставь ссылку выше, как в канал «Перезвоны».",
   cl_sec_today: "Сегодня", cl_sec_later: "Позже", cl_sec_nodate: "Без даты", cl_sec_done: "Сделано",
   cl_today: "сегодня", cl_tomorrow: "завтра", cl_overdue: "с {d}", cl_no_phone: "нет телефона", cl_no_title: "Без названия",
   cl_phone: "Телефон", cl_note: "Заметка", cl_when: "Перезвонить:", cl_w_today: "Сегодня", cl_w_tomorrow: "Завтра", cl_w_fri: "Пятница", cl_w_week: "Через неделю", cl_w_none: "Без даты",
@@ -32,7 +32,7 @@ uk: {
   m_owners: "Власники",
   ow_f_calls: "Передзвони", cl_sub: "Встав посилання з Otodom, можна одразу з телефоном і «в п'ятницю передзвонити». Зранку в потрібний день прийде нагадування.",
   cl_ph: "Посилання на оголошення, телефон і нотатка, наприклад: https://www.otodom.pl/… tel 535 016 721 в п'ятницю передзвонити",
-  cl_add: "Додати", cl_adding: "Відкриваю оголошення…", cl_find: "Номер телефону або вулиця", cl_empty: "Поки порожньо. Встав посилання вище, як у канал «Перезвоны».",
+  cl_add: "Додати", cl_empty_t: "Передзвонів поки немає", cl_empty_d: "Встав посилання і напиши, коли передзвонити. Номер і квартиру підтягну сам:", cl_ex: ["…ID4D1uR 535 016 721 завтра", "…ID4DGdT у пʼятницю, хоче 50%", "…ID4Cx9a через 3 дні"], cl_adding: "Відкриваю оголошення…", cl_find: "Номер телефону або вулиця", cl_empty: "Поки порожньо. Встав посилання вище, як у канал «Перезвоны».",
   cl_sec_today: "Сьогодні", cl_sec_later: "Пізніше", cl_sec_nodate: "Без дати", cl_sec_done: "Зроблено",
   cl_today: "сьогодні", cl_tomorrow: "завтра", cl_overdue: "з {d}", cl_no_phone: "немає телефону", cl_no_title: "Без назви",
   cl_phone: "Телефон", cl_note: "Нотатка", cl_when: "Передзвонити:", cl_w_today: "Сьогодні", cl_w_tomorrow: "Завтра", cl_w_fri: "П'ятниця", cl_w_week: "Через тиждень", cl_w_none: "Без дати",
@@ -57,7 +57,7 @@ pl: {
   m_owners: "Właściciele",
   ow_f_calls: "Oddzwonić", cl_sub: "Wklej link z Otodom, od razu z telefonem i np. „w piątek oddzwonić”. Rano w dany dzień przyjdzie przypomnienie.",
   cl_ph: "Link do ogłoszenia, telefon i notatka, np.: https://www.otodom.pl/… tel 535 016 721 w piątek oddzwonić",
-  cl_add: "Dodaj", cl_adding: "Otwieram ogłoszenie…", cl_find: "Numer telefonu lub ulica", cl_empty: "Na razie pusto. Wklej link powyżej.",
+  cl_add: "Dodaj", cl_empty_t: "Brak oddzwonień", cl_empty_d: "Wklej link i napisz, kiedy oddzwonić. Numer i mieszkanie pobiorę sam:", cl_ex: ["…ID4D1uR 535 016 721 jutro", "…ID4DGdT w piątek, chce 50%", "…ID4Cx9a za 3 dni"], cl_adding: "Otwieram ogłoszenie…", cl_find: "Numer telefonu lub ulica", cl_empty: "Na razie pusto. Wklej link powyżej.",
   cl_sec_today: "Dziś", cl_sec_later: "Później", cl_sec_nodate: "Bez daty", cl_sec_done: "Zrobione",
   cl_today: "dziś", cl_tomorrow: "jutro", cl_overdue: "od {d}", cl_no_phone: "brak telefonu", cl_no_title: "Bez tytułu",
   cl_phone: "Telefon", cl_note: "Notatka", cl_when: "Oddzwonić:", cl_w_today: "Dziś", cl_w_tomorrow: "Jutro", cl_w_fri: "Piątek", cl_w_week: "Za tydzień", cl_w_none: "Bez daty",
@@ -317,7 +317,7 @@ function clRow(c) {
   const place = [c.district, c.street].filter(Boolean).join(", ");
   const due = c.status === "open" && c.remind && c.remind <= OW.calls.today;
   return `<li class="cl-row${due ? " due" : ""}${c.status === "done" ? " done" : ""}${open ? " open" : ""}" data-id="${esc(c.id)}">
-    <div class="cl-main">
+    <div class="cb-main">
       ${c.img ? `<img class="ow-img" src="${esc(c.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="ow-img"></div>`}
       <div class="ow-info">
         <div class="ow-t"><b>${esc(place || c.title || t("cl_no_title"))}</b><span>${esc([rooms, c.area ? Math.round(parseFloat(String(c.area).replace(",", "."))) + " м²" : "", price ? zl(price) + " zł" : ""].filter(Boolean).join(" · "))}</span></div>
@@ -331,7 +331,7 @@ function clRow(c) {
       <label>${t("cl_phone")} <input class="pop-in" data-f="phone" value="${esc(c.phone_pretty || "")}" placeholder="535 016 721" inputmode="tel"></label>
       <label class="cl-n">${t("cl_note")} <textarea class="pop-in" data-f="note" rows="2">${esc(c.note || "")}</textarea></label>
       <div class="cl-dates">${t("cl_when")}
-        ${["today", "tomorrow", "fri", "week"].map((k) => `<button class="chip" type="button" data-when="${k}">${t("cl_w_" + k)}</button>`).join("")}
+        ${["today", "tomorrow", "fri", "week"].map((k) => `<button class="cl-chip" type="button" data-when="${k}">${t("cl_w_" + k)}</button>`).join("")}
         <input class="pop-in" type="date" data-f="remind" value="${esc(c.remind || "")}">
         ${c.remind ? `<button class="text-btn" type="button" data-when="none">${t("cl_w_none")}</button>` : ""}</div>
       <div class="ow-btns">
@@ -341,6 +341,13 @@ function clRow(c) {
         <button class="text-btn ow-no" type="button" data-cl="del">${t("cl_delete")}</button>
       </div></div>` : ""}
   </li>`;
+}
+function clEmpty() {
+  const ex = (OW_L[LANG] || OW_L.ru).cl_ex || [];
+  return `<div class="cb-empty">
+    <span class="cb-empty-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="M15 3.5a6 6 0 0 1 5.5 5.5M15 7a2.5 2.5 0 0 1 2 2"/></svg></span>
+    <div><b>${esc(t("cl_empty_t"))}</b><p>${esc(t("cl_empty_d"))}</p>
+    <div class="cb-ex">${ex.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div></div>`;
 }
 function drawCalls(first) {
   const box = $("#owners"), c = OW.calls || { items: [], today: "" };
@@ -363,13 +370,15 @@ function drawCalls(first) {
     </form>
     <div id="clList">
       ${sec(t("cl_sec_today"), today, "new")}${sec(t("cl_sec_later"), later)}${sec(t("cl_sec_nodate"), nodate)}
-      ${!today.length && !later.length && !nodate.length ? `<p class="ow-none">${q ? t("ow_none") : t("cl_empty")}</p>` : ""}
+      ${!today.length && !later.length && !nodate.length ? (q || done.length ? `<p class="ow-none">${q ? t("ow_none") : t("cl_empty")}</p>` : clEmpty()) : ""}
       ${done.length ? `<details class="cl-done"><summary>${t("cl_sec_done")} (${done.length})</summary><ol class="ow-list">${done.slice(0, 50).map(clRow).join("")}</ol></details>` : ""}
     </div></div>`;
   if (first) enter($("#clList"), ".cl-row");
   requestAnimationFrame(() => slideSeg($("#owSeg")));
   $("#owSeg").onclick = owSegClick;
   $("#clQ").oninput = (e) => { OW.cq = e.target.value; clearTimeout(OW.qt); OW.qt = setTimeout(() => { drawCalls(); const i = $("#clQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 200); };
+  const grow = () => { const a = $("#clText"); a.style.height = "auto"; a.style.height = Math.min(180, a.scrollHeight + 2) + "px"; };
+  $("#clText").addEventListener("input", grow);
   $("#clText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#clAdd").requestSubmit(); } });
   $("#clText").addEventListener("paste", () => setTimeout(() => { const v = $("#clText").value; if (/https?:\/\//.test(v) && /\d{3}[\s-]?\d{3}[\s-]?\d{3}|[a-zа-яіїє]{4,}\s*$/i.test(v.replace(/https?:\/\/\S+/, ""))) $("#clAdd").requestSubmit(); }, 30));
   $("#clAdd").onsubmit = async (e) => {

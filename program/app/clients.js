@@ -5,7 +5,7 @@
 const CL = {
 ru: {
   m_clients: "Клиенты", m_market: "Рынок",
-  c_new: "Новый клиент", c_search: "Найти клиента", c_empty: "Клиентов пока нет. Добавьте первого — его лид сразу попадёт в СВК.",
+  c_new: "Новый клиент", c_search: "Найти клиента", c_noname: "Без имени", c_empty: "Клиентов пока нет. Добавьте первого — его лид сразу попадёт в СВК.",
   c_calc_btn: "Калькулятор", st_new: "Новый", st_search: "Подбор", st_shows: "Показы", st_contract: "Договор", st_deal: "Сделка", st_lost: "Отказ",
   tab_card: "Карточка", tab_msg: "Сообщения", tab_calc: "Калькулятор",
   g_contact: "Контакт", g_contract: "Для договора", g_request: "Запрос клиента", g_viewed: "Просмотренные объекты",
@@ -44,7 +44,7 @@ ru: {
 },
 uk: {
   m_clients: "Клієнти", m_market: "Ринок",
-  c_new: "Новий клієнт", c_search: "Знайти клієнта", c_empty: "Клієнтів поки немає. Додайте першого — його лід одразу потрапить у СВК.",
+  c_new: "Новий клієнт", c_search: "Знайти клієнта", c_noname: "Без імені", c_empty: "Клієнтів поки немає. Додайте першого — його лід одразу потрапить у СВК.",
   c_calc_btn: "Калькулятор", st_new: "Новий", st_search: "Підбір", st_shows: "Покази", st_contract: "Договір", st_deal: "Угода", st_lost: "Відмова",
   tab_card: "Картка", tab_msg: "Повідомлення", tab_calc: "Калькулятор",
   g_contact: "Контакт", g_contract: "Для договору", g_request: "Запит клієнта", g_viewed: "Переглянуті об'єкти",
@@ -83,7 +83,7 @@ uk: {
 },
 pl: {
   m_clients: "Klienci", m_market: "Rynek",
-  c_new: "Nowy klient", c_search: "Szukaj klienta", c_empty: "Nie ma jeszcze klientów. Dodaj pierwszego — jego lead od razu trafi do raportu.",
+  c_new: "Nowy klient", c_search: "Szukaj klienta", c_noname: "Bez nazwiska", c_empty: "Nie ma jeszcze klientów. Dodaj pierwszego — jego lead od razu trafi do raportu.",
   c_calc_btn: "Kalkulator", st_new: "Nowy", st_search: "Dobór", st_shows: "Prezentacje", st_contract: "Umowa", st_deal: "Transakcja", st_lost: "Odmowa",
   tab_card: "Karta", tab_msg: "Wiadomości", tab_calc: "Kalkulator",
   g_contact: "Kontakt", g_contract: "Do umowy", g_request: "Zapytanie klienta", g_viewed: "Obejrzane mieszkania",
@@ -191,7 +191,7 @@ function drawList() {
   $("#clItems").innerHTML = items.length ? items.map((c) => `
     <button class="cl-item" type="button" data-cid="${c.id}" aria-current="${c.id === CLS.id}">
       <span class="cl-av">${esc((c.name || "?").trim().slice(0, 1).toUpperCase())}</span>
-      <span class="cl-txt"><b>${esc(c.name || "—")}</b>
+      <span class="cl-txt"><b>${c.name ? esc(c.name) : `<span class="cl-noname">${esc(t("c_noname"))}</span>`}</b>
         <span><i class="st st-${c.status}">${esc(statusName(c.status))}</i>${c.budget ? ` ${esc(zl(c.budget))} zł` : ""}${c.package ? ` · ${esc(c.package)}` : ""}</span></span>
     </button>`).join("") : `<p class="cl-empty">${t("c_empty")}</p>`;
   $("#clItems").onclick = async (e) => {

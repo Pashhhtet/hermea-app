@@ -77,6 +77,9 @@ body {
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* тонкие полосы прокрутки в цвет темы и золотое выделение текста */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted) 45%, transparent) transparent; }
+::selection { background: color-mix(in srgb, var(--accent) 38%, transparent); color: inherit; }
 [hidden] { display: none !important; }
 
 /* ---------- top bar */
@@ -1875,7 +1878,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "-") zoomCenter(1 / 1.6);
 });
 // тень под шапкой, когда страница прокручена
-for (const sc of [$("#main"), $("#svk"), $("#clients"), $("#market")]) {
+for (const sc of [$("#main"), $("#svk"), $("#clients"), $("#market"), $("#owners")].filter(Boolean)) {
   sc.addEventListener("scroll", () => document.body.classList.toggle("scrolled", sc.scrollTop > 6), { passive: true });
 }
 

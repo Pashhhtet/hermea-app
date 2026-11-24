@@ -33,4 +33,8 @@ def main(version):
 
 
 if __name__ == "__main__":
+    import subprocess
+    # перед релизом: вкладки не должны перебивать стили друг друга
+    if subprocess.call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "css_check.py")]) != 0:
+        sys.exit("CSS: один класс задан в разных файлах, переименуй перед релизом")
     main(sys.argv[1])

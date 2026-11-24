@@ -6,7 +6,7 @@
 Object.assign(L.ru, {
   m_photo: "Обработка фото", m_svk: "СВК",
   sv_day: "День", sv_week: "Неделя", sv_month: "Месяц", sv_report: "Отчёт",
-  sv_today: "сегодня", sv_yesterday: "вчера", sv_plan_done: "план дня выполнен на {p}%", sv_weekend: "выходной",
+  sv_today: "сегодня", sv_hi: ["Доброй ночи", "Доброе утро", "Добрый день", "Добрый вечер"], sv_yesterday: "вчера", sv_plan_done: "план дня выполнен на {p}%", sv_weekend: "выходной",
   sv_leads: "Лиды", sv_direct: "Прямой клиент", sv_agents: "Риэлтор другого агентства", sv_duty: "Дежурный телефон",
   sv_ads: "Публикации", sv_ads_sub: "OLX, Threads и другие личные объявления",
   sv_auto: "В программе сегодня обработано: {n} {flats}.", sv_auto_add: "Записать {n} {pubs}",
@@ -52,7 +52,7 @@ Object.assign(L.ru, {
 Object.assign(L.uk, {
   m_photo: "Обробка фото", m_svk: "СВК",
   sv_day: "День", sv_week: "Тиждень", sv_month: "Місяць", sv_report: "Звіт",
-  sv_today: "сьогодні", sv_yesterday: "вчора", sv_plan_done: "план дня виконано на {p}%", sv_weekend: "вихідний",
+  sv_today: "сьогодні", sv_hi: ["Доброї ночі", "Доброго ранку", "Добрий день", "Добрий вечір"], sv_yesterday: "вчора", sv_plan_done: "план дня виконано на {p}%", sv_weekend: "вихідний",
   sv_leads: "Ліди", sv_direct: "Прямий клієнт", sv_agents: "Рієлтор іншої агенції", sv_duty: "Черговий телефон",
   sv_ads: "Публікації", sv_ads_sub: "OLX, Threads та інші особисті оголошення",
   sv_auto: "У програмі сьогодні оброблено: {n} {flats}.", sv_auto_add: "Записати {n} {pubs}",
@@ -98,7 +98,7 @@ Object.assign(L.uk, {
 Object.assign(L.pl, {
   m_photo: "Obróbka zdjęć", m_svk: "Raport",
   sv_day: "Dzień", sv_week: "Tydzień", sv_month: "Miesiąc", sv_report: "Raport",
-  sv_today: "dzisiaj", sv_yesterday: "wczoraj", sv_plan_done: "plan dnia wykonany w {p}%", sv_weekend: "weekend",
+  sv_today: "dzisiaj", sv_hi: ["Dobrej nocy", "Dzień dobry", "Dzień dobry", "Dobry wieczór"], sv_yesterday: "wczoraj", sv_plan_done: "plan dnia wykonany w {p}%", sv_weekend: "weekend",
   sv_leads: "Leady", sv_direct: "Klient bezpośredni", sv_agents: "Agent z innej agencji", sv_duty: "Telefon dyżurny",
   sv_ads: "Publikacje", sv_ads_sub: "OLX, Threads i inne własne ogłoszenia",
   sv_auto: "W programie dziś przetworzono: {n} {flats}.", sv_auto_add: "Zapisz {n} {pubs}",
@@ -259,7 +259,28 @@ function drawModes() {
   const now = new Date();
   const late = now.getDay() >= 1 && now.getDay() <= 5 && now.getHours() >= 16;
   $("#svkDot").hidden = !(late && S.st && S.st.svk_touched === false && SV.mode !== "svk");
+  winTitle();
 }
+// заголовок окна: «(2) Hermea — Собственники», чтобы в Dock/панели задач было видно, где ты
+function winTitle() {
+  const b = document.querySelector(`#modes [data-mode="${SV.mode}"]`);
+  const due = S.st && S.st.calls_due ? `(${S.st.calls_due}) ` : "";
+  const name = b ? b.textContent.trim() : "";
+  const want = `${due}Hermea${name ? " — " + name : ""}`;
+  if (document.title !== want) document.title = want;
+}
+setInterval(winTitle, 2500);
+// ⌘1…⌘5 / Ctrl+1…5 — быстро между вкладками
+document.addEventListener("keydown", (e) => {
+  if (!(e.metaKey || e.ctrlKey) || e.altKey || e.shiftKey) return;
+  const i = "12345".indexOf(e.key);
+  if (i < 0 || !MODES[i]) return;
+  e.preventDefault(); setMode(MODES[i]);
+});
+(() => {
+  const mac = /Mac/i.test(navigator.platform || navigator.userAgent);
+  document.querySelectorAll("#modes [data-mode]").forEach((b, i) => { b.title = `${mac ? "⌘" : "Ctrl+"}${i + 1}`; });
+})();
 $("#modes").addEventListener("click", (e) => {
   const b = e.target.closest("[data-mode]");
   if (b) setMode(b.dataset.mode);
@@ -346,8 +367,16 @@ function daySub(dv) {
   if (wd === 0 || wd === 6) parts.push(`<span>${t("sv_weekend")}</span>`);
   const p = dayPct(dv);
   if (p != null) parts.push(`<span>${esc(t("sv_plan_done", { p }))}</span>`);
-  if (SV.agent) parts.push(`<span>${esc(SV.agent)}</span>`);
+  if (dv.date === td) parts.push(`<span class="sv-hi">${esc(greet())}</span>`);
+  else if (SV.agent) parts.push(`<span>${esc(SV.agent)}</span>`);
   return parts.join("");
+}
+// приветствие по времени суток: «Доброе утро, Паша»
+function greet() {
+  const h = new Date().getHours(), hi = (L[LANG] || L.ru).sv_hi || [];
+  const w = hi[h < 5 ? 0 : h < 12 ? 1 : h < 18 ? 2 : h < 23 ? 3 : 0] || "";
+  const name = (SV.agent || "").split(/\s+/)[0];
+  return name ? `${w}, ${name}` : w;
 }
 function ofHtml(m) { return `<span class="of" data-of="${m}"></span>`; }
 function stepper(m, money) {
