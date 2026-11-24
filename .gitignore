@@ -1,0 +1,11 @@
+# личное и тяжёлое никогда не попадает в репозиторий
+telegram.txt
+готово.txt
+app_settings.json
+app_searches.json
+app_svk.json
+*.pt
+*.pth
+.venv/
+__pycache__/
+.DS_Store

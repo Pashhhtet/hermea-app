@@ -1,0 +1,31 @@
+#!/bin/bash
+# Hermea — окно «Обработка фото». Запускает _program/hermea_app.py.
+# Программа сама закрывается, когда окно закрыто и обработка закончена.
+APP="$(cd "$(dirname "$0")/../.." && pwd)"
+ROOT="$(dirname "$APP")"
+PROG="$ROOT/_program"
+[ -d "$PROG" ] || PROG="$HOME/Desktop/Hermea Photo/_program"
+export LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" PYTHONIOENCODING="utf-8"
+PY="$PROG/.venv/bin/python"
+LOG="$PROG/app_log.txt"
+if [ ! -x "$PY" ]; then
+  osascript -e 'display dialog "Программа ещё не установлена. Открой папку «_program» и дважды кликни «Установка.command»." with title "Hermea" buttons {"OK"} default button 1 with icon caution' >/dev/null 2>&1
+  exit 1
+fi
+cd "$PROG" || exit 1
+
+# --- обычный запуск ---
+"$PY" -W ignore hermea_app.py >> "$LOG" 2>&1 &
+PID=$!
+for i in $(seq 1 25); do                       # 5 секунд: если Python не пустили, он падает сразу
+  kill -0 $PID 2>/dev/null || break
+  sleep 0.2
+done
+if kill -0 $PID 2>/dev/null; then wait $PID; exit 0; fi   # работает — ждём, пока закроют окно
+wait $PID; RC=$?
+[ $RC -eq 0 ] && exit 0                         # окно уже было открыто — просто показали его
+
+# --- запасной путь: macOS не пустила Python — открываем через Терминал (у него доступ есть) ---
+echo "запасной путь: открываю через Терминал" >> "$LOG"
+open "$PROG/Открыть окно Hermea.command"
+exit 0

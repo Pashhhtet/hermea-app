@@ -1,0 +1,167 @@
+{
+ "version": "1.2.0",
+ "notes": {
+  "ru": "Новая вкладка «СВК»: счётчики за день, журнал, отчёт в один клик и таблица недели и месяца. Плавные анимации, приближение фото.",
+  "uk": "Нова вкладка «СВК»: лічильники за день, журнал, звіт в один клік і таблиця тижня та місяця. Плавні анімації, наближення фото.",
+  "pl": "Nowa karta „Raport”: liczniki dnia, dziennik, raport jednym kliknięciem oraz tabela tygodnia i miesiąca. Płynne animacje, przybliżanie zdjęć."
+ },
+ "pip": [],
+ "files": [
+  {
+   "path": "../Hermea.app/Contents/Info.plist",
+   "src": "bundle/Contents/Info.plist",
+   "sha256": "863026f68591d22e599c73b6fe1fb7603b56f755ea3940a9158ff5c4f2de750f",
+   "exec": false
+  },
+  {
+   "path": "../Hermea.app/Contents/MacOS/Hermea",
+   "src": "bundle/Contents/MacOS/Hermea",
+   "sha256": "b9f5a678b7f11a4a18ea0378a246d4e3d98d58549f21dca11ec701031a7356d2",
+   "exec": true
+  },
+  {
+   "path": "../Hermea.app/Contents/PkgInfo",
+   "src": "bundle/Contents/PkgInfo",
+   "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+   "exec": false
+  },
+  {
+   "path": "../Hermea.app/Contents/Resources/AppIcon.icns",
+   "src": "bundle/Contents/Resources/AppIcon.icns",
+   "sha256": "d7eb0cb628d00598331bdd078324818597114db6157dbe289f6f6365cdfa1bac",
+   "exec": false
+  },
+  {
+   "path": "CormorantGaramond-600.woff2",
+   "src": "program/CormorantGaramond-600.woff2",
+   "sha256": "ae062b6d5ae308e7edf61b28b07b9984bbb6e961b1f34d9b2c2f4389c33f21ea",
+   "exec": false
+  },
+  {
+   "path": "app/cormorant.woff2",
+   "src": "program/app/cormorant.woff2",
+   "sha256": "b32eaa607cf944903847a3c70e88bb25025ed33b601554a859e2cd1b8084aaf0",
+   "exec": false
+  },
+  {
+   "path": "app/index.html",
+   "src": "program/app/index.html",
+   "sha256": "39343c4933ba2bff32ec032e5949e69d18d1182257cf43747c062fafc0af1db9",
+   "exec": false
+  },
+  {
+   "path": "app/logo_row.png",
+   "src": "program/app/logo_row.png",
+   "sha256": "061b0921e78d9a8280701b81845e069b2bcd4eb23e4cf152b966335be3afd9b4",
+   "exec": false
+  },
+  {
+   "path": "app/mark.png",
+   "src": "program/app/mark.png",
+   "sha256": "1d273b594aaba6deb1b71b1662abe245dce8cec9bb404af80c335de6960c34ce",
+   "exec": false
+  },
+  {
+   "path": "app/svk.css",
+   "src": "program/app/svk.css",
+   "sha256": "0c77da227481bd6ac618f46e80e4fb105ac55b8fe17538ec27d3884f391def5b",
+   "exec": false
+  },
+  {
+   "path": "app/svk.js",
+   "src": "program/app/svk.js",
+   "sha256": "a7c3567f680246ff20e47a920fbfc6735914f5934245a061db2028bbf2c2c6ea",
+   "exec": false
+  },
+  {
+   "path": "app_i18n.py",
+   "src": "program/app_i18n.py",
+   "sha256": "9b6ca93ab581b311dad0f017c33a7c007bf35e6c5154ef7ff9f305ce9134ce40",
+   "exec": false
+  },
+  {
+   "path": "app_searches.py",
+   "src": "program/app_searches.py",
+   "sha256": "2993e93101a25eacb569308c71b94a2eafd1e6366733e1ce023f68091d54a127",
+   "exec": false
+  },
+  {
+   "path": "app_server.py",
+   "src": "program/app_server.py",
+   "sha256": "6e5cfa4c1f48d7d005e83064333200cf945bc40d15ab147c37b99f90328a46f7",
+   "exec": false
+  },
+  {
+   "path": "app_svk.py",
+   "src": "program/app_svk.py",
+   "sha256": "fcddc97b0e7eff739a53681e466c89a68ae32abbfaa0af226432d01e2d76a636",
+   "exec": false
+  },
+  {
+   "path": "app_update.py",
+   "src": "program/app_update.py",
+   "sha256": "fdefb03e9e69ba40a1936e59d7e631347ca92c90334048346fff917ce3138dff",
+   "exec": false
+  },
+  {
+   "path": "hermea.py",
+   "src": "program/hermea.py",
+   "sha256": "ee57e92336902b2391fb576e09b20afe688766b3236f4cd9284efeee1de06787",
+   "exec": false
+  },
+  {
+   "path": "hermea_app.py",
+   "src": "program/hermea_app.py",
+   "sha256": "f9f2dbf54facf4428f02372e48feb618791d1ebfbd5a7530a65b7cb4f189e9fb",
+   "exec": false
+  },
+  {
+   "path": "logo.png",
+   "src": "program/logo.png",
+   "sha256": "26555592fcfd48c84fde9e08297715de43cbbbfb405fcd39cbe9c75cb4ccbe4d",
+   "exec": false
+  },
+  {
+   "path": "quality.py",
+   "src": "program/quality.py",
+   "sha256": "ec526be892f91b33a802271b5875b90acf0e4dc11bc479d974ec9c06820c1c46",
+   "exec": false
+  },
+  {
+   "path": "rooms.py",
+   "src": "program/rooms.py",
+   "sha256": "df14c11370948404375033c7e4e83051d9d83801591b3ccc08d0672f0cda458f",
+   "exec": false
+  },
+  {
+   "path": "sites.py",
+   "src": "program/sites.py",
+   "sha256": "c10e580ce2b2456237cb5347ef8cde5f3a1d8948d44e9a0ca78eafaa61887b09",
+   "exec": false
+  },
+  {
+   "path": "КАК ПОЛЬЗОВАТЬСЯ.txt",
+   "src": "program/КАК ПОЛЬЗОВАТЬСЯ.txt",
+   "sha256": "6362ef37c6e2f72b89a454963d6bfb017787f3ae369ba3b899f75fc18bbb443c",
+   "exec": false
+  },
+  {
+   "path": "Открыть окно Hermea.command",
+   "src": "program/Открыть окно Hermea.command",
+   "sha256": "858cefebc75a04e49ba11b5f972944926307078b32ed1f27538af7dfd0d1018a",
+   "exec": true
+  },
+  {
+   "path": "Проверить Telegram.command",
+   "src": "program/Проверить Telegram.command",
+   "sha256": "0d595a12ab0302b2be3dd0efcbaf574e130c0cf9295286f921c8ab5d59902e42",
+   "exec": true
+  },
+  {
+   "path": "Установка.command",
+   "src": "program/Установка.command",
+   "sha256": "7bad506a5e7c157b538aec1ca20e28ec58e54361cb8267919155b2d06ddbdf98",
+   "exec": true
+  }
+ ]
+}

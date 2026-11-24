@@ -1,0 +1,87 @@
+"""Тексты, которые программа показывает в окне, на трёх языках (ru / uk / pl)."""
+
+LANGS = ("ru", "uk", "pl")
+CURRENT = {"lang": "ru"}
+
+MSG = {
+    "tg_checking": {"ru": "Проверяю Telegram…", "uk": "Перевіряю Telegram…", "pl": "Sprawdzam Telegram…"},
+    "tg_off": {"ru": "Telegram не настроен", "uk": "Telegram не налаштовано", "pl": "Telegram nie jest skonfigurowany"},
+    "tg_off_hint": {"ru": "Нет файла telegram.txt или в нём пустой TOKEN",
+                    "uk": "Немає файлу telegram.txt або в ньому порожній TOKEN",
+                    "pl": "Brak pliku telegram.txt albo pusty TOKEN"},
+    "tg_bad_token": {"ru": "Telegram: неверный токен", "uk": "Telegram: невірний токен", "pl": "Telegram: błędny token"},
+    "tg_bad_token_hint": {"ru": "Проверь TOKEN в telegram.txt", "uk": "Перевір TOKEN у telegram.txt",
+                          "pl": "Sprawdź TOKEN w telegram.txt"},
+    "tg_no_net": {"ru": "Нет связи с Telegram", "uk": "Немає зв'язку з Telegram", "pl": "Brak połączenia z Telegramem"},
+    "tg_nochat": {"ru": "Telegram: не выбран чат", "uk": "Telegram: не вибрано чат", "pl": "Telegram: nie wybrano czatu"},
+    "tg_nochat_hint": {"ru": "Запусти «Проверить Telegram.command» в папке _program",
+                       "uk": "Запусти «Проверить Telegram.command» у папці _program",
+                       "pl": "Uruchom „Проверить Telegram.command” w folderze _program"},
+    "tg_ok": {"ru": "Telegram подключён", "uk": "Telegram підключено", "pl": "Telegram połączony"},
+    "tg_ok_hint": {"ru": "Бот {bot}", "uk": "Бот {bot}", "pl": "Bot {bot}"},
+    "no_links": {"ru": "Не вижу ссылки. Скопируйте адрес объявления из браузера (начинается с https://).",
+                 "uk": "Не бачу посилання. Скопіюйте адресу оголошення з браузера (починається з https://).",
+                 "pl": "Nie widzę linku. Skopiuj adres ogłoszenia z przeglądarki (zaczyna się od https://)."},
+    "no_access": {"ru": "Нет доступа", "uk": "Немає доступу", "pl": "Brak dostępu"},
+    "open_via_app": {"ru": "Откройте Hermea через Hermea.app", "uk": "Відкрийте Hermea через Hermea.app",
+                     "pl": "Otwórz Hermea przez Hermea.app"},
+    "job_not_found": {"ru": "Задание не найдено", "uk": "Завдання не знайдено", "pl": "Nie znaleziono zadania"},
+    "folder_gone": {"ru": "Папки уже нет", "uk": "Папки вже немає", "pl": "Ten folder już nie istnieje"},
+    "no_url": {"ru": "У этой квартиры не сохранена ссылка", "uk": "У цієї квартири не збережено посилання",
+               "pl": "To mieszkanie nie ma zapisanego linku"},
+    "tg_not_set": {"ru": "Telegram не настроен", "uk": "Telegram не налаштовано", "pl": "Telegram nie jest skonfigurowany"},
+    "no_opis": {"ru": "У этой папки нет описания или готовых фото", "uk": "У цієї папки немає опису або готових фото",
+                "pl": "Ten folder nie ma opisu ani gotowych zdjęć"},
+    "wait_busy": {"ru": "Сначала дождитесь конца обработки", "uk": "Спочатку дочекайтеся кінця обробки",
+                  "pl": "Najpierw poczekaj na koniec obróbki"},
+    "done_title": {"ru": "Hermea: готово", "uk": "Hermea: готово", "pl": "Hermea: gotowe"},
+    "done_text": {"ru": "{name}: {n} фото", "uk": "{name}: {n} фото", "pl": "{name}: {n} zdjęć"},
+    "done_tg": {"ru": ", отправлено в Telegram", "uk": ", надіслано в Telegram", "pl": ", wysłano do Telegrama"},
+    "fail_title": {"ru": "Hermea: не получилось", "uk": "Hermea: не вдалося", "pl": "Hermea: nie udało się"},
+    "err_lib": {"ru": "Не установлена библиотека для сайтов. Запустите «Установка.command» в папке _program.",
+                "uk": "Не встановлено бібліотеку для сайтів. Запустіть «Установка.command» у папці _program.",
+                "pl": "Brakuje biblioteki do stron. Uruchom „Установка.command” w folderze _program."},
+    "err_blocked": {"ru": "Сайт временно не пускает программу. Подождите пару минут и попробуйте ещё раз.",
+                    "uk": "Сайт тимчасово не пускає програму. Зачекайте пару хвилин і спробуйте ще раз.",
+                    "pl": "Strona chwilowo blokuje program. Poczekaj kilka minut i spróbuj ponownie."},
+    "err_no_data": {"ru": "Не удалось получить данные объявления (сайт мог показать капчу). Попробуйте ещё раз через пару минут.",
+                    "uk": "Не вдалося отримати дані оголошення (сайт міг показати капчу). Спробуйте ще раз за пару хвилин.",
+                    "pl": "Nie udało się pobrać danych ogłoszenia (strona mogła pokazać captchę). Spróbuj za kilka minut."},
+    "err_no_photos": {"ru": "На странице объявления нет фото.", "uk": "На сторінці оголошення немає фото.",
+                      "pl": "Na stronie ogłoszenia nie ma zdjęć."},
+    "err_none_processed": {"ru": "Ни одно фото не обработалось.", "uk": "Жодне фото не обробилося.",
+                           "pl": "Żadne zdjęcie nie zostało przetworzone."},
+    "err_net": {"ru": "Нет связи с сайтом. Проверьте интернет и попробуйте ещё раз.",
+                "uk": "Немає зв'язку з сайтом. Перевірте інтернет і спробуйте ще раз.",
+                "pl": "Brak połączenia ze stroną. Sprawdź internet i spróbuj ponownie."},
+    "svk_remind_title": {"ru": "Hermea: время закрыть день", "uk": "Hermea: час закрити день", "pl": "Hermea: czas zamknąć dzień"},
+    "svk_remind_text": {"ru": "Проверьте счётчики в СВК и скопируйте отчёт", "uk": "Перевірте лічильники у СВК і скопіюйте звіт",
+                        "pl": "Sprawdź liczniki w SVK i skopiuj raport"},
+    "search_new_title": {"ru": "Hermea: новые квартиры", "uk": "Hermea: нові квартири", "pl": "Hermea: nowe mieszkania"},
+    "search_new_text": {"ru": "{n} новых в поиске «{name}»", "uk": "{n} нових у пошуку «{name}»",
+                        "pl": "{n} nowych w wyszukiwaniu „{name}”"},
+    "search_bad": {"ru": "Это не ссылка на поиск Otodom. Откройте на otodom.pl поиск с фильтрами и скопируйте адрес.",
+                   "uk": "Це не посилання на пошук Otodom. Відкрийте на otodom.pl пошук із фільтрами й скопіюйте адресу.",
+                   "pl": "To nie jest link do wyszukiwania Otodom. Otwórz wyszukiwanie z filtrami na otodom.pl i skopiuj adres."},
+    "search_fail": {"ru": "Не получилось открыть поиск: {e}", "uk": "Не вдалося відкрити пошук: {e}",
+                    "pl": "Nie udało się otworzyć wyszukiwania: {e}"},
+    "search_not_found": {"ru": "Поиск не найден", "uk": "Пошук не знайдено", "pl": "Nie znaleziono wyszukiwania"},
+    "upd_off": {"ru": "Обновления ещё не подключены", "uk": "Оновлення ще не підключено",
+                "pl": "Aktualizacje nie są jeszcze podłączone"},
+    "upd_fail": {"ru": "Не получилось проверить обновления: {e}", "uk": "Не вдалося перевірити оновлення: {e}",
+                 "pl": "Nie udało się sprawdzić aktualizacji: {e}"},
+    "upd_bad_file": {"ru": "Файл обновления пришёл с ошибкой, попробуйте позже",
+                     "uk": "Файл оновлення прийшов з помилкою, спробуйте пізніше",
+                     "pl": "Plik aktualizacji jest uszkodzony, spróbuj później"},
+    "upload_none": {"ru": "Нет фото для обработки", "uk": "Немає фото для обробки", "pl": "Brak zdjęć do obróbki"},
+    "upload_big": {"ru": "Файл слишком большой", "uk": "Файл завеликий", "pl": "Plik jest za duży"},
+}
+
+
+def tr(key, **kw):
+    m = MSG.get(key) or {}
+    s = m.get(CURRENT["lang"]) or m.get("ru") or key
+    try:
+        return s.format(**kw)
+    except Exception:
+        return s
