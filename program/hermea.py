@@ -628,8 +628,12 @@ def process_photo(img, plan=False, watermark=None):
     if side < 1280:
         img, _ = quality.upscale_to(img, 1280, None)
     if not plan:
+        # «квадратики» сжатия Otodom на стенах и потолке: чистим до и после цветокоррекции
+        img, _ = quality.deblock(img)
         img = enhance(img)
+        img, flat = quality.deblock(img)
         img = quality.sharpen(img, amount=0.3, radius=0.8, threshold=3)
+        img = quality.dither(img, flat)
     img = add_logo(img)
     ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 93])
     return buf.tobytes(), tags

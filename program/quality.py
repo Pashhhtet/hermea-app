@@ -229,6 +229,38 @@ def straighten(img, verbose=False):
     return img, "пропуск (без потерь нельзя)"
 
 
+# =================================================================== ровные стены
+def deblock(img):
+    """Убирает «квадратики» и пятна сжатия на ровных стенах и потолке; края и фактуру не трогает."""
+    g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    gb = cv2.GaussianBlur(g, (0, 0), 1.2)
+    mag = cv2.GaussianBlur(np.hypot(cv2.Sobel(gb, cv2.CV_32F, 1, 0), cv2.Sobel(gb, cv2.CV_32F, 0, 1)), (0, 0), 3)
+    w = np.clip(1 - (mag - 2.5) / 3.0, 0, 1)
+    w = cv2.GaussianBlur(w, (0, 0), 2)
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    s = max(img.shape[:2]) / 1500
+    # размываем только с учётом маски (нормированная свёртка): соседние края не «затекают» на стену
+    def nblur(ch, sig):
+        num = cv2.GaussianBlur(ch * w, (0, 0), sig)
+        den = cv2.GaussianBlur(w, (0, 0), sig) + 1e-4
+        return num / den
+    L, A, B = lab[..., 0], lab[..., 1], lab[..., 2]
+    lab[..., 0] = L * (1 - w) + nblur(L, 3.0 * s) * w
+    lab[..., 1] = A * (1 - w) + nblur(A, 6.0 * s) * w
+    lab[..., 2] = B * (1 - w) + nblur(B, 6.0 * s) * w
+    out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+    return out, w[..., None]
+
+
+def dither(img, w=None, amt=0.9):
+    """Едва заметное зерно на ровных местах — чтобы плавные переходы не ложились «ступеньками»."""
+    rng = np.random.default_rng(7)
+    n = rng.normal(0, amt, img.shape[:2]).astype(np.float32)[..., None]
+    if w is not None:
+        n = n * w
+    return np.clip(img.astype(np.float32) + n + 0.0, 0, 255).astype(np.uint8)
+
+
 # =================================================================== чёткость
 class SuperRes:
     """Real-ESRGAN realesr-general-x4v3 (SRVGGNetCompact), ~5 МБ, работает на процессоре."""

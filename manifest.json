@@ -1,9 +1,9 @@
 {
- "version": "1.4.4",
+ "version": "1.4.5",
  "notes": {
-  "ru": "Обработка фото стала естественнее: без пересвета и «выжженного» белого, без зерна, меньше обрезки по краям — качество как у оригинала.",
-  "uk": "Обробка фото природніша: без пересвіту й «випаленого» білого, без зерна, менше обрізки по краях — якість як в оригіналу.",
-  "pl": "Naturalniejsza obróbka zdjęć: bez prześwietlenia i „wypalonej” bieli, bez ziarna, mniej przycinania krawędzi — jakość jak w oryginale."
+  "ru": "Чистые стены и потолок: убраны «квадратики» и пятна сжатия на ровном белом фоне, фактура дерева и ткани сохраняется.",
+  "uk": "Чисті стіни й стеля: прибрано «квадратики» та плями стиснення на рівному білому фоні, фактура дерева й тканини зберігається.",
+  "pl": "Czyste ściany i sufit: usunięte „kwadraty” i plamy kompresji na gładkim białym tle, faktura drewna i tkanin zostaje."
  },
  "pip": [
   "pypdf>=4",
@@ -163,7 +163,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "288e9dd9675e73263dfe4d50fcb6053667262873d81d78905ad053fd0b87adc0",
+   "sha256": "58383e3aa4de501c297776ac00734fb8dcbd854c11eb15a331b2867a0a9012b5",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "quality.py",
    "src": "program/quality.py",
-   "sha256": "929d4b2153bd5f5abcac5bbce51ee4d8a6b810b262a5cb06836fa03ccbde0862",
+   "sha256": "d088bbd1fea23adcd00149dc433002142ad6db7dc0c5c440e844fbc76d3025bb",
    "exec": false
   },
   {
