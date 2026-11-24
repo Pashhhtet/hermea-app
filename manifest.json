@@ -1,9 +1,9 @@
 {
- "version": "1.6.1",
+ "version": "1.6.2",
  "notes": {
-  "ru": "«Слежу за поиском»: новые квартиры всегда первыми и в золотой рамке. Если новая от агентства и её прячет фильтр «Только собственники», над карточками это написано и есть кнопка «Показать все».",
-  "uk": "«Стежу за пошуком»: нові квартири завжди першими й у золотій рамці. Якщо нова від агентства і її ховає фільтр «Тільки власники», над картками це написано і є кнопка «Показати всі».",
-  "pl": "Obserwowane wyszukiwania: nowe mieszkania zawsze na początku i w złotej ramce. Jeśli nowe jest od agencji i ukrywa je filtr „Tylko właściciele”, pojawia się informacja i przycisk „Pokaż wszystkie”."
+  "ru": "«Слежу за поиском»: дубли одного объявления схлопываются, перевыставленная квартира больше не считается «новой»; метки на фото переносятся и не наезжают друг на друга; кнопки в карточке не обрезаются; вместо пустого фото — логотип.",
+  "uk": "«Стежу за пошуком»: дублі одного оголошення об'єднуються, перевиставлена квартира більше не вважається «новою»; мітки на фото переносяться й не налазять одна на одну; кнопки в картці не обрізаються.",
+  "pl": "Obserwowane wyszukiwania: duplikaty ogłoszenia są łączone, ponownie wystawione mieszkanie nie jest już „nowe”; etykiety na zdjęciu się zawijają i nie nachodzą na siebie; przyciski w karcie nie są ucinane."
  },
  "pip": [
   "pypdf>=4",
@@ -43,7 +43,7 @@
   {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
-   "sha256": "8c71c1cced667327ccf0fa68b8643ed5723e82c7a7c6c2d8e7c10e7a8838ba42",
+   "sha256": "2b52b67b6e97665ffb8f9d6476795a3ed4c4e60c02fb1748f7351ac7e9cd5be1",
    "exec": false
   },
   {
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "8737a01376d5bc78cf9a7d53eddfdebcedad5805aab7fa34f35d15b3867c4098",
+   "sha256": "efd4d909d782485c25ed46ce45acb56187f424c9cf56e4f2aab3244d1db11c04",
    "exec": false
   },
   {
@@ -145,7 +145,7 @@
   {
    "path": "app_searches.py",
    "src": "program/app_searches.py",
-   "sha256": "c59e181b79cca92e1ceb8d6b70509c4261d39fe5d8397e768023ece67060c39a",
+   "sha256": "c5555d495b6de8e4726e6a235c903ff9914ef41e184fc734d2f06b9cf4109b46",
    "exec": false
   },
   {

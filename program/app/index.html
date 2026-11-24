@@ -340,7 +340,9 @@ button.frame:hover { box-shadow: 0 0 0 2px var(--accent); }
 .hidden-new { color: var(--accent); font-weight: 600; font-size: 14px; display: inline-flex; gap: 8px; align-items: baseline; }
 .card .pic { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); flex: none; overflow: hidden; }
 .card .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.card .tags { position: absolute; left: 8px; top: 8px; display: flex; gap: 6px; }
+.card .tags { position: absolute; left: 8px; right: 8px; top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.card .tags > * { white-space: nowrap; }
+.card .pic.noimg { background: var(--surface-2) url("/app/mark.png") center / 40px no-repeat; }
 .tag { padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--accent); color: var(--on-accent); }
 .tag.own { background: #3D7A5A; color: #fff; }
 .card .cb { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
@@ -348,7 +350,8 @@ button.frame:hover { box-shadow: 0 0 0 2px var(--accent); }
 .card .price small { font-family: var(--sans); font-size: 12.5px; color: var(--muted); font-weight: 500; margin-left: 6px; }
 .card .ttl { font-size: 14px; font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .card .meta { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 12px; }
-.card .acts { display: flex; gap: 8px; align-items: center; margin-top: auto; padding-top: 10px; }
+.card .acts { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-top: auto; padding-top: 10px; }
+.card .acts > * { white-space: nowrap; }
 .add-search { max-width: 760px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
 .add-search p { margin: 0 0 14px; color: var(--muted); }
 .add-search .own-row input { flex: 1 1 380px; }
@@ -645,7 +648,7 @@ ru: {
   srch_checking: "проверяю…", srch_found: "{n} на сайте", srch_check_now: "Проверить сейчас",
   srch_mark_seen: "Отметить все просмотренными", srch_remove: "Перестать следить", srch_remove_confirm: "Перестать следить за этим поиском?",
   srch_owners: "Только собственники", srch_hidden_new: "Новых от агентств: {n}, они скрыты фильтром.", srch_show_all: "Показать все", srch_new: "новая", srch_owner: "Собственник", srch_process: "Обработать",
-  srch_open: "На Otodom", srch_empty: "Пока нет квартир по этому поиску.",
+  srch_open: "Otodom", srch_empty: "Пока нет квартир по этому поиску.",
   srch_first: "Квартиры, которые есть в поиске сейчас, отмечены как просмотренные. Новые будут с меткой «новая».",
   rooms_n: "{n} комн.", total_word: "в месяц", srch_added: "Слежу за поиском", srch_hidden: "Скрыто", just_now: "только что",
   theme: "Тема", theme_auto: "Авто", theme_light: "Светлая", theme_dark: "Тёмная", language: "Язык",
@@ -702,7 +705,7 @@ uk: {
   srch_checking: "перевіряю…", srch_found: "{n} на сайті", srch_check_now: "Перевірити зараз",
   srch_mark_seen: "Позначити все переглянутим", srch_remove: "Перестати стежити", srch_remove_confirm: "Перестати стежити за цим пошуком?",
   srch_owners: "Тільки власники", srch_hidden_new: "Нових від агентств: {n}, їх приховано фільтром.", srch_show_all: "Показати всі", srch_new: "нова", srch_owner: "Власник", srch_process: "Обробити",
-  srch_open: "На Otodom", srch_empty: "Поки немає квартир за цим пошуком.",
+  srch_open: "Otodom", srch_empty: "Поки немає квартир за цим пошуком.",
   srch_first: "Квартири, які зараз є в пошуку, позначено як переглянуті. Нові будуть з міткою «нова».",
   rooms_n: "{n} кімн.", total_word: "на місяць", srch_added: "Стежу за пошуком", srch_hidden: "Сховано", just_now: "щойно",
   theme: "Тема", theme_auto: "Авто", theme_light: "Світла", theme_dark: "Темна", language: "Мова",
@@ -759,7 +762,7 @@ pl: {
   srch_checking: "sprawdzam…", srch_found: "{n} na stronie", srch_check_now: "Sprawdź teraz",
   srch_mark_seen: "Oznacz wszystkie jako przejrzane", srch_remove: "Przestań obserwować", srch_remove_confirm: "Przestać obserwować to wyszukiwanie?",
   srch_owners: "Tylko właściciele", srch_hidden_new: "Nowe od agencji: {n}, ukryte filtrem.", srch_show_all: "Pokaż wszystkie", srch_new: "nowe", srch_owner: "Właściciel", srch_process: "Przetwórz",
-  srch_open: "Na Otodom", srch_empty: "Na razie brak mieszkań w tym wyszukiwaniu.",
+  srch_open: "Otodom", srch_empty: "Na razie brak mieszkań w tym wyszukiwaniu.",
   srch_first: "Mieszkania, które są teraz w wyszukiwaniu, oznaczono jako przejrzane. Nowe dostaną etykietę „nowe”.",
   rooms_n: "{n} pok.", total_word: "miesięcznie", srch_added: "Obserwuję wyszukiwanie", srch_hidden: "Ukryto", just_now: "przed chwilą",
   theme: "Motyw", theme_auto: "Auto", theme_light: "Jasny", theme_dark: "Ciemny", language: "Język",
@@ -1463,9 +1466,8 @@ function drawSearch(d) {
   const card = (i) => {
     const place = [i.sub || i.district, i.street].filter(Boolean).join(", ");
     return `<article class="card${i.new ? " new" : ""}">
-      <div class="pic">${i.img ? `<img loading="lazy" src="${esc(i.img)}" alt="">` : ""}
-        <div class="tags">${i.new ? `<span class="tag">${t("srch_new")}</span>` : ""}${i.owner ? `<span class="tag own">${t("srch_owner")}</span>` : ""}${i.drop ? `<span class="tag pdrop">${esc(t("srch_drop", { d: zl(i.drop.from - i.drop.to) }))}</span>` : ""}</div>
-        ${i.market != null && Math.abs(i.market) >= 5 ? `<span class="mkt ${i.market > 0 ? "hi" : "lo"}">${esc(t(i.market > 0 ? "srch_mkt_up" : "srch_mkt_down", { p: i.market }))}</span>` : ""}</div>
+      <div class="pic${i.img ? "" : " noimg"}">${i.img ? `<img loading="lazy" src="${esc(i.img)}" alt="" onerror="this.remove()">` : ""}
+        <div class="tags">${i.new ? `<span class="tag">${t("srch_new")}</span>` : ""}${i.owner ? `<span class="tag own">${t("srch_owner")}</span>` : ""}${i.drop ? `<span class="tag pdrop">${esc(t("srch_drop", { d: zl(i.drop.from - i.drop.to) }))}</span>` : ""}${i.market != null && Math.abs(i.market) >= 5 ? `<span class="mkt ${i.market > 0 ? "hi" : "lo"}">${esc(t(i.market > 0 ? "srch_mkt_up" : "srch_mkt_down", { p: i.market }))}</span>` : ""}</div></div>
       <div class="cb">
         <div class="price">${esc(money(i.total || i.price))}<small>${i.rent ? esc(money(i.price) + " + " + money(i.rent)) : esc(t("total_word"))}</small></div>
         <div class="ttl">${esc(i.title)}</div>

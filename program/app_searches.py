@@ -132,6 +132,35 @@ def remove(sid):
         save()
 
 
+def _fp(i):
+    """Отпечаток квартиры: одинаковые объявления с разными номерами (дубль, перевыставление)."""
+    title = re.sub(r"\W+", "", (i.get("title") or "").lower())[:60]
+    try:
+        area = round(float(i.get("area") or 0))
+    except Exception:
+        area = 0
+    return f"{title}|{i.get('total') or i.get('price') or ''}|{area}|{(i.get('street') or '').lower()}"
+
+
+def _dedupe(s, items):
+    """Убирает дубли в выдаче: остаётся уже просмотренное объявление (или первое), фото берём у любого."""
+    seen = set(s.get("seen") or [])
+    keep, order = {}, []
+    for i in items:
+        k = _fp(i)
+        j = keep.get(k)
+        if j is None:
+            keep[k] = i
+            order.append(k)
+            continue
+        if i["id"] in seen and j["id"] not in seen:
+            i = dict(i, img=i.get("img") or j.get("img"))
+            keep[k] = i
+        elif not j.get("img") and i.get("img"):
+            keep[k] = dict(j, img=i["img"])
+    return [keep[k] for k in order]
+
+
 def check(s, http_factory, on_new=None):
     """Открывает поиск и обновляет список. Новые = которых ещё не было в «seen»."""
     s["checking"] = True
@@ -142,6 +171,7 @@ def check(s, http_factory, on_new=None):
         r.raise_for_status()
         title, items, total = parse(r.text)
         with LOCK:
+            items = _dedupe(s, items)
             if not s.get("title"):
                 s["title"] = title
             s["items"], s["total"], s["error"] = items, total, ""
@@ -168,6 +198,14 @@ def check(s, http_factory, on_new=None):
                 fresh = []
             else:
                 fresh = [i for i in ids if i not in s["seen"] and i not in s["hidden"]]
+                # та же квартира, выставленная заново под новым номером, — не «новая»
+                known = set(s.get("fps") or [])
+                byid = {i["id"]: i for i in items}
+                re_listed = [x for x in fresh if _fp(byid[x]) in known]
+                if re_listed:
+                    s["seen"] = (s["seen"] + re_listed)[-3000:]
+                    fresh = [x for x in fresh if x not in re_listed]
+            s["fps"] = list(dict.fromkeys((s.get("fps") or []) + [_fp(i) for i in items]))[-3000:]
             s["notified"] = list(set(s.get("notified") or []) | set(fresh))[-500:]
             save()
         if fresh and on_new:
@@ -185,7 +223,7 @@ def check(s, http_factory, on_new=None):
 
 def new_count(s):
     seen, hidden = set(s.get("seen") or []), set(s.get("hidden") or [])
-    return sum(1 for i in s.get("items") or [] if i["id"] not in seen and i["id"] not in hidden)
+    return sum(1 for i in _dedupe(s, s.get("items") or []) if i["id"] not in seen and i["id"] not in hidden)
 
 
 def mark_seen(sid, ad=None):
@@ -222,7 +260,7 @@ def detail(sid):
         cmp_ = COMPARE["fn"]
         items = [dict(i, new=i["id"] not in seen, drop=drops.get(i["id"]),
                       market=cmp_(i) if cmp_ else None)
-                 for i in s.get("items") or [] if i["id"] not in hidden]
+                 for i in _dedupe(s, s.get("items") or []) if i["id"] not in hidden]
         return {"id": s["id"], "title": s.get("title") or "Otodom", "url": s["url"], "items": items,
                 "total": s.get("total"), "last_check": s.get("last_check", 0), "error": s.get("error", ""),
                 "checking": bool(s.get("checking")), "new": new_count(s)}
