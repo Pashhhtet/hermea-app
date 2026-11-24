@@ -212,6 +212,9 @@ button { cursor: pointer; }
 .switch .track { width: 36px; height: 21px; border-radius: 11px; background: var(--switch-off); position: relative; transition: background .15s; flex: none; }
 .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%; background: #fff; transition: transform .15s; }
 .switch input:checked + .track { background: var(--ok); }
+.switch.nofee input:checked + .track { background: var(--accent); }
+.switch.nofee:has(input:checked) { color: var(--accent); font-weight: 600; }
+.nofee-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--on-accent); background: var(--accent); vertical-align: middle; }
 .switch input:checked + .track::after { transform: translateX(15px); }
 .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -542,6 +545,7 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
     </form>
     <div class="opts">
       <label class="switch"><input type="checkbox" id="tgSend" checked><span class="track"></span><span data-i18n="send_tg"></span></label>
+      <label class="switch nofee" data-i18n-title="no_fee_tip"><input type="checkbox" id="noFee"><span class="track"></span><span data-i18n="no_fee"></span></label>
       <button class="btn" type="button" id="ownBtn">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 8"/></svg>
         <span data-i18n="own_btn"></span>
@@ -600,7 +604,7 @@ ru: {
   today_stats: "Сегодня: {n} {flats}, {p} фото", today_none: "Сегодня ещё ничего не обработано",
   open_root: "Открыть папку «Квартиры»", photos_n: "{n} фото", manual: "вручную", own: "свои фото",
   heading: "Вставьте ссылку на объявление", link_aria: "Ссылка на объявление", create: "Создать", to_queue: "В очередь",
-  send_tg: "Сразу отправить в Telegram", own_btn: "Свои фото",
+  send_tg: "Сразу отправить в Telegram", no_fee: "Без комиссии", no_fee_tip: "В описании сверху будет строка «БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ». Только для ссылок, которые добавляешь сейчас.", own_btn: "Свои фото",
   hint: "Подходят Otodom, OLX, Morizon и Gratka. Фото с телефона можно просто перетащить в окно.",
   dup_active: "Эта ссылка уже в работе.", dup_done: "Эту квартиру уже обрабатывали.", open: "Открыть", redo: "Сделать заново",
   search_detected: "Это ссылка на поиск, а не на объявление. Следить за новыми квартирами по этим фильтрам?", watch: "Следить",
@@ -657,7 +661,7 @@ uk: {
   today_stats: "Сьогодні: {n} {flats}, {p} фото", today_none: "Сьогодні ще нічого не оброблено",
   open_root: "Відкрити папку «Квартиры»", photos_n: "{n} фото", manual: "вручну", own: "свої фото",
   heading: "Вставте посилання на оголошення", link_aria: "Посилання на оголошення", create: "Створити", to_queue: "У чергу",
-  send_tg: "Одразу надіслати в Telegram", own_btn: "Свої фото",
+  send_tg: "Одразу надіслати в Telegram", no_fee: "Без комісії", no_fee_tip: "В описі зверху буде рядок «БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ». Лише для посилань, які додаєш зараз.", own_btn: "Свої фото",
   hint: "Підходять Otodom, OLX, Morizon і Gratka. Фото з телефона можна просто перетягнути у вікно.",
   dup_active: "Це посилання вже в роботі.", dup_done: "Цю квартиру вже обробляли.", open: "Відкрити", redo: "Зробити заново",
   search_detected: "Це посилання на пошук, а не на оголошення. Стежити за новими квартирами за цими фільтрами?", watch: "Стежити",
@@ -714,7 +718,7 @@ pl: {
   today_stats: "Dzisiaj: {n} {flats}, {p} zdj.", today_none: "Dzisiaj jeszcze nic nie przetworzono",
   open_root: "Otwórz folder „Квартиры”", photos_n: "{n} zdj.", manual: "ręcznie", own: "własne zdjęcia",
   heading: "Wklej link do ogłoszenia", link_aria: "Link do ogłoszenia", create: "Utwórz", to_queue: "Do kolejki",
-  send_tg: "Od razu wyślij do Telegrama", own_btn: "Własne zdjęcia",
+  send_tg: "Od razu wyślij do Telegrama", no_fee: "Bez prowizji", no_fee_tip: "Na górze opisu pojawi się linia «БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ». Tylko dla linków dodawanych teraz.", own_btn: "Własne zdjęcia",
   hint: "Działa z Otodom, OLX, Morizon i Gratka. Zdjęcia z telefonu wystarczy przeciągnąć do okna.",
   dup_active: "Ten link jest już w trakcie.", dup_done: "To mieszkanie było już przetwarzane.", open: "Otwórz", redo: "Zrób ponownie",
   search_detected: "To link do wyszukiwania, a nie do ogłoszenia. Obserwować nowe mieszkania z tymi filtrami?", watch: "Obserwuj",
@@ -1245,6 +1249,7 @@ function drawJob(j) {
     };
   }
   $("#jTitle").textContent = j.name ? nice(j.name).title : (j.status === "queued" ? t("waiting") : (j.kind === "local" ? (j.title || t("own_title")) : t("st_listing")));
+  if (j.no_fee) $("#jTitle").insertAdjacentHTML("beforeend", `<span class="nofee-tag">${esc(t("no_fee"))}</span>`);
   $("#jSub").textContent = j.kind === "local" ? t("own_title") : (j.name ? shortUrl(j.url) : j.url);
   $("#jSteps").innerHTML = stepsHtml(j);
   $("#jFacts").innerHTML = factsHtml(j.facts);
@@ -1515,10 +1520,11 @@ async function create(text, force) {
   const go = $("#go");
   go.disabled = true;
   try {
-    const r = await api("/api/create", { text, force: !!force, telegram: $("#tgSend").checked });
+    const r = await api("/api/create", { text, force: !!force, telegram: $("#tgSend").checked, no_fee: $("#noFee").checked });
     if (r.error) throw new Error(r.error);
     if (r.search) { showSearchOffer(r.search); return; }
     if (r.added && r.added.length) {
+      $("#noFee").checked = false;          // «без комиссии» — только для этих ссылок
       if (link.value.trim() === text.trim()) { link.value = ""; fitLink(); }
       toast(r.added.length === 1 ? t("started") : t("added_n", { n: r.added.length, links: plural(r.added.length, "links") }));
       const busy = S.st && (S.st.jobs || []).some((j) => j.status === "running");
@@ -1631,8 +1637,9 @@ async function uploadOwn() {
       const r = await fetch(`/api/upload?u=${uid}&n=${encodeURIComponent(f.name)}`, { method: "POST", headers: { "X-Hermea": T }, body: f });
       if (!r.ok) { let m = "HTTP " + r.status; try { m = (await r.json()).error || m; } catch (e) {} throw new Error(m); }
     }
-    const r = await api("/api/create_local", { u: uid, name: own.name || "", telegram: $("#tgSend").checked });
+    const r = await api("/api/create_local", { u: uid, name: own.name || "", telegram: $("#tgSend").checked, no_fee: $("#noFee").checked });
     if (r.error) throw new Error(r.error);
+    $("#noFee").checked = false;
     S.own = null;
     $("#notice").hidden = true;
     toast(t("started"));

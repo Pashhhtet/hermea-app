@@ -1,9 +1,9 @@
 {
- "version": "1.5.4",
+ "version": "1.5.5",
  "notes": {
-  "ru": "Скрипт звонка собственнику: в условиях указано 50% одного czynszu + 23% VAT.",
-  "uk": "Скрипт дзвінка власнику: в умовах вказано 50% одного czynszu + 23% VAT.",
-  "pl": "Skrypt rozmowy z właścicielem: w warunkach 50% jednego czynszu + 23% VAT."
+  "ru": "Переключатель «Без комиссии» рядом со ссылкой: в описании сверху появится строка «🔥 БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ 🔥» (и в Telegram). Действует только на ссылки, которые добавляешь сейчас. Квартиры согласившихся собственников отмечаются так автоматически.",
+  "uk": "Перемикач «Без комісії» біля посилання: в описі зверху з'явиться рядок «🔥 БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ 🔥» (і в Telegram). Діє лише на посилання, які додаєш зараз. Квартири власників, що погодилися, позначаються так автоматично.",
+  "pl": "Przełącznik „Bez prowizji” przy linku: na górze opisu pojawi się linia «🔥 БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ 🔥» (także w Telegramie). Działa tylko dla linków dodawanych teraz. Mieszkania właścicieli, którzy się zgodzili, są oznaczane automatycznie."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "78a5db4f68c960ffae3a5fc9ce46fe569af1cfa02a9bcb01cd9a6ad2baa13b81",
+   "sha256": "97c54a9c5ff7e4bf45fd83561e5349339e8c4effb18cf8a280f96d3db091a73e",
    "exec": false
   },
   {
@@ -91,7 +91,7 @@
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "2a2e53314fca6552a0711b7c923fba84dcab76186ab72e2c1b212b55bff5e1bb",
+   "sha256": "21a0b36e53a2e4c5ec7e23ba27c23dfeb72b66685cfdb7b4182c37a709f39f31",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "f0f305c09b0f6b21c4d8f9e12a7ca737f6379bcb02e7285c03852f8645f71d67",
+   "sha256": "dd5186ed048cc19ff070cb5dce897f7f25af6ba9bfa12a2be68be3f8a0fb4482",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "99653eab707c6e74e62e3cb70698b4b4caf7cede631ceb70709bbd5fc5704bb0",
+   "sha256": "cff4b71f277a76b5e7581172a0b85cd9bd62bceca3ebd2714e7829c17cea8bee",
    "exec": false
   },
   {

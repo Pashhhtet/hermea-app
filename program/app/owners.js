@@ -227,7 +227,7 @@ async function owClick(e) {
       return;
     }
     if (k === "photo") {
-      try { await api("/api/create", { text: a.url, force: false, telegram: true }); toast(t("ow_photo_ok")); setMode("photo"); }
+      try { await api("/api/create", { text: a.url, force: false, telegram: true, no_fee: true }); toast(t("ow_photo_ok")); setMode("photo"); }
       catch (err) { toast(err.message, true); }
       return;
     }

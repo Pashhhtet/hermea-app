@@ -93,9 +93,12 @@ def pln(v):
     return f"{v:,}".replace(",", " ") + " zł" if v is not None else "—"
 
 
-def opis(i):
+NO_FEE_LINE = "🔥 БЕЗ КОМІСІЇ ДЛЯ ОРЕНДАРЯ 🔥"
+
+
+def opis(i, no_fee=False):
     place = ", ".join(x for x in [i["district"], i["sub"]] if x)
-    lines = [" | ".join(x for x in [f"🏡 {i['rooms']} кімн." if i.get("rooms") else "🏡",
+    lines = ([NO_FEE_LINE, ""] if no_fee else []) + [" | ".join(x for x in [f"🏡 {i['rooms']} кімн." if i.get("rooms") else "🏡",
                                      f"{i['area']} м²" if i.get("area") else "", place] if x),
              f"📍 {i['street'] + ', ' if i['street'] else ''}{i['city']}"]
     feats = []
@@ -649,7 +652,7 @@ def _kitchen_first(done, clf):
         print("    кухню на фото не нашёл — порядок как есть")
 
 
-def process_listing(sess, url, progress=None):
+def process_listing(sess, url, progress=None, no_fee=False):
     """progress(событие, **данные) — для окна приложения (Hermea.app); в консоли не нужен."""
     def emit(ev, **kw):
         if progress:
@@ -701,7 +704,7 @@ def process_listing(sess, url, progress=None):
     except Exception:
         pass
     with open(os.path.join(out, "opis.txt"), "w", encoding="utf-8") as f:
-        f.write(opis(info))
+        f.write(opis(info, no_fee))
         f.write(f"\n---\nЧерновик, проверь перед публикацией.\nСайт: {info['site']}\nОригинал: {url}\nЗаголовок: {info['title']}\n")
     with open(DONE, "a", encoding="utf-8") as f:
         f.write(info["id"] + "\t" + url + "\n")
@@ -747,7 +750,7 @@ def local_folder(name):
     return path
 
 
-def process_local(name, files, progress=None):
+def process_local(name, files, progress=None, no_fee=False):
     """Свои фото (с телефона после показа): та же обработка, без водяного знака и без описания с сайта."""
     def emit(ev, **kw):
         if progress:
@@ -786,7 +789,7 @@ def process_local(name, files, progress=None):
         open(os.path.join(ready, f"p{n}_hermea.jpg"), "wb").write(d["jpg"])
     title = os.path.basename(out)
     with open(os.path.join(out, "opis.txt"), "w", encoding="utf-8") as f:
-        f.write(f"🏡 {title}\n\n📩 Запрошую на перегляд!\n\n---\nСвои фото, описание впиши сам.\n")
+        f.write((NO_FEE_LINE + "\n\n" if no_fee else "") + f"🏡 {title}\n\n📩 Запрошую на перегляд!\n\n---\nСвои фото, описание впиши сам.\n")
     try:
         meta = {"kind": "local", "created": time.strftime("%Y-%m-%d %H:%M"),
                 "photos": {f"p{i}_hermea.jpg": d["src"] for i, d in enumerate(done, 1)}}
