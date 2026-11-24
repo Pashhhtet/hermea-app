@@ -700,6 +700,13 @@ def process_listing(sess, url, progress=None, no_fee=False):
             json.dump(meta, f, ensure_ascii=False, indent=1)
     except Exception:
         pass
+    if no_fee:                                       # длинный польский текст для Otodom/OLX — отдельным файлом
+        try:
+            import otodom_text
+            with open(os.path.join(out, "opis_otodom.txt"), "w", encoding="utf-8") as f:
+                f.write(otodom_text.build(info))
+        except Exception as e:
+            print("  ✗ текст для Otodom:", e)
     with open(os.path.join(out, "opis.txt"), "w", encoding="utf-8") as f:
         f.write(opis(info, no_fee))
         f.write(f"\n---\nЧерновик, проверь перед публикацией.\nСайт: {info['site']}\nОригинал: {url}\nЗаголовок: {info['title']}\n")

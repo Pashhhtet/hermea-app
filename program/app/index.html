@@ -311,6 +311,10 @@ button.frame:hover { box-shadow: 0 0 0 2px var(--accent); }
   padding: 12px; font-size: 14px; line-height: 1.55; resize: vertical;
 }
 .opis:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.oto { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+.oto summary { cursor: pointer; font-weight: 600; color: var(--accent); list-style-position: inside; }
+.oto[open] summary { margin-bottom: 10px; }
+.oto .btn { margin-top: 8px; }
 .opis-wait { padding: 14px; border-radius: 8px; background: var(--surface-2); color: var(--muted); font-size: 14px; }
 .row-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .actions { display: grid; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
@@ -618,7 +622,7 @@ ru: {
   retry: "Попробовать ещё раз", open_ad: "Открыть объявление", hide: "Скрыть", created: "создано {when}",
   manual_done: "обработано вручную", own_done: "свои фото", tg_sent_at: "отправлено в Telegram {when}", tg_not_sent: "в Telegram не ушло",
   tg_err_line: "Telegram ответил: {e}. Нажмите «Отправить в Telegram», чтобы попробовать ещё раз.",
-  copy_opis: "Копировать описание", open_folder: "Открыть папку с фото", save_edits: "Сохранить правки", undo_edits: "Отменить правки",
+  copy_opis: "Копировать описание", oto_title: "Текст для Otodom на польском (без комиссии)", oto_copy: "Копировать текст для Otodom", open_folder: "Открыть папку с фото", save_edits: "Сохранить правки", undo_edits: "Отменить правки",
   no_opis: "У этой папки нет описания.", send_to_tg: "Отправить в Telegram", sending: "Отправляю…", no_photos: "В папке нет фото",
   f_total: "Всего в месяц", f_rent: "Аренда", f_czynsz: "Czynsz", f_deposit: "Залог",
   copied: "Описание скопировано", saved: "Правки сохранены", sent: "Отправлено в Telegram",
@@ -675,7 +679,7 @@ uk: {
   retry: "Спробувати ще раз", open_ad: "Відкрити оголошення", hide: "Сховати", created: "створено {when}",
   manual_done: "оброблено вручну", own_done: "свої фото", tg_sent_at: "надіслано в Telegram {when}", tg_not_sent: "у Telegram не надіслано",
   tg_err_line: "Telegram відповів: {e}. Натисніть «Надіслати в Telegram», щоб спробувати ще раз.",
-  copy_opis: "Копіювати опис", open_folder: "Відкрити папку з фото", save_edits: "Зберегти зміни", undo_edits: "Скасувати зміни",
+  copy_opis: "Копіювати опис", oto_title: "Текст для Otodom польською (без комісії)", oto_copy: "Копіювати текст для Otodom", open_folder: "Відкрити папку з фото", save_edits: "Зберегти зміни", undo_edits: "Скасувати зміни",
   no_opis: "У цієї папки немає опису.", send_to_tg: "Надіслати в Telegram", sending: "Надсилаю…", no_photos: "У папці немає фото",
   f_total: "Разом на місяць", f_rent: "Оренда", f_czynsz: "Czynsz", f_deposit: "Застава",
   copied: "Опис скопійовано", saved: "Зміни збережено", sent: "Надіслано в Telegram",
@@ -732,7 +736,7 @@ pl: {
   retry: "Spróbuj ponownie", open_ad: "Otwórz ogłoszenie", hide: "Ukryj", created: "utworzono {when}",
   manual_done: "obrobione ręcznie", own_done: "własne zdjęcia", tg_sent_at: "wysłano do Telegrama {when}", tg_not_sent: "nie wysłano do Telegrama",
   tg_err_line: "Telegram odpowiedział: {e}. Kliknij „Wyślij do Telegrama”, aby spróbować ponownie.",
-  copy_opis: "Kopiuj opis", open_folder: "Otwórz folder ze zdjęciami", save_edits: "Zapisz zmiany", undo_edits: "Cofnij zmiany",
+  copy_opis: "Kopiuj opis", oto_title: "Tekst na Otodom (bez prowizji)", oto_copy: "Kopiuj tekst na Otodom", open_folder: "Otwórz folder ze zdjęciami", save_edits: "Zapisz zmiany", undo_edits: "Cofnij zmiany",
   no_opis: "Ten folder nie ma opisu.", send_to_tg: "Wyślij do Telegrama", sending: "Wysyłam…", no_photos: "W folderze nie ma zdjęć",
   f_total: "Razem miesięcznie", f_rent: "Najem", f_czynsz: "Czynsz", f_deposit: "Kaucja",
   copied: "Opis skopiowany", saved: "Zmiany zapisane", sent: "Wysłano do Telegrama",
@@ -1343,8 +1347,17 @@ function drawFlat(d) {
           ${d.url ? `<button class="btn" type="button" id="fUrl">${ICON.web} ${t("open_ad")}</button>` : ""}
         </div>` : ""}
         ${tgErr}
+        ${d.otodom ? `<details class="oto"><summary>${t("oto_title")}</summary>
+          <textarea class="opis" id="fOto" spellcheck="false" readonly>${esc(d.otodom)}</textarea>
+          <button class="btn ink" type="button" id="fOtoCopy">${ICON.copy} ${t("oto_copy")}</button></details>` : ""}
       </div>
     </div>`;
+  if ($("#fOtoCopy")) $("#fOtoCopy").onclick = async () => {
+    const o = $("#fOto");
+    try { await navigator.clipboard.writeText(o.value); } catch (e) { o.select(); document.execCommand("copy"); }
+    toast(t("copied"));
+  };
+  if ($("#fOto")) $(".oto").addEventListener("toggle", () => { const o = $("#fOto"); o.style.height = "auto"; o.style.height = Math.min(o.scrollHeight + 4, 640) + "px"; });
   enter($("#work"), ".work-head, .sheet");
   enter($("#fTray"), ".frame");
   countUp($("#work .facts .total dd"));

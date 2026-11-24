@@ -243,7 +243,12 @@ def flat_detail(name):
         items.append({"f": f"{name}/{rel}", "orig": orig, "name": base})
     body, tail = read_opis(p)
     url = meta.get("url") or tail_value(tail, "Оригинал")
-    return {"f": name, "name": name, "photos": items, "opis": body, "has_opis": body is not None,
+    oto = None
+    try:
+        oto = open(os.path.join(p, "opis_otodom.txt"), encoding="utf-8").read()
+    except Exception:
+        pass
+    return {"f": name, "name": name, "photos": items, "opis": body, "has_opis": body is not None, "otodom": oto,
             "facts": parse_facts(body), "url": url, "site": meta.get("site") or tail_value(tail, "Сайт"),
             "telegram": meta.get("telegram"), "created": meta.get("created"), "kind": meta.get("kind")}
 

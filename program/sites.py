@@ -188,6 +188,12 @@ def parse_otodom(html, url):
         "images": [{"url": u, "plan": bool(im.get("isFloorPlan")), "room": im.get("roomType")}
                    for im in ad.get("images") or [] for u in [_img_url(im)] if u],
         "watermark": "otodom",
+        # для длинного польского текста (opis_otodom.txt)
+        "floor": ch.get("floor_no") or "",
+        "floors": ch.get("building_floors_num") or "",
+        "free_from": (ch.get("free_from") or "")[:10],
+        "equipment": sorted(eq | ex | sec),
+        "desc": re.sub(r"\s+", " ", re.sub("<[^>]+>", " ", ad.get("description") or "")).strip()[:4000],
     })
     return i
 

@@ -1,9 +1,9 @@
 {
- "version": "1.5.8",
+ "version": "1.5.9",
  "notes": {
-  "ru": "Логотип без тёмной тени-пятна за знаком, осталась только тонкая тень по контуру букв.",
-  "uk": "Логотип без темної тіні-плями за знаком, лишилася тільки тонка тінь по контуру літер.",
-  "pl": "Logo bez ciemnej plamy cienia za znakiem, został tylko cienki cień wokół liter."
+  "ru": "Для квартир «Без комиссии» программа сама пишет длинное объявление на польском для Otodom/OLX (заголовок, описание, оснащение, условия). Оно лежит в карточке квартиры в блоке «Текст для Otodom» с кнопкой копирования и в файле opis_otodom.txt. В Telegram не уходит.",
+  "uk": "Для квартир «Без комісії» програма сама пише довге оголошення польською для Otodom/OLX. Воно в картці квартири, блок «Текст для Otodom», з кнопкою копіювання, і у файлі opis_otodom.txt. У Telegram не надсилається.",
+  "pl": "Dla mieszkań „Bez prowizji” program sam pisze długie ogłoszenie po polsku na Otodom/OLX. Jest w karcie mieszkania w bloku „Tekst na Otodom” z przyciskiem kopiowania i w pliku opis_otodom.txt. Nie trafia do Telegrama."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "cabf5b930e84318db45e63def9b61682fdca510478a642c499e7ac4c0af2a62c",
+   "sha256": "13294951ca96c43190bf8db1531a9d0e0cb2057aed27fb3a80098eac7c171f7f",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "dd5186ed048cc19ff070cb5dce897f7f25af6ba9bfa12a2be68be3f8a0fb4482",
+   "sha256": "d6a4d19a458e29110f978de48f817d2d2f176c94fd6c65fb23fdfb6326075e4c",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "ba5692aaca6b176b6c9fb5e356dfdf26a783cadec17e5115c801124be8793e57",
+   "sha256": "662837806e0cd9ed9d05840f4f7f84ea8bd1a6085b2c729771357abb6ad69d4d",
    "exec": false
   },
   {
@@ -194,6 +194,12 @@
    "path": "logo.png",
    "src": "program/logo.png",
    "sha256": "26555592fcfd48c84fde9e08297715de43cbbbfb405fcd39cbe9c75cb4ccbe4d",
+   "exec": false
+  },
+  {
+   "path": "otodom_text.py",
+   "src": "program/otodom_text.py",
+   "sha256": "d08b1be028a41603b433e2515e3711a9cad79823dde26de47969f82d2b69a868",
    "exec": false
   },
   {
@@ -211,7 +217,7 @@
   {
    "path": "sites.py",
    "src": "program/sites.py",
-   "sha256": "c10e580ce2b2456237cb5347ef8cde5f3a1d8948d44e9a0ca78eafaa61887b09",
+   "sha256": "8884153a2cfd6a8216e1c13e8594ad3b987378f33cf35eafc8c5efc1a6c5a4ec",
    "exec": false
   },
   {
