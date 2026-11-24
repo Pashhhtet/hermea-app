@@ -23,5 +23,10 @@
   "ru": "Hermea больше не открывается через Терминал: папка «Hermea Photo» один раз переезжает в домашнюю папку, на рабочем столе остаётся ссылка на неё. Всё внутри остаётся как было.",
   "uk": "Hermea більше не відкривається через Термінал: папка «Hermea Photo» один раз переїжджає в домашню папку, на робочому столі лишається посилання на неї. Усе всередині лишається як було.",
   "pl": "Hermea nie otwiera się już przez Terminal: folder „Hermea Photo” jednorazowo przenosi się do folderu domowego, a na biurku zostaje do niego skrót. Zawartość się nie zmienia."
+ },
+ "1.4.2": {
+  "ru": "Hermea открывается без Терминала и на Mac с чипом M.",
+  "uk": "Hermea відкривається без Термінала і на Mac з чипом M.",
+  "pl": "Hermea otwiera się bez Terminala także na Macu z procesorem M."
  }
 }

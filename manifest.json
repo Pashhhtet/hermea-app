@@ -1,9 +1,9 @@
 {
- "version": "1.4.1",
+ "version": "1.4.2",
  "notes": {
-  "ru": "Hermea больше не открывается через Терминал: папка «Hermea Photo» один раз переезжает в домашнюю папку, на рабочем столе остаётся ссылка на неё. Всё внутри остаётся как было.",
-  "uk": "Hermea більше не відкривається через Термінал: папка «Hermea Photo» один раз переїжджає в домашню папку, на робочому столі лишається посилання на неї. Усе всередині лишається як було.",
-  "pl": "Hermea nie otwiera się już przez Terminal: folder „Hermea Photo” jednorazowo przenosi się do folderu domowego, a na biurku zostaje do niego skrót. Zawartość się nie zmienia."
+  "ru": "Hermea открывается без Терминала и на Mac с чипом M.",
+  "uk": "Hermea відкривається без Термінала і на Mac з чипом M.",
+  "pl": "Hermea otwiera się bez Terminala także na Macu z procesorem M."
  },
  "pip": [
   "pypdf>=4",
@@ -13,13 +13,13 @@
   {
    "path": "../Hermea.app/Contents/Info.plist",
    "src": "bundle/Contents/Info.plist",
-   "sha256": "863026f68591d22e599c73b6fe1fb7603b56f755ea3940a9158ff5c4f2de750f",
+   "sha256": "69b3a0eddc09bafaa77c5ebd127fcd205487d0fd0cf1e11a16770bb5f293aadf",
    "exec": false
   },
   {
    "path": "../Hermea.app/Contents/MacOS/Hermea",
    "src": "bundle/Contents/MacOS/Hermea",
-   "sha256": "1173d4cb11a5dfbb2c9baf8e397aa36cbfd639308749790148e048d872d4ad55",
+   "sha256": "6bdf3a548c54add3c554418db7ce6bd987e3d052214b46c7c3be24af93d55e79",
    "exec": true
   },
   {
