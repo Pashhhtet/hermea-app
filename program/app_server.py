@@ -30,6 +30,7 @@ import app_clients
 import app_contract
 import app_market
 import app_owners
+import app_calls
 import app_update
 from app_i18n import tr
 
@@ -814,6 +815,17 @@ def client_op(body):
     return {"client": c, "svk": svk_events(ev)}
 
 
+def calls_notify(n, names):
+    notify(tr("calls_title", n=n), ", ".join(names), {"mode": "owners", "calls": 1})
+
+
+def calls_fetch(url):
+    info = hermea.sites.get_listing(session(), hermea.clean_url(url))
+    info = dict(info)
+    info["flags"] = sorted(info.get("flags") or [])
+    return info
+
+
 def on_search_new(s, n):
     notify(tr("search_new_title"), tr("search_new_text", n=n, name=s.get("title") or "Otodom"),
            {"kind": "search", "id": s.get("id")})
@@ -902,7 +914,7 @@ def state():
     return {"busy": busy(), "jobs": jobs, "tg": tg_public(), "settings": SETTINGS, "pending": pending_list(),
             "today": today_stats(flats), "flats_version": FLATS_VERSION, "warm": WARM["state"],
             "searches": app_searches.summary(), "update": update_public(), "version": app_update.local_version(),
-            "svk_touched": app_svk.today_touched(), "notes": NOTES[-10:]}
+            "svk_touched": app_svk.today_touched(), "notes": NOTES[-10:], "calls_due": app_calls.due_count()}
 
 
 def open_path(path, reveal=False):
@@ -1001,6 +1013,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, app_market.summary())
             if path == "/api/owners":
                 return self._send(200, app_owners.public())
+            if path == "/api/calls":
+                return self._send(200, app_calls.public())
             if path == "/api/flat":
                 return self._send(200, flat_detail((q.get("f") or [""])[0]))
             if path == "/img":
@@ -1071,6 +1085,28 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True})
             if path == "/api/svk":
                 return self._send(200, app_svk.apply(body))
+            if path == "/api/calls":
+                op = body.get("op")
+                try:
+                    if op == "add":
+                        app_calls.add(body.get("text", ""), calls_fetch)
+                    elif op == "from_owner":
+                        a = app_owners.DATA["ads"].get(str(body.get("id")))
+                        if not a:
+                            return self._send(404, {"error": tr("owner_not_found")})
+                        app_calls.add_from(a, body.get("note", ""), app_calls.parse_date(body.get("when", "")))
+                    elif op == "update":
+                        kw = {k: body[k] for k in ("phone", "note", "remind", "status") if k in body}
+                        app_calls.update(body.get("id"), **kw)
+                    elif op == "delete":
+                        app_calls.delete(body.get("id"))
+                    else:
+                        return self._send(400, {"error": "op"})
+                except ValueError:
+                    return self._send(400, {"error": tr("calls_need_link")})
+                except KeyError:
+                    return self._send(404, {"error": tr("owner_not_found")})
+                return self._send(200, app_calls.public())
             if path == "/api/owners":
                 op = body.get("op")
                 if op == "scan":
@@ -1257,6 +1293,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     app_clients.init(PROG)
     app_market.init(PROG)
     app_owners.init(PROG)
+    app_calls.init(PROG)
     app_searches.ON_DROP["fn"] = on_search_drop
     app_searches.COMPARE["fn"] = app_market.compare
     if os.environ.get("HERMEA_PORT"):
@@ -1286,6 +1323,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     threading.Thread(target=svk_reminder_loop, daemon=True).start()
     threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
     threading.Thread(target=app_owners.loop, args=(search_session, log), daemon=True).start()
+    threading.Thread(target=app_calls.loop, args=(calls_notify, log), daemon=True).start()
     url = f"http://127.0.0.1:{PORT}/?t={TOKEN}"
     if open_window_fn:
         threading.Thread(target=open_window_fn, args=(url,), daemon=True).start()

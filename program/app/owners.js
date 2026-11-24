@@ -5,6 +5,13 @@
 const OW_L = {
 ru: {
   m_owners: "Собственники",
+  ow_f_calls: "Перезвоны", cl_sub: "Вставь ссылку с Otodom, можно сразу с телефоном и «в пятницу перезвонить». Утром в нужный день придёт напоминание.",
+  cl_ph: "Ссылка на объявление, телефон и заметка, например: https://www.otodom.pl/… tel 535 016 721 в пятницу перезвонить",
+  cl_add: "Добавить", cl_adding: "Открываю объявление…", cl_find: "Номер телефона или улица", cl_empty: "Пока пусто. Вставь ссылку выше, как в канал «Перезвоны».",
+  cl_sec_today: "Сегодня", cl_sec_later: "Позже", cl_sec_nodate: "Без даты", cl_sec_done: "Сделано",
+  cl_today: "сегодня", cl_tomorrow: "завтра", cl_overdue: "с {d}", cl_no_phone: "нет телефона", cl_no_title: "Без названия",
+  cl_phone: "Телефон", cl_note: "Заметка", cl_when: "Перезвонить:", cl_w_today: "Сегодня", cl_w_tomorrow: "Завтра", cl_w_fri: "Пятница", cl_w_week: "Через неделю", cl_w_none: "Без даты",
+  cl_done: "Позвонил ✓", cl_reopen: "Вернуть", cl_copy_phone: "Копировать номер", cl_delete: "Удалить", cl_to_calls: "В перезвоны", cl_added: "Добавлено в «Перезвоны»",
   ow_title: "Собственники", ow_sub: "Частные объявления Otodom по 18 районам. Сверху те, кому агент нужнее всего. Обновляется раз в день, пока программа открыта.",
   ow_last: "проверено {d}", ow_refresh: "Обновить сейчас", ow_running: "Собираю районы: {n} из {t}…", ow_reading: "Читаю объявления: {n} из {t}…",
   ow_empty_t: "Список ещё не собран", ow_empty: "Программа пройдёт по частным объявлениям во всех районах Варшавы (5–10 минут) и отсортирует собственников по шансу на сотрудничество.",
@@ -23,6 +30,13 @@ ru: {
 },
 uk: {
   m_owners: "Власники",
+  ow_f_calls: "Передзвони", cl_sub: "Встав посилання з Otodom, можна одразу з телефоном і «в п'ятницю передзвонити». Зранку в потрібний день прийде нагадування.",
+  cl_ph: "Посилання на оголошення, телефон і нотатка, наприклад: https://www.otodom.pl/… tel 535 016 721 в п'ятницю передзвонити",
+  cl_add: "Додати", cl_adding: "Відкриваю оголошення…", cl_find: "Номер телефону або вулиця", cl_empty: "Поки порожньо. Встав посилання вище, як у канал «Перезвоны».",
+  cl_sec_today: "Сьогодні", cl_sec_later: "Пізніше", cl_sec_nodate: "Без дати", cl_sec_done: "Зроблено",
+  cl_today: "сьогодні", cl_tomorrow: "завтра", cl_overdue: "з {d}", cl_no_phone: "немає телефону", cl_no_title: "Без назви",
+  cl_phone: "Телефон", cl_note: "Нотатка", cl_when: "Передзвонити:", cl_w_today: "Сьогодні", cl_w_tomorrow: "Завтра", cl_w_fri: "П'ятниця", cl_w_week: "Через тиждень", cl_w_none: "Без дати",
+  cl_done: "Подзвонив ✓", cl_reopen: "Повернути", cl_copy_phone: "Копіювати номер", cl_delete: "Видалити", cl_to_calls: "У передзвони", cl_added: "Додано в «Передзвони»",
   ow_title: "Власники", ow_sub: "Приватні оголошення Otodom по 18 районах. Зверху ті, кому агент потрібен найбільше. Оновлюється раз на день, поки програма відкрита.",
   ow_last: "перевірено {d}", ow_refresh: "Оновити зараз", ow_running: "Збираю райони: {n} з {t}…", ow_reading: "Читаю оголошення: {n} з {t}…",
   ow_empty_t: "Список ще не зібраний", ow_empty: "Програма пройде по приватних оголошеннях у всіх районах Варшави (5–10 хвилин) і відсортує власників за шансом на співпрацю.",
@@ -41,6 +55,13 @@ uk: {
 },
 pl: {
   m_owners: "Właściciele",
+  ow_f_calls: "Oddzwonić", cl_sub: "Wklej link z Otodom, od razu z telefonem i np. „w piątek oddzwonić”. Rano w dany dzień przyjdzie przypomnienie.",
+  cl_ph: "Link do ogłoszenia, telefon i notatka, np.: https://www.otodom.pl/… tel 535 016 721 w piątek oddzwonić",
+  cl_add: "Dodaj", cl_adding: "Otwieram ogłoszenie…", cl_find: "Numer telefonu lub ulica", cl_empty: "Na razie pusto. Wklej link powyżej.",
+  cl_sec_today: "Dziś", cl_sec_later: "Później", cl_sec_nodate: "Bez daty", cl_sec_done: "Zrobione",
+  cl_today: "dziś", cl_tomorrow: "jutro", cl_overdue: "od {d}", cl_no_phone: "brak telefonu", cl_no_title: "Bez tytułu",
+  cl_phone: "Telefon", cl_note: "Notatka", cl_when: "Oddzwonić:", cl_w_today: "Dziś", cl_w_tomorrow: "Jutro", cl_w_fri: "Piątek", cl_w_week: "Za tydzień", cl_w_none: "Bez daty",
+  cl_done: "Zadzwoniłem ✓", cl_reopen: "Przywróć", cl_copy_phone: "Kopiuj numer", cl_delete: "Usuń", cl_to_calls: "Do oddzwonienia", cl_added: "Dodano do „Oddzwonić”",
   ow_title: "Właściciele", ow_sub: "Prywatne ogłoszenia z Otodom w 18 dzielnicach. Na górze ci, którym agent jest najbardziej potrzebny. Odświeżane raz dziennie, gdy program jest otwarty.",
   ow_last: "sprawdzono {d}", ow_refresh: "Odśwież teraz", ow_running: "Zbieram dzielnice: {n} z {t}…", ow_reading: "Czytam ogłoszenia: {n} z {t}…",
   ow_empty_t: "Lista nie jest jeszcze zebrana", ow_empty: "Program przejdzie przez prywatne ogłoszenia we wszystkich dzielnicach Warszawy (5–10 minut) i ułoży właścicieli według szansy na współpracę.",
@@ -64,14 +85,17 @@ const OW = { data: null, filter: "new", district: "", q: "", shown: 40, open: ""
 try { OW.price = localStorage.getItem("hermea_ow_price") || ""; } catch (e) {}
 const OW_PRICES = ["", "0-4000", "0-6000", "0-8000", "8000-999999"];
 try { OW.filter = localStorage.getItem("hermea_ow_filter") || "new"; } catch (e) {}
-const OW_GROUP = { new: ["new"], called: ["called", "nocall"], agreed: ["agreed"], refused: ["refused"], hidden: ["hidden"] };
+const OW_GROUP = { calls: [], new: ["new"], called: ["called", "nocall"], agreed: ["agreed"], refused: ["refused"], hidden: ["hidden"] };
 
 function owName() {
   try { return localStorage.getItem("hermea_ow_name") || "Paweł"; } catch (e) { return "Paweł"; }
 }
 
 async function ownersOpen(quiet) {
-  try { OW.data = await api("/api/owners"); drawOwners(!quiet); } catch (e) { toast(e.message, true); }
+  try {
+    const [d, c] = await Promise.all([api("/api/owners"), api("/api/calls")]);
+    OW.data = d; OW.calls = c; drawOwners(!quiet);
+  } catch (e) { toast(e.message, true); }
   clearTimeout(OW.timer);
   if (OW.data && OW.data.state && OW.data.state.state === "running")
     OW.timer = setTimeout(() => { if (SV.mode === "owners") ownersOpen(true); }, 2500);
@@ -127,15 +151,19 @@ function drawOwners(first) {
   const run = st.state === "running";
   const runTxt = run ? (st.phase === "detail" ? t("ow_reading", { n: st.done, t: st.total }) : t("ow_running", { n: st.done, t: st.total || 18 })) : t("ow_refresh");
   const dd = (s) => (s ? parseIso(s).toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "long" }) : "");
+  if (OW.filter === "calls") return drawCalls(first);
   if (!d.last_scan && !d.items.length) {
-    box.innerHTML = `<div class="sv-wrap"><div class="cl-head"><div><h1 class="display">${t("ow_title")}</h1><p class="sv-sub">${t("ow_sub")}</p></div></div>
+    box.innerHTML = `<div class="sv-wrap ow-wrap"><div class="cl-head"><div><h1 class="display">${t("ow_title")}</h1><p class="sv-sub">${t("ow_sub")}</p></div></div>
+      <div class="ow-bar">${owSegHtml()}</div>
       <div class="mk-empty rise"><b>${t("ow_empty_t")}</b><p>${t("ow_empty")}</p>
       <button class="btn-primary" type="button" id="owGo" ${run ? "disabled" : ""}>${esc(runTxt)}</button></div></div>`;
     $("#owGo").onclick = owScan;
+    $("#owSeg").onclick = owSegClick;
+    requestAnimationFrame(() => slideSeg($("#owSeg")));
     return;
   }
   const groups = OW_GROUP[OW.filter] || OW_GROUP.new;
-  const cnt = (g) => OW_GROUP[g].reduce((s, k) => s + ((d.counts || {})[k] || 0), 0);
+  const cnt = (g) => owCnt(g);
   const q = OW.q.trim().toLowerCase();
   let rows = d.items.filter((a) => groups.includes(a.status || "new"));
   if (OW.filter === "new") rows = rows.filter((a) => !a.gone);
@@ -160,12 +188,7 @@ function drawOwners(first) {
   if (first) enter($("#owList"), ":scope > li");
   requestAnimationFrame(() => slideSeg($("#owSeg")));
   $("#owGo").onclick = owScan;
-  $("#owSeg").onclick = (e) => {
-    const b = e.target.closest("[data-g]"); if (!b) return;
-    OW.filter = b.dataset.g; OW.shown = 40; OW.open = "";
-    try { localStorage.setItem("hermea_ow_filter", OW.filter); } catch (err) {}
-    drawOwners(true);
-  };
+  $("#owSeg").onclick = owSegClick;
   $("#owDist").onchange = (e) => { OW.district = e.target.value; OW.shown = 40; drawOwners(true); };
   $("#owPrice").onchange = (e) => { OW.price = e.target.value; OW.shown = 40; try { localStorage.setItem("hermea_ow_price", OW.price); } catch (err) {} drawOwners(true); };
   $("#owQ").oninput = (e) => { OW.q = e.target.value; clearTimeout(OW.qt); OW.qt = setTimeout(() => { drawOwners(); const i = $("#owQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
@@ -209,7 +232,7 @@ function owRow(a) {
         <h4>${t("ow_obj")}</h4>
         <dl class="ow-obj">${owObjections().map(([q2, r]) => `<dt>${esc(q2)}</dt><dd>${esc(r)}</dd>`).join("")}</dl>
         <textarea class="pop-in ow-note" data-note="${esc(a.id)}" rows="2" placeholder="${esc(t("ow_note"))}">${esc(a.note || "")}</textarea>
-        <div class="ow-btns">${btns.map(btn).join("")}</div>
+        <div class="ow-btns">${btns.map(btn).join("")}<button class="text-btn" type="button" data-act="tocall">${t("cl_to_calls")}</button></div>
       </div></div>` : ""}
   </li>`;
 }
@@ -224,6 +247,11 @@ async function owClick(e) {
     if (k === "script") { OW.open = OW.open === id ? "" : id; return drawOwners(); }
     if (k === "copy") {
       try { await navigator.clipboard.writeText(owScript(a)); toast(t("ow_copied")); } catch (err) { toast(err.message, true); }
+      return;
+    }
+    if (k === "tocall") {
+      try { OW.calls = await api("/api/calls", { op: "from_owner", id }); OW.filter = "calls"; OW.callOpen = ""; drawOwners(true); toast(t("cl_added")); }
+      catch (err) { toast(err.message, true); }
       return;
     }
     if (k === "photo") {
@@ -256,6 +284,141 @@ async function owNote(e) {
     toast(t("ow_saved"));
   } catch (err) { toast(err.message, true); }
 }
+
+function owCnt(g) {
+  if (g === "calls") return (OW.calls && OW.calls.due) || "";
+  const d = OW.data || {};
+  return OW_GROUP[g].reduce((s, k) => s + ((d.counts || {})[k] || 0), 0);
+}
+function owSegHtml() {
+  return `<div class="seg" id="owSeg">${Object.keys(OW_GROUP).map((g) => `<button type="button" data-g="${g}" aria-pressed="${g === OW.filter}"${g === "calls" && owCnt("calls") ? ' class="due"' : ""}>${t("ow_f_" + g)} <small>${owCnt(g)}</small></button>`).join("")}</div>`;
+}
+function owSegClick(e) {
+  const b = e.target.closest("[data-g]"); if (!b) return;
+  OW.filter = b.dataset.g; OW.shown = 40; OW.open = "";
+  try { localStorage.setItem("hermea_ow_filter", OW.filter); } catch (err) {}
+  drawOwners(true);
+}
+
+// ---------------------------------------------------------------- перезвоны
+function clDay(iso) {
+  if (!iso) return "";
+  const d = parseIso(iso), td = parseIso(OW.calls.today);
+  const diff = Math.round((d - td) / 86400000);
+  if (diff === 0) return t("cl_today");
+  if (diff === 1) return t("cl_tomorrow");
+  if (diff < 0) return t("cl_overdue", { d: d.toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "short" }) });
+  return d.toLocaleDateString(LOCALE[LANG], { weekday: "short", day: "numeric", month: "short" });
+}
+function clRow(c) {
+  const open = OW.callOpen === c.id;
+  const rooms = c.rooms ? `${c.rooms} ${LANG === "pl" ? "pok." : LANG === "uk" ? "кімн." : "комн."}` : "";
+  const price = (c.price || 0) + (c.rent || 0);
+  const place = [c.district, c.street].filter(Boolean).join(", ");
+  const due = c.status === "open" && c.remind && c.remind <= OW.calls.today;
+  return `<li class="cl-row${due ? " due" : ""}${c.status === "done" ? " done" : ""}${open ? " open" : ""}" data-id="${esc(c.id)}">
+    <div class="cl-main">
+      ${c.img ? `<img class="ow-img" src="${esc(c.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="ow-img"></div>`}
+      <div class="ow-info">
+        <div class="ow-t"><b>${esc(place || c.title || t("cl_no_title"))}</b><span>${esc([rooms, c.area ? Math.round(parseFloat(String(c.area).replace(",", "."))) + " м²" : "", price ? zl(price) + " zł" : ""].filter(Boolean).join(" · "))}</span></div>
+        ${c.title && place ? `<div class="cl-sub">${esc(c.title)}</div>` : ""}
+        ${c.note && !open ? `<div class="cl-note">${esc(c.note)}</div>` : ""}
+      </div>
+      <div class="cl-phone">${c.phone ? `<a href="tel:+48${esc(c.phone)}" class="cl-tel">${esc(c.phone_pretty)}</a>` : `<span class="hint">${t("cl_no_phone")}</span>`}
+        ${c.remind ? `<span class="cl-when${due ? " due" : ""}">${esc(clDay(c.remind))}</span>` : ""}</div>
+    </div>
+    ${open ? `<div class="cl-edit">
+      <label>${t("cl_phone")} <input class="pop-in" data-f="phone" value="${esc(c.phone_pretty || "")}" placeholder="535 016 721" inputmode="tel"></label>
+      <label class="cl-n">${t("cl_note")} <textarea class="pop-in" data-f="note" rows="2">${esc(c.note || "")}</textarea></label>
+      <div class="cl-dates">${t("cl_when")}
+        ${["today", "tomorrow", "fri", "week"].map((k) => `<button class="chip" type="button" data-when="${k}">${t("cl_w_" + k)}</button>`).join("")}
+        <input class="pop-in" type="date" data-f="remind" value="${esc(c.remind || "")}">
+        ${c.remind ? `<button class="text-btn" type="button" data-when="none">${t("cl_w_none")}</button>` : ""}</div>
+      <div class="ow-btns">
+        ${c.status === "open" ? `<button class="btn ow-yes" type="button" data-cl="done">${t("cl_done")}</button>` : `<button class="btn" type="button" data-cl="open">${t("cl_reopen")}</button>`}
+        ${c.url ? `<button class="btn" type="button" data-cl="url">${ICON.web} Otodom</button>` : ""}
+        ${c.phone ? `<button class="btn" type="button" data-cl="copy">${t("cl_copy_phone")}</button>` : ""}
+        <button class="text-btn ow-no" type="button" data-cl="del">${t("cl_delete")}</button>
+      </div></div>` : ""}
+  </li>`;
+}
+function drawCalls(first) {
+  const box = $("#owners"), c = OW.calls || { items: [], today: "" };
+  const q = (OW.cq || "").trim().toLowerCase(), qd = q.replace(/\D/g, "");
+  let items = c.items;
+  if (q) items = items.filter((x) => (qd.length >= 3 && (x.phone || "").includes(qd)) || `${x.street} ${x.district} ${x.title} ${x.note}`.toLowerCase().includes(q));
+  const open = items.filter((x) => x.status === "open");
+  const today = open.filter((x) => x.remind && x.remind <= c.today).sort((a, b) => a.remind.localeCompare(b.remind));
+  const later = open.filter((x) => x.remind && x.remind > c.today).sort((a, b) => a.remind.localeCompare(b.remind));
+  const nodate = open.filter((x) => !x.remind);
+  const done = items.filter((x) => x.status === "done");
+  const sec = (title, arr, cls) => arr.length ? `<h3 class="cards-h ${cls || ""}">${esc(title)} <small>${arr.length}</small></h3><ol class="ow-list">${arr.map(clRow).join("")}</ol>` : "";
+  box.innerHTML = `<div class="sv-wrap ow-wrap">
+    <div class="cl-head"><div><h1 class="display">${t("ow_title")}</h1><p class="sv-sub"><span>${esc(t("cl_sub"))}</span></p></div></div>
+    <div class="ow-bar">${owSegHtml()}
+      <input class="pop-in ow-q" id="clQ" type="search" placeholder="${esc(t("cl_find"))}" value="${esc(OW.cq || "")}"></div>
+    <form class="cl-add" id="clAdd">
+      <textarea class="pop-in" id="clText" rows="2" placeholder="${esc(t("cl_ph"))}"></textarea>
+      <button class="btn-primary" type="submit" id="clGo">${t("cl_add")}</button>
+    </form>
+    <div id="clList">
+      ${sec(t("cl_sec_today"), today, "new")}${sec(t("cl_sec_later"), later)}${sec(t("cl_sec_nodate"), nodate)}
+      ${!today.length && !later.length && !nodate.length ? `<p class="ow-none">${q ? t("ow_none") : t("cl_empty")}</p>` : ""}
+      ${done.length ? `<details class="cl-done"><summary>${t("cl_sec_done")} (${done.length})</summary><ol class="ow-list">${done.slice(0, 50).map(clRow).join("")}</ol></details>` : ""}
+    </div></div>`;
+  if (first) enter($("#clList"), ".cl-row");
+  requestAnimationFrame(() => slideSeg($("#owSeg")));
+  $("#owSeg").onclick = owSegClick;
+  $("#clQ").oninput = (e) => { OW.cq = e.target.value; clearTimeout(OW.qt); OW.qt = setTimeout(() => { drawCalls(); const i = $("#clQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 200); };
+  $("#clText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#clAdd").requestSubmit(); } });
+  $("#clText").addEventListener("paste", () => setTimeout(() => { const v = $("#clText").value; if (/https?:\/\//.test(v) && /\d{3}[\s-]?\d{3}[\s-]?\d{3}|[a-zа-яіїє]{4,}\s*$/i.test(v.replace(/https?:\/\/\S+/, ""))) $("#clAdd").requestSubmit(); }, 30));
+  $("#clAdd").onsubmit = async (e) => {
+    e.preventDefault();
+    const text = $("#clText").value.trim(); if (!text) return;
+    $("#clGo").disabled = true; $("#clGo").textContent = t("cl_adding");
+    try { OW.calls = await api("/api/calls", { op: "add", text }); OW.callOpen = OW.calls.items[0] && OW.calls.items[0].id; drawCalls(); }
+    catch (err) { toast(err.message, true); $("#clGo").disabled = false; $("#clGo").textContent = t("cl_add"); }
+  };
+  $("#clList").onclick = clClick;
+  $("#clList").addEventListener("change", clChange);
+}
+async function clSave(id, patch) {
+  try { OW.calls = await api("/api/calls", Object.assign({ op: "update", id }, patch)); } catch (e) { toast(e.message, true); }
+}
+async function clClick(e) {
+  const li = e.target.closest(".cl-row"); if (!li) return;
+  const id = li.dataset.id, c = OW.calls.items.find((x) => x.id === id); if (!c) return;
+  const w = e.target.closest("[data-when]"), b = e.target.closest("[data-cl]");
+  if (e.target.closest("a.cl-tel")) return;
+  if (w) {
+    const k = w.dataset.when, td = parseIso(OW.calls.today);
+    const add = (n) => { const d = new Date(td); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    const val = k === "none" ? "" : k === "today" ? OW.calls.today : k === "tomorrow" ? add(1) : k === "week" ? add(7) : add(((5 - td.getDay() + 7) % 7) || 7);
+    await clSave(id, { remind: val }); OW.callOpen = ""; return drawCalls();
+  }
+  if (b) {
+    const k = b.dataset.cl;
+    if (k === "url") return api("/api/open", { what: "url", url: c.url }).catch((err) => toast(err.message, true));
+    if (k === "copy") { try { await navigator.clipboard.writeText(c.phone_pretty); toast(t("copied")); } catch (err) {} return; }
+    if (k === "del") { try { OW.calls = await api("/api/calls", { op: "delete", id }); } catch (err) { toast(err.message, true); } return drawCalls(); }
+    if (k === "done" || k === "open") { await clSave(id, { status: k }); OW.callOpen = ""; return drawCalls(); }
+  }
+  if (e.target.closest("input, textarea, button, a, label")) return;
+  OW.callOpen = OW.callOpen === id ? "" : id; drawCalls();
+}
+async function clChange(e) {
+  const f = e.target.closest("[data-f]"); if (!f) return;
+  const li = e.target.closest(".cl-row");
+  await clSave(li.dataset.id, { [f.dataset.f]: f.value });
+  if (f.dataset.f === "remind") { OW.callOpen = ""; drawCalls(); } else toast(t("ow_saved"));
+}
+
+// счётчик «сегодня перезвонить» на вкладке
+setInterval(() => {
+  const b = document.querySelector('[data-mode="owners"]'); if (!b || !S.st) return;
+  const n = S.st.calls_due || 0;
+  b.dataset.due = n ? String(n) : "";
+}, 2000);
 
 async function owScan() {
   try { await api("/api/owners", { op: "scan" }); } catch (e) { toast(e.message, true); }

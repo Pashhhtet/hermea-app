@@ -1,9 +1,9 @@
 {
- "version": "1.6.3",
+ "version": "1.7.0",
  "notes": {
-  "ru": "«Слежу за поиском»: новые квартиры в отдельном блоке «Новые» в самом верху, ниже — «Уже просмотренные».",
-  "uk": "«Стежу за пошуком»: нові квартири в окремому блоці «Нові» на самому верху, нижче — «Вже переглянуті».",
-  "pl": "Obserwowane wyszukiwania: nowe mieszkania w osobnym bloku „Nowe” na samej górze, niżej „Już przejrzane”."
+  "ru": "«Собственники» → «Перезвоны»: вставь ссылку (можно сразу с телефоном и «в пятницу перезвонить») — квартира, телефон и дата сохраняются. В нужный день в 9:30 приходит напоминание, на вкладке видно, скольким перезвонить сегодня. Поиск по номеру: когда звонят, набери цифры и увидишь, что за квартира.",
+  "uk": "«Власники» → «Передзвони»: встав посилання (можна одразу з телефоном і «в п'ятницю передзвонити») — квартира, телефон і дата зберігаються. У потрібний день о 9:30 приходить нагадування. Пошук за номером: коли дзвонять, набери цифри й побачиш, що за квартира.",
+  "pl": "„Właściciele” → „Oddzwonić”: wklej link (od razu z telefonem i np. „w piątek oddzwonić”) — mieszkanie, telefon i data się zapisują. W dany dzień o 9:30 przychodzi przypomnienie. Szukanie po numerze: gdy ktoś dzwoni, wpisz cyfry i zobaczysz, które to mieszkanie."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "bf1ee892e3644ee8ae1c2b27a5ab85b74e9c5c0e097b65c2bfb2a088b3f25725",
+   "sha256": "f63d6d73046e239b4853da88744d109afcb62ac789fd189e19edb972a63512f7",
    "exec": false
   },
   {
@@ -85,13 +85,13 @@
   {
    "path": "app/owners.css",
    "src": "program/app/owners.css",
-   "sha256": "77c117b8efaac3c8e12f237873cf762ee8731800deb5864c21edd417d6c8a57d",
+   "sha256": "61eebbacc47e274d319e06b858b9a04153ba3bea660d6c45b95e8b7ac719a0a9",
    "exec": false
   },
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "21a0b36e53a2e4c5ec7e23ba27c23dfeb72b66685cfdb7b4182c37a709f39f31",
+   "sha256": "223304f19c48022e7a1104763c6d8ed3c626c48fa3c1b5f57798519a9c5495a7",
    "exec": false
   },
   {
@@ -113,6 +113,12 @@
    "exec": false
   },
   {
+   "path": "app_calls.py",
+   "src": "program/app_calls.py",
+   "sha256": "5e94c0b1bc0c42bac983337b5274a520657b12dc0db9a69e4277524bcbeb08ee",
+   "exec": false
+  },
+  {
    "path": "app_clients.py",
    "src": "program/app_clients.py",
    "sha256": "b1f3c70e51de787e5badab119c13cc5fd9f73b95860cfa89a96b768ed35cba51",
@@ -127,7 +133,7 @@
   {
    "path": "app_i18n.py",
    "src": "program/app_i18n.py",
-   "sha256": "981f7c11bdc123c2be80457164e4016cf6bfff916c8723cae514e1d44381a216",
+   "sha256": "3a66642da0e7249569b09739ba8f4e2a8a70d6a50c561eacb12ede67d43c5f61",
    "exec": false
   },
   {
@@ -151,7 +157,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "b2e22257df38e696b0942a6ba7beb732dabc0807ce44805b102b1cf99bd5dca4",
+   "sha256": "7afc6152c82aa4574cc44f1aebb8483b4847c5413f544da141ccd20472410cad",
    "exec": false
   },
   {

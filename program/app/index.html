@@ -940,7 +940,11 @@ function showNotes(notes) {
   NOTE.last = Math.max(NOTE.last, max);
 }
 function goTarget(tg) {
-  if (tg.mode) { setMode(tg.mode); return; }
+  if (tg.mode) {
+    if (tg.calls && typeof OW !== "undefined") { OW.filter = "calls"; }
+    setMode(tg.mode); if (tg.calls && typeof ownersOpen === "function") ownersOpen();
+    return;
+  }
   if (!tg.kind) return;
   if (SV.mode !== "photo") setMode("photo");
   if (tg.kind === "search" && tg.id) select({ kind: "search", id: tg.id });

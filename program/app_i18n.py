@@ -57,6 +57,8 @@ MSG = {
     "drop_title": {"ru": "Hermea: квартира подешевела", "uk": "Hermea: квартира подешевшала", "pl": "Hermea: mieszkanie potaniało"},
     "drop_text": {"ru": "{name}: {was} → {now} zł", "uk": "{name}: {was} → {now} zł", "pl": "{name}: {was} → {now} zł"},
     "client_not_found": {"ru": "Клиент не найден", "uk": "Клієнта не знайдено", "pl": "Nie znaleziono klienta"},
+    "calls_title": {"ru": "Сегодня перезвонить: {n}", "uk": "Сьогодні передзвонити: {n}", "pl": "Dziś oddzwonić: {n}"},
+    "calls_need_link": {"ru": "Вставь ссылку на объявление или номер телефона", "uk": "Встав посилання на оголошення або номер телефону", "pl": "Wklej link do ogłoszenia albo numer telefonu"},
     "owner_not_found": {"ru": "Объявление не найдено", "uk": "Оголошення не знайдено", "pl": "Nie znaleziono ogłoszenia"},
     "contract_no_template": {"ru": "Нет шаблона договора. Загрузите PDF договора в Настройках.",
                              "uk": "Немає шаблону договору. Завантажте PDF договору в Налаштуваннях.",
