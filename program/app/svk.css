@@ -7,6 +7,7 @@ body.mode-aux .side, body.mode-aux .main { display: none; }
 body:not(.mode-svk) .svk { display: none; }
 body:not(.mode-clients) #clients { display: none; }
 body:not(.mode-market) #market { display: none; }
+body:not(.mode-owners) #owners { display: none; }
 .sv-wrap { max-width: 1360px; padding: 30px 40px 72px; }
 
 .sv-head { display: flex; align-items: center; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; margin-bottom: 26px; }

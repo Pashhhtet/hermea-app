@@ -459,6 +459,7 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
 </style>
 <link rel="stylesheet" href="/app/svk.css">
 <link rel="stylesheet" href="/app/clients.css">
+<link rel="stylesheet" href="/app/owners.css">
 </head>
 <body>
 <header class="bar">
@@ -469,6 +470,7 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
       <button type="button" data-mode="svk"><span data-i18n="m_svk"></span><span class="dot" id="svkDot" hidden></span></button>
       <button type="button" data-mode="clients" data-i18n="m_clients"></button>
       <button type="button" data-mode="market" data-i18n="m_market"></button>
+      <button type="button" data-mode="owners" data-i18n="m_owners"></button>
     </nav>
   </div>
   <div class="bar-right">
@@ -554,6 +556,7 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
 <section class="svk" id="svk" aria-live="polite"></section>
 <section class="aux" id="clients"></section>
 <section class="aux" id="market"></section>
+<section class="aux" id="owners"></section>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" data-i18n-aria="viewer">
   <div class="lb-wrap">
@@ -1815,5 +1818,6 @@ tick();
 <script src="/app/svk.js"></script>
 <script src="/app/templates.js"></script>
 <script src="/app/clients.js"></script>
+<script src="/app/owners.js"></script>
 </body>
 </html>

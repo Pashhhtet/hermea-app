@@ -1,9 +1,9 @@
 {
- "version": "1.4.5",
+ "version": "1.5.0",
  "notes": {
-  "ru": "Чистые стены и потолок: убраны «квадратики» и пятна сжатия на ровном белом фоне, фактура дерева и ткани сохраняется.",
-  "uk": "Чисті стіни й стеля: прибрано «квадратики» та плями стиснення на рівному білому фоні, фактура дерева й тканини зберігається.",
-  "pl": "Czyste ściany i sufit: usunięte „kwadraty” i plamy kompresji na gładkim białym tle, faktura drewna i tkanin zostaje."
+  "ru": "Новая вкладка «Собственники»: частные объявления Otodom по всей Варшаве с оценкой, кому агент нужнее всего (долго висит, снижали цену, дороже рынка, слабое объявление). Скрипт звонка на польском, ответы на возражения, статусы и заметки.",
+  "uk": "Нова вкладка «Власники»: приватні оголошення Otodom по всій Варшаві з оцінкою, кому агент потрібен найбільше (довго висить, знижували ціну, дорожче ринку, слабке оголошення). Скрипт дзвінка польською, відповіді на заперечення, статуси й нотатки.",
+  "pl": "Nowa karta „Właściciele”: prywatne ogłoszenia z Otodom w całej Warszawie z oceną, komu agent jest najbardziej potrzebny (długo wisi, obniżana cena, drożej niż rynek, słabe ogłoszenie). Skrypt rozmowy, odpowiedzi na obiekcje, statusy i notatki."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "62e5327d5315b045773876eeff1d14a0238cde9ec7533ee1fc33ac8642ff0e88",
+   "sha256": "78a5db4f68c960ffae3a5fc9ce46fe569af1cfa02a9bcb01cd9a6ad2baa13b81",
    "exec": false
   },
   {
@@ -83,15 +83,27 @@
    "exec": false
   },
   {
+   "path": "app/owners.css",
+   "src": "program/app/owners.css",
+   "sha256": "77c117b8efaac3c8e12f237873cf762ee8731800deb5864c21edd417d6c8a57d",
+   "exec": false
+  },
+  {
+   "path": "app/owners.js",
+   "src": "program/app/owners.js",
+   "sha256": "331c54e5531268143e2c149c111386825003468a326619d59eed857287aa30a0",
+   "exec": false
+  },
+  {
    "path": "app/svk.css",
    "src": "program/app/svk.css",
-   "sha256": "0a26dd7fc8f71e504aa4bf4020bac31441c6d9b40f4be4d0e0c8a1b14d3ee55f",
+   "sha256": "6cb390b36894d6c2694ebc2d6309eb2cee2841fc15cc7b98ea42e951ffef0a19",
    "exec": false
   },
   {
    "path": "app/svk.js",
    "src": "program/app/svk.js",
-   "sha256": "7a9868e4d18f66e11982851aaf9ae7803945ffdf2948b7d34e8e509d7bb650c2",
+   "sha256": "7bc5b673d38d699ccca029d196f80c0f5a95528f225255234f4aea02f035ef32",
    "exec": false
   },
   {
@@ -115,13 +127,19 @@
   {
    "path": "app_i18n.py",
    "src": "program/app_i18n.py",
-   "sha256": "eeedc7cf97b46d7c7158d88bf02633769866642aaa19c118deea2353d4bffa37",
+   "sha256": "6afdf17a77a35d4e0fcd29f965f474eeb1c2220f4fed76c65f1a4957cee828bc",
    "exec": false
   },
   {
    "path": "app_market.py",
    "src": "program/app_market.py",
    "sha256": "af0b2128acc2e2fd352205b71fb7f494acf13f62c125447ac50e49338786b400",
+   "exec": false
+  },
+  {
+   "path": "app_owners.py",
+   "src": "program/app_owners.py",
+   "sha256": "dbc842b57491ae900f6d5b488af072d8f5ea546c96ba5f13c2fb640a60897738",
    "exec": false
   },
   {
@@ -133,7 +151,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "34b531c6728c47a2fa13073c1f8c509b4fcfce70bf3c91bf9625228dcf700e0c",
+   "sha256": "fca13287e9e02a364b2b73d3247346e1e1197606352aba92ba3d69fb2f166bd8",
    "exec": false
   },
   {

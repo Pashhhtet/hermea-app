@@ -9,3 +9,8 @@ app_svk.json
 .venv/
 __pycache__/
 .DS_Store
+app_clients.json
+app_market.json
+app_owners.json
+*.tmp
+templates/

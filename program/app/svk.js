@@ -157,7 +157,7 @@ const SV = {
   mode: "photo", view: "day", date: "", data: null, key: "", range: null, rdata: null, rkey: "",
   report: "day", agent: "", busy: false, hit: {}, goal: {},
 };
-const MODES = ["photo", "svk", "clients", "market"];
+const MODES = ["photo", "svk", "clients", "market", "owners"];
 const MODE_OPEN = { svk: () => svkOpen(true) };          // clients.js добавит свои экраны
 try { const m = localStorage.getItem("hermea_mode"); SV.mode = MODES.includes(m) ? m : "photo"; } catch (e) {}
 try { SV.view = ["day", "week", "month"].includes(localStorage.getItem("hermea_svk_view")) ? localStorage.getItem("hermea_svk_view") : "day"; } catch (e) {}

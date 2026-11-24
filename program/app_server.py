@@ -29,6 +29,7 @@ import app_svk
 import app_clients
 import app_contract
 import app_market
+import app_owners
 import app_update
 from app_i18n import tr
 
@@ -926,6 +927,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"client": c}) if c else self._send(404, {"error": tr("client_not_found")})
             if path == "/api/market":
                 return self._send(200, app_market.summary())
+            if path == "/api/owners":
+                return self._send(200, app_owners.public())
             if path == "/api/flat":
                 return self._send(200, flat_detail((q.get("f") or [""])[0]))
             if path == "/img":
@@ -996,6 +999,19 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True})
             if path == "/api/svk":
                 return self._send(200, app_svk.apply(body))
+            if path == "/api/owners":
+                op = body.get("op")
+                if op == "scan":
+                    if app_owners.STATE.get("state") != "running":
+                        threading.Thread(target=app_owners.scan, args=(search_session, log), daemon=True).start()
+                    return self._send(200, {"ok": True})
+                if op == "status":
+                    try:
+                        app_owners.set_status(body.get("id"), body.get("status"), body.get("note"))
+                    except (KeyError, ValueError):
+                        return self._send(404, {"error": tr("owner_not_found")})
+                    return self._send(200, {"ok": True})
+                return self._send(400, {"error": "op"})
             if path == "/api/ping":
                 return self._send(200, {"ok": True})
             if path == "/api/create":
@@ -1168,6 +1184,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     app_svk.init(PROG)
     app_clients.init(PROG)
     app_market.init(PROG)
+    app_owners.init(PROG)
     app_searches.ON_DROP["fn"] = on_search_drop
     app_searches.COMPARE["fn"] = app_market.compare
     if os.environ.get("HERMEA_PORT"):
@@ -1196,6 +1213,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     threading.Thread(target=update_loop, daemon=True).start()
     threading.Thread(target=svk_reminder_loop, daemon=True).start()
     threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
+    threading.Thread(target=app_owners.loop, args=(search_session, log), daemon=True).start()
     url = f"http://127.0.0.1:{PORT}/?t={TOKEN}"
     if open_window_fn:
         threading.Thread(target=open_window_fn, args=(url,), daemon=True).start()
