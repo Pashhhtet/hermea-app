@@ -1,9 +1,9 @@
 {
- "version": "1.5.6",
+ "version": "1.5.7",
  "notes": {
-  "ru": "Белые стены и потолок без цветных пятен и «островов»: цветокоррекция теперь считается без промежуточного округления, плавные переходы остаются плавными.",
-  "uk": "Білі стіни й стеля без кольорових плям і «островів»: кольорокорекція тепер рахується без проміжного округлення, плавні переходи лишаються плавними.",
-  "pl": "Białe ściany i sufit bez kolorowych plam i „wysp”: korekcja kolorów liczona bez pośredniego zaokrąglania, płynne przejścia zostają płynne."
+  "ru": "Исправлено: метка снижения цены («−200 zł») в «Слежу за поиском» разрасталась в зелёный экран на всё окно.",
+  "uk": "Виправлено: мітка зниження ціни («−200 zł») у «Стежу за пошуком» розросталася в зелений екран на все вікно.",
+  "pl": "Poprawka: znacznik obniżki ceny („−200 zł”) w obserwowanych wyszukiwaniach rozrastał się w zielony ekran na całe okno."
  },
  "pip": [
   "pypdf>=4",
@@ -43,7 +43,7 @@
   {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
-   "sha256": "39df05721ee438bb48f33b5298468809be8858e2ca003a4f7d35534a88a704a6",
+   "sha256": "8c71c1cced667327ccf0fa68b8643ed5723e82c7a7c6c2d8e7c10e7a8838ba42",
    "exec": false
   },
   {
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "97c54a9c5ff7e4bf45fd83561e5349339e8c4effb18cf8a280f96d3db091a73e",
+   "sha256": "cabf5b930e84318db45e63def9b61682fdca510478a642c499e7ac4c0af2a62c",
    "exec": false
   },
   {

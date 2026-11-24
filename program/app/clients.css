@@ -120,7 +120,7 @@ html[data-theme="dark"] .k-me .num { color: #9A7A35; }
 .mk-spark { width: 90px; height: 24px; color: var(--accent); display: block; margin-left: auto; }
 
 /* бейджи в поиске */
-.tag.drop { background: var(--ok); color: #fff; }
+.tag.pdrop { background: var(--ok); color: #fff; }
 .card .mkt { position: absolute; right: 8px; top: 8px; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; background: rgba(17, 25, 27, .78); color: #F1EEE6; }
 .card .mkt.hi { color: #F3B4A9; }
 .card .mkt.lo { color: #9FE0B8; }
