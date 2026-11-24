@@ -1,9 +1,9 @@
 {
- "version": "1.5.7",
+ "version": "1.5.8",
  "notes": {
-  "ru": "Исправлено: метка снижения цены («−200 zł») в «Слежу за поиском» разрасталась в зелёный экран на всё окно.",
-  "uk": "Виправлено: мітка зниження ціни («−200 zł») у «Стежу за пошуком» розросталася в зелений екран на все вікно.",
-  "pl": "Poprawka: znacznik obniżki ceny („−200 zł”) w obserwowanych wyszukiwaniach rozrastał się w zielony ekran na całe okno."
+  "ru": "Логотип без тёмной тени-пятна за знаком, осталась только тонкая тень по контуру букв.",
+  "uk": "Логотип без темної тіні-плями за знаком, лишилася тільки тонка тінь по контуру літер.",
+  "pl": "Logo bez ciemnej plamy cienia za znakiem, został tylko cienki cień wokół liter."
  },
  "pip": [
   "pypdf>=4",
@@ -181,7 +181,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "5b67c47aab3ea2d831e56b74293864e6c32e09efee4dca00e67d58c35aa5a522",
+   "sha256": "ba5692aaca6b176b6c9fb5e356dfdf26a783cadec17e5115c801124be8793e57",
    "exec": false
   },
   {

@@ -309,12 +309,7 @@ def add_logo(img_bgr):
         for c, cw in zip(word, widths):
             d.text((x - ft.getbbox(c)[0], by + hh + gap - tb[1]), c, font=ft, fill=GOLD + (255,))
             x += cw + spacing
-    sh = Image.new("L", (W, H), 0)
-    ex, ey = int(blk_w * 0.16), int(blk_h * 0.14)          # тень только под самим знаком
-    ImageDraw.Draw(sh).ellipse([bx - ex, by - ey, bx + blk_w + ex, by + blk_h + ey], fill=120)
-    sh = sh.filter(ImageFilter.GaussianBlur(int(s * 0.022)))
-    dark = Image.new("RGBA", (W, H), (0, 0, 0, 255)); dark.putalpha(sh)
-    im = Image.alpha_composite(im, dark)
+    # без тёмного пятна за знаком: только тонкая тень по контуру букв, чтобы знак читался на белом
     glow = layer.split()[3].filter(ImageFilter.GaussianBlur(max(2, s // 500)))
     g = Image.new("RGBA", (W, H), (0, 0, 0, 255)); g.putalpha(glow.point(lambda v: int(v * 0.6)))
     im = Image.alpha_composite(Image.alpha_composite(im, g), layer)
