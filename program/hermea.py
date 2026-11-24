@@ -240,32 +240,34 @@ def tone(lab):
 
 
 def vibrance(img, amt=0.12):
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)
-    s = hsv[..., 1] / 255
-    hsv[..., 1] = np.clip((s + amt * s * (1 - s) * 2) * 255, 0, 255)
-    return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+    """Мягкая насыщенность: бледные цвета чуть живее, яркие не трогаем. float BGR -> float BGR."""
+    hsv = cv2.cvtColor(np.clip(img.astype(np.float32) / 255.0, 0, 1), cv2.COLOR_BGR2HSV)
+    s = hsv[..., 1]
+    hsv[..., 1] = np.clip(s + amt * s * (1 - s) * 2, 0, 1)
+    return np.clip(cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR) * 255.0, 0, 255)
 
 
 def clarity(img, amt=0.18):
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    """Локальный контраст в средних тонах. float BGR -> float BGR."""
+    lab = quality.lab_f(img)
     L = lab[..., 0]
     r = max(img.shape[:2]) / 80
     blur = cv2.GaussianBlur(L, (0, 0), r)
     mid = 1 - np.abs(L / 255 - 0.5) * 2          # меньше всего в самых светлых и тёмных
     lab[..., 0] = np.clip(L + (L - blur) * amt * np.clip(mid, 0.2, 1), 0, 255)
-    return cv2.cvtColor(lab.astype(np.uint8), cv2.COLOR_LAB2BGR)
+    return quality.bgr_f(lab)
 
 
 def enhance(img):
     """Естественный светлый интерьер: чистый белый, чуть светлее тени, без пересвета и «зерна».
     Яркость поднимаем умеренно, светлые поверхности не выжигаем, мелкий шум сжатия не усиливаем."""
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    lab = quality.lab_f(img)                             # всё в float — без «ступенек» на белом
     med = float(np.median(lab[..., 0])) / 2.55          # уже светлое фото трогаем ещё мягче
     soft = float(np.clip((med - 55) / 15, 0, 1))
     lab = white_balance(lab)
     lab = tame_cast(lab, 0.7)
     lab = tone(lab)
-    out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+    out = quality.bgr_f(np.clip(lab, 0, 255))
     out = clarity(out, 0.10 - 0.06 * soft)
     out = vibrance(out, 0.08 - 0.05 * soft)
     return out

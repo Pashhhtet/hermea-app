@@ -229,15 +229,34 @@ def straighten(img, verbose=False):
     return img, "пропуск (без потерь нельзя)"
 
 
+# =================================================================== цвет без «ступенек»
+# Всё считается в float: каждый проход через 8-битный Lab округляет цвет, и на белых стенах
+# получаются цветные «острова». Округляем один раз — в самом конце (dither).
+def lab_f(img):
+    """BGR (uint8 или float 0..255) -> float Lab в шкале OpenCV-uint8: L 0..255, a/b с нулём 128."""
+    lab = cv2.cvtColor(np.clip(img.astype(np.float32) / 255.0, 0, 1), cv2.COLOR_BGR2LAB)
+    lab[..., 0] *= 2.55
+    lab[..., 1:] += 128.0
+    return lab
+
+
+def bgr_f(lab):
+    """float Lab (шкала как в lab_f) -> float BGR 0..255."""
+    x = lab.astype(np.float32).copy()
+    x[..., 0] = np.clip(x[..., 0], 0, 255) / 2.55
+    x[..., 1:] -= 128.0
+    return np.clip(cv2.cvtColor(x, cv2.COLOR_LAB2BGR) * 255.0, 0, 255)
+
+
 # =================================================================== ровные стены
 def deblock(img):
     """Убирает «квадратики» и пятна сжатия на ровных стенах и потолке; края и фактуру не трогает."""
-    g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    g = cv2.cvtColor(np.clip(img, 0, 255).astype(np.float32), cv2.COLOR_BGR2GRAY)
     gb = cv2.GaussianBlur(g, (0, 0), 1.2)
     mag = cv2.GaussianBlur(np.hypot(cv2.Sobel(gb, cv2.CV_32F, 1, 0), cv2.Sobel(gb, cv2.CV_32F, 0, 1)), (0, 0), 3)
     w = np.clip(1 - (mag - 2.5) / 3.0, 0, 1)
     w = cv2.GaussianBlur(w, (0, 0), 2)
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    lab = lab_f(img)
     s = max(img.shape[:2]) / 1500
     # размываем только с учётом маски (нормированная свёртка): соседние края не «затекают» на стену
     def nblur(ch, sig):
@@ -248,17 +267,17 @@ def deblock(img):
     lab[..., 0] = L * (1 - w) + nblur(L, 3.0 * s) * w
     lab[..., 1] = A * (1 - w) + nblur(A, 6.0 * s) * w
     lab[..., 2] = B * (1 - w) + nblur(B, 6.0 * s) * w
-    out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
-    return out, w[..., None]
+    return bgr_f(lab), w[..., None]
 
 
 def dither(img, w=None, amt=0.9):
-    """Едва заметное зерно на ровных местах — чтобы плавные переходы не ложились «ступеньками»."""
+    """Единственное округление до 8 бит + едва заметное зерно на ровных местах,
+    чтобы плавные переходы не ложились «ступеньками»."""
     rng = np.random.default_rng(7)
     n = rng.normal(0, amt, img.shape[:2]).astype(np.float32)[..., None]
     if w is not None:
         n = n * w
-    return np.clip(img.astype(np.float32) + n + 0.0, 0, 255).astype(np.uint8)
+    return np.clip(np.round(img.astype(np.float32) + n), 0, 255).astype(np.uint8)
 
 
 # =================================================================== чёткость
@@ -326,14 +345,14 @@ class SuperRes:
 
 
 def sharpen(img, amount=0.55, radius=1.1, threshold=3):
-    """Резкость только по яркости, с порогом — шум и плоские стены не трогает."""
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    L = lab[..., 0].astype(np.float32)
+    """Резкость только по яркости, с порогом — шум и плоские стены не трогает. float BGR -> float BGR."""
+    lab = lab_f(img)
+    L = lab[..., 0]
     blur = cv2.GaussianBlur(L, (0, 0), radius)
     detail = L - blur
     mask = np.clip((np.abs(detail) - threshold) / threshold, 0, 1)
-    lab[..., 0] = np.clip(L + amount * detail * mask, 0, 255).astype(np.uint8)
-    return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+    lab[..., 0] = np.clip(L + amount * detail * mask, 0, 255)
+    return bgr_f(lab)
 
 
 def upscale_to(img, target, sr=None):
