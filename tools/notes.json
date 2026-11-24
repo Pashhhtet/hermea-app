@@ -53,5 +53,10 @@
   "ru": "Собственники: добавлены Praga-Południe и Praga-Północ, точнее оценка (сравнение с рынком по числу комнат, «давно пустует», компании с десятками объявлений). Рынок теперь тоже собирает обе Праги.",
   "uk": "Власники: додано Praga-Południe і Praga-Północ, точніша оцінка (порівняння з ринком за кількістю кімнат, «давно пустує», компанії з десятками оголошень). Ринок тепер теж збирає обидві Праги.",
   "pl": "Właściciele: dodane Praga-Południe i Praga-Północ, dokładniejsza ocena (porównanie z rynkiem wg liczby pokoi, „długo puste”, firmy z dziesiątkami ogłoszeń). Rynek też zbiera teraz obie Pragi."
+ },
+ "1.5.2": {
+  "ru": "Собственники: фильтр по цене (до 4 000 / 6 000 / 8 000 zł или дороже).",
+  "uk": "Власники: фільтр за ціною (до 4 000 / 6 000 / 8 000 zł або дорожче).",
+  "pl": "Właściciele: filtr ceny (do 4 000 / 6 000 / 8 000 zł lub drożej)."
  }
 }

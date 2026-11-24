@@ -1,9 +1,9 @@
 {
- "version": "1.5.1",
+ "version": "1.5.2",
  "notes": {
-  "ru": "Собственники: добавлены Praga-Południe и Praga-Północ, точнее оценка (сравнение с рынком по числу комнат, «давно пустует», компании с десятками объявлений). Рынок теперь тоже собирает обе Праги.",
-  "uk": "Власники: додано Praga-Południe і Praga-Północ, точніша оцінка (порівняння з ринком за кількістю кімнат, «давно пустує», компанії з десятками оголошень). Ринок тепер теж збирає обидві Праги.",
-  "pl": "Właściciele: dodane Praga-Południe i Praga-Północ, dokładniejsza ocena (porównanie z rynkiem wg liczby pokoi, „długo puste”, firmy z dziesiątkami ogłoszeń). Rynek też zbiera teraz obie Pragi."
+  "ru": "Собственники: фильтр по цене (до 4 000 / 6 000 / 8 000 zł или дороже).",
+  "uk": "Власники: фільтр за ціною (до 4 000 / 6 000 / 8 000 zł або дорожче).",
+  "pl": "Właściciele: filtr ceny (do 4 000 / 6 000 / 8 000 zł lub drożej)."
  },
  "pip": [
   "pypdf>=4",
@@ -91,7 +91,7 @@
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "6a990341aae92d4a987d875d32a35db55158343e462eb169e458d71142a03aaa",
+   "sha256": "b73504d86da12b842efb126844e020623e14cb2d727804c9f02fb4e86335de8a",
    "exec": false
   },
   {

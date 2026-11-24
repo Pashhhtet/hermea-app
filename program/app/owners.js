@@ -9,7 +9,7 @@ ru: {
   ow_last: "проверено {d}", ow_refresh: "Обновить сейчас", ow_running: "Собираю районы: {n} из {t}…", ow_reading: "Читаю объявления: {n} из {t}…",
   ow_empty_t: "Список ещё не собран", ow_empty: "Программа пройдёт по частным объявлениям во всех районах Варшавы (5–10 минут) и отсортирует собственников по шансу на сотрудничество.",
   ow_f_new: "К звонку", ow_f_called: "Звонил", ow_f_agreed: "Согласны", ow_f_refused: "Отказ", ow_f_hidden: "Скрытые",
-  ow_all: "Все районы", ow_find: "Улица или район", ow_more: "Показать ещё", ow_none: "Здесь пока пусто.",
+  ow_all: "Все районы", ow_price_all: "Любая цена", ow_price_to: "до {n} zł", ow_price_from: "от {n} zł", ow_find: "Улица или район", ow_more: "Показать ещё", ow_none: "Здесь пока пусто.",
   ow_open: "Открыть на Otodom", ow_script: "Скрипт звонка", ow_close: "Свернуть",
   ow_s_called: "Поговорил", ow_s_nocall: "Не дозвонился", ow_s_agreed: "Согласен на 50%", ow_s_refused: "Отказ", ow_s_hidden: "Скрыть", ow_s_back: "Вернуть в список",
   ow_note: "Заметка: когда перезвонить, что сказал…", ow_photo: "Обработать фото", ow_photo_ok: "Квартира добавлена в обработку фото",
@@ -27,7 +27,7 @@ uk: {
   ow_last: "перевірено {d}", ow_refresh: "Оновити зараз", ow_running: "Збираю райони: {n} з {t}…", ow_reading: "Читаю оголошення: {n} з {t}…",
   ow_empty_t: "Список ще не зібраний", ow_empty: "Програма пройде по приватних оголошеннях у всіх районах Варшави (5–10 хвилин) і відсортує власників за шансом на співпрацю.",
   ow_f_new: "До дзвінка", ow_f_called: "Дзвонив", ow_f_agreed: "Згодні", ow_f_refused: "Відмова", ow_f_hidden: "Приховані",
-  ow_all: "Усі райони", ow_find: "Вулиця або район", ow_more: "Показати ще", ow_none: "Тут поки порожньо.",
+  ow_all: "Усі райони", ow_price_all: "Будь-яка ціна", ow_price_to: "до {n} zł", ow_price_from: "від {n} zł", ow_find: "Вулиця або район", ow_more: "Показати ще", ow_none: "Тут поки порожньо.",
   ow_open: "Відкрити на Otodom", ow_script: "Скрипт дзвінка", ow_close: "Згорнути",
   ow_s_called: "Поговорив", ow_s_nocall: "Не додзвонився", ow_s_agreed: "Згоден на 50%", ow_s_refused: "Відмова", ow_s_hidden: "Приховати", ow_s_back: "Повернути в список",
   ow_note: "Нотатка: коли передзвонити, що сказав…", ow_photo: "Обробити фото", ow_photo_ok: "Квартиру додано в обробку фото",
@@ -45,7 +45,7 @@ pl: {
   ow_last: "sprawdzono {d}", ow_refresh: "Odśwież teraz", ow_running: "Zbieram dzielnice: {n} z {t}…", ow_reading: "Czytam ogłoszenia: {n} z {t}…",
   ow_empty_t: "Lista nie jest jeszcze zebrana", ow_empty: "Program przejdzie przez prywatne ogłoszenia we wszystkich dzielnicach Warszawy (5–10 minut) i ułoży właścicieli według szansy na współpracę.",
   ow_f_new: "Do telefonu", ow_f_called: "Dzwoniłem", ow_f_agreed: "Zgoda", ow_f_refused: "Odmowa", ow_f_hidden: "Ukryte",
-  ow_all: "Wszystkie dzielnice", ow_find: "Ulica lub dzielnica", ow_more: "Pokaż więcej", ow_none: "Na razie pusto.",
+  ow_all: "Wszystkie dzielnice", ow_price_all: "Każda cena", ow_price_to: "do {n} zł", ow_price_from: "od {n} zł", ow_find: "Ulica lub dzielnica", ow_more: "Pokaż więcej", ow_none: "Na razie pusto.",
   ow_open: "Otwórz na Otodom", ow_script: "Skrypt rozmowy", ow_close: "Zwiń",
   ow_s_called: "Rozmawiałem", ow_s_nocall: "Nie odebrał", ow_s_agreed: "Zgoda na 50%", ow_s_refused: "Odmowa", ow_s_hidden: "Ukryj", ow_s_back: "Przywróć",
   ow_note: "Notatka: kiedy oddzwonić, co powiedział…", ow_photo: "Obrób zdjęcia", ow_photo_ok: "Mieszkanie dodane do obróbki zdjęć",
@@ -60,7 +60,9 @@ pl: {
 };
 Object.assign(L.ru, OW_L.ru); Object.assign(L.uk, OW_L.uk); Object.assign(L.pl, OW_L.pl);
 
-const OW = { data: null, filter: "new", district: "", q: "", shown: 40, open: "", timer: 0 };
+const OW = { data: null, filter: "new", district: "", q: "", shown: 40, open: "", timer: 0, price: "" };
+try { OW.price = localStorage.getItem("hermea_ow_price") || ""; } catch (e) {}
+const OW_PRICES = ["", "0-4000", "0-6000", "0-8000", "8000-999999"];
 try { OW.filter = localStorage.getItem("hermea_ow_filter") || "new"; } catch (e) {}
 const OW_GROUP = { new: ["new"], called: ["called", "nocall"], agreed: ["agreed"], refused: ["refused"], hidden: ["hidden"] };
 
@@ -84,6 +86,11 @@ function owWhy(w) {
   return `<span class="ow-why ${cls}">${esc(txt)}</span>`;
 }
 
+function owPriceLabel(p) {
+  if (!p) return t("ow_price_all");
+  const [lo, hi] = p.split("-").map(Number);
+  return lo ? t("ow_price_from", { n: zl(lo) }) : t("ow_price_to", { n: zl(hi) });
+}
 function owHeat(s) { return s >= 70 ? "hot" : s >= 50 ? "warm" : "cold"; }
 
 function owScript(a) {
@@ -133,6 +140,7 @@ function drawOwners(first) {
   let rows = d.items.filter((a) => groups.includes(a.status || "new"));
   if (OW.filter === "new") rows = rows.filter((a) => !a.gone);
   if (OW.district) rows = rows.filter((a) => (a.district || "") === OW.district);
+  if (OW.price) { const [lo, hi] = OW.price.split("-").map(Number); rows = rows.filter((a) => { const v = a.total || a.price || 0; return v >= lo && v <= hi; }); }
   if (q) rows = rows.filter((a) => `${a.street} ${a.district} ${a.sub} ${a.title}`.toLowerCase().includes(q));
   const dists = [...new Set(d.items.map((a) => a.district).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   box.innerHTML = `<div class="sv-wrap ow-wrap">
@@ -142,6 +150,7 @@ function drawOwners(first) {
     <div class="ow-bar">
       <div class="seg" id="owSeg">${Object.keys(OW_GROUP).map((g) => `<button type="button" data-g="${g}" aria-pressed="${g === OW.filter}">${t("ow_f_" + g)} <small>${cnt(g)}</small></button>`).join("")}</div>
       <select class="pop-in ow-sel" id="owDist"><option value="">${t("ow_all")}</option>${dists.map((x) => `<option ${x === OW.district ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>
+      <select class="pop-in ow-sel" id="owPrice">${OW_PRICES.map((p) => `<option value="${p}" ${p === OW.price ? "selected" : ""}>${owPriceLabel(p)}</option>`).join("")}</select>
       <input class="pop-in ow-q" id="owQ" type="search" placeholder="${esc(t("ow_find"))}" value="${esc(OW.q)}">
       <label class="ow-name">${t("ow_name")} <input class="pop-in" id="owName" value="${esc(owName())}" maxlength="40"></label>
     </div>
@@ -158,6 +167,7 @@ function drawOwners(first) {
     drawOwners(true);
   };
   $("#owDist").onchange = (e) => { OW.district = e.target.value; OW.shown = 40; drawOwners(true); };
+  $("#owPrice").onchange = (e) => { OW.price = e.target.value; OW.shown = 40; try { localStorage.setItem("hermea_ow_price", OW.price); } catch (err) {} drawOwners(true); };
   $("#owQ").oninput = (e) => { OW.q = e.target.value; clearTimeout(OW.qt); OW.qt = setTimeout(() => { drawOwners(); const i = $("#owQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
   $("#owName").onchange = (e) => { try { localStorage.setItem("hermea_ow_name", e.target.value.trim() || "Paweł"); } catch (err) {} drawOwners(); };
   if ($("#owMore")) $("#owMore").onclick = () => { OW.shown += 40; drawOwners(); };
