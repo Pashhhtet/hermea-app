@@ -1,9 +1,9 @@
 {
- "version": "1.4.0",
+ "version": "1.4.1",
  "notes": {
-  "ru": "Новые вкладки «Клиенты» и «Рынок»: карточка клиента, договор о сотрудничестве в PDF одной кнопкой, сообщения по скриптам Hermea, калькулятор заселения, цены аренды по районам Варшавы. В поисках видно «дороже рынка» и снижение цены.",
-  "uk": "Нові вкладки «Клієнти» і «Ринок»: картка клієнта, договір про співпрацю в PDF однією кнопкою, повідомлення за скриптами Hermea, калькулятор заселення, ціни оренди по районах Варшави. У пошуках видно «дорожче ринку» і зниження ціни.",
-  "pl": "Nowe karty „Klienci” i „Rynek”: karta klienta, umowa współpracy w PDF jednym kliknięciem, wiadomości według skryptów Hermea, kalkulator wprowadzenia, ceny najmu w dzielnicach Warszawy. W wyszukiwaniach widać „drożej niż rynek” i obniżki cen."
+  "ru": "Hermea больше не открывается через Терминал: папка «Hermea Photo» один раз переезжает в домашнюю папку, на рабочем столе остаётся ссылка на неё. Всё внутри остаётся как было.",
+  "uk": "Hermea більше не відкривається через Термінал: папка «Hermea Photo» один раз переїжджає в домашню папку, на робочому столі лишається посилання на неї. Усе всередині лишається як було.",
+  "pl": "Hermea nie otwiera się już przez Terminal: folder „Hermea Photo” jednorazowo przenosi się do folderu domowego, a na biurku zostaje do niego skrót. Zawartość się nie zmienia."
  },
  "pip": [
   "pypdf>=4",
@@ -19,7 +19,7 @@
   {
    "path": "../Hermea.app/Contents/MacOS/Hermea",
    "src": "bundle/Contents/MacOS/Hermea",
-   "sha256": "b9f5a678b7f11a4a18ea0378a246d4e3d98d58549f21dca11ec701031a7356d2",
+   "sha256": "1173d4cb11a5dfbb2c9baf8e397aa36cbfd639308749790148e048d872d4ad55",
    "exec": true
   },
   {
@@ -169,7 +169,7 @@
   {
    "path": "hermea_app.py",
    "src": "program/hermea_app.py",
-   "sha256": "7cfbb147a78c4b33953c35244e04dc44ef3f2f4db887f8d8ee1d5879488c7924",
+   "sha256": "79a4301ce1eac7cd44adfd4ee723f7793c0c28f11d5b424e2ddf0f31bcdf327b",
    "exec": false
   },
   {
@@ -205,7 +205,7 @@
   {
    "path": "Открыть окно Hermea.command",
    "src": "program/Открыть окно Hermea.command",
-   "sha256": "858cefebc75a04e49ba11b5f972944926307078b32ed1f27538af7dfd0d1018a",
+   "sha256": "bb0e5909dbe829cfa7abfb22ae645376dc200de9d7fd24e72da8b42a08b3db4f",
    "exec": true
   },
   {

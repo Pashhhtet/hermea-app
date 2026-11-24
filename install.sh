@@ -5,7 +5,12 @@
 # Повторный запуск обновляет программу и ничего не стирает (квартиры, клиенты, СВК, настройки остаются).
 set -e
 REPO="Pashhhtet/hermea-app"
-ROOT="${HERMEA_DIR:-$HOME/Desktop/Hermea Photo}"
+# Папка живёт в домашней папке (macOS не даёт программам свободно работать в «Рабочем столе»),
+# на рабочем столе — ссылка на неё. Старую папку со стола переносим сюда же.
+ROOT="${HERMEA_DIR:-$HOME/Hermea Photo}"
+if [ -z "$HERMEA_DIR" ] && [ -d "$HOME/Desktop/Hermea Photo" ] && [ ! -L "$HOME/Desktop/Hermea Photo" ] && [ ! -e "$ROOT" ]; then
+  mv "$HOME/Desktop/Hermea Photo" "$ROOT"
+fi
 PROG="$ROOT/_program"
 step() { printf "\n\033[33m==> %s\033[0m\n" "$1"; }
 get() { curl -fL --retry 3 --retry-delay 3 -o "$2" "$1"; }
@@ -61,6 +66,7 @@ if [ -z "$HERMEA_SKIP_MODELS" ]; then
 fi
 
 xattr -dr com.apple.quarantine "$ROOT" 2>/dev/null || true
-printf "\n\033[32mГотово! Hermea.app лежит в папке «Hermea Photo» на рабочем столе.\033[0m\n"
+if [ -z "$HERMEA_DIR" ] && [ ! -e "$HOME/Desktop/Hermea Photo" ]; then ln -s "$ROOT" "$HOME/Desktop/Hermea Photo"; fi
+printf "\n\033[32mГотово! Папка «Hermea Photo» на рабочем столе, внутри Hermea.app.\033[0m\n"
 echo "Обновления приходят сами: в программе появится кнопка «Обновить»."
 if [ -z "$HERMEA_NO_LAUNCH" ]; then open "$ROOT/Hermea.app"; fi

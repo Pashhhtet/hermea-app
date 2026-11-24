@@ -101,8 +101,45 @@ def daemonize():
     os.dup2(lf, 2)
 
 
+def move_out_of_desktop(restarted):
+    """macOS не пускает программу, запущенную из Hermea.app, в защищённый «Рабочий стол» —
+    поэтому окно открывалось через Терминал. Один раз переносим «Hermea Photo» в домашнюю папку
+    (она не защищена), на столе оставляем ссылку на папку и перезапускаемся уже оттуда."""
+    if sys.platform != "darwin" or os.environ.get("HERMEA_NO_MOVE"):
+        return
+    root = os.path.realpath(ROOT)
+    desk = os.path.realpath(os.path.expanduser("~/Desktop"))
+    if os.path.dirname(root) != desk:
+        return
+    new = os.path.join(os.path.realpath(os.path.expanduser("~")), os.path.basename(root))
+    if os.path.exists(new):
+        return
+    try:
+        os.rename(root, new)
+    except OSError as e:
+        sys.stderr.write(f"перенос папки не удался: {e}\n")
+        return
+    try:
+        os.symlink(new, root)                           # на рабочем столе — ссылка на папку
+    except OSError:
+        pass
+    try:
+        with open(os.path.join(new, "_program", "app_log.txt"), "a", encoding="utf-8") as f:
+            f.write(f"[{time.strftime('%d.%m %H:%M:%S')}] папка перенесена: {root} -> {new}\n")
+    except OSError:
+        pass
+    env = dict(os.environ)
+    if restarted:
+        env["HERMEA_RESTART"] = "1"
+    py = os.path.join(new, "_program", ".venv", "bin", "python")
+    if not os.path.exists(py):
+        py = sys.executable
+    os.execve(py, [py, "-W", "ignore", os.path.join(new, "_program", "hermea_app.py")] + sys.argv[1:], env)
+
+
 def main():
     restarted = os.environ.pop("HERMEA_RESTART", None)    # перезапуск после обновления: окно уже открыто
+    move_out_of_desktop(restarted)
     url = None if restarted else running_instance()
     if url:
         if "--no-window" not in sys.argv:

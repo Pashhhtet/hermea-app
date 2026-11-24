@@ -18,5 +18,10 @@
   "ru": "Новые вкладки «Клиенты» и «Рынок»: карточка клиента, договор о сотрудничестве в PDF одной кнопкой, сообщения по скриптам Hermea, калькулятор заселения, цены аренды по районам Варшавы. В поисках видно «дороже рынка» и снижение цены.",
   "uk": "Нові вкладки «Клієнти» і «Ринок»: картка клієнта, договір про співпрацю в PDF однією кнопкою, повідомлення за скриптами Hermea, калькулятор заселення, ціни оренди по районах Варшави. У пошуках видно «дорожче ринку» і зниження ціни.",
   "pl": "Nowe karty „Klienci” i „Rynek”: karta klienta, umowa współpracy w PDF jednym kliknięciem, wiadomości według skryptów Hermea, kalkulator wprowadzenia, ceny najmu w dzielnicach Warszawy. W wyszukiwaniach widać „drożej niż rynek” i obniżki cen."
+ },
+ "1.4.1": {
+  "ru": "Hermea больше не открывается через Терминал: папка «Hermea Photo» один раз переезжает в домашнюю папку, на рабочем столе остаётся ссылка на неё. Всё внутри остаётся как было.",
+  "uk": "Hermea більше не відкривається через Термінал: папка «Hermea Photo» один раз переїжджає в домашню папку, на робочому столі лишається посилання на неї. Усе всередині лишається як було.",
+  "pl": "Hermea nie otwiera się już przez Terminal: folder „Hermea Photo” jednorazowo przenosi się do folderu domowego, a na biurku zostaje do niego skrót. Zawartość się nie zmienia."
  }
 }

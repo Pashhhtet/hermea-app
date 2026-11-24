@@ -1,9 +1,10 @@
 #!/bin/bash
 # Hermea — окно «Обработка фото». Запускает _program/hermea_app.py.
 # Программа сама закрывается, когда окно закрыто и обработка закончена.
-APP="$(cd "$(dirname "$0")/../.." && pwd)"
+APP="$(cd -P "$(dirname "$0")/../.." && pwd -P)"      # настоящий путь, не через ссылку на столе
 ROOT="$(dirname "$APP")"
 PROG="$ROOT/_program"
+[ -d "$PROG" ] || PROG="$HOME/Hermea Photo/_program"
 [ -d "$PROG" ] || PROG="$HOME/Desktop/Hermea Photo/_program"
 export LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" PYTHONIOENCODING="utf-8"
 PY="$PROG/.venv/bin/python"
