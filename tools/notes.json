@@ -48,5 +48,10 @@
   "ru": "Новая вкладка «Собственники»: частные объявления Otodom по всей Варшаве с оценкой, кому агент нужнее всего (долго висит, снижали цену, дороже рынка, слабое объявление). Скрипт звонка на польском, ответы на возражения, статусы и заметки.",
   "uk": "Нова вкладка «Власники»: приватні оголошення Otodom по всій Варшаві з оцінкою, кому агент потрібен найбільше (довго висить, знижували ціну, дорожче ринку, слабке оголошення). Скрипт дзвінка польською, відповіді на заперечення, статуси й нотатки.",
   "pl": "Nowa karta „Właściciele”: prywatne ogłoszenia z Otodom w całej Warszawie z oceną, komu agent jest najbardziej potrzebny (długo wisi, obniżana cena, drożej niż rynek, słabe ogłoszenie). Skrypt rozmowy, odpowiedzi na obiekcje, statusy i notatki."
+ },
+ "1.5.1": {
+  "ru": "Собственники: добавлены Praga-Południe и Praga-Północ, точнее оценка (сравнение с рынком по числу комнат, «давно пустует», компании с десятками объявлений). Рынок теперь тоже собирает обе Праги.",
+  "uk": "Власники: додано Praga-Południe і Praga-Północ, точніша оцінка (порівняння з ринком за кількістю кімнат, «давно пустує», компанії з десятками оголошень). Ринок тепер теж збирає обидві Праги.",
+  "pl": "Właściciele: dodane Praga-Południe i Praga-Północ, dokładniejsza ocena (porównanie z rynkiem wg liczby pokoi, „długo puste”, firmy z dziesiątkami ogłoszeń). Rynek też zbiera teraz obie Pragi."
  }
 }

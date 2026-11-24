@@ -57,6 +57,31 @@ def slug(name):
     return "-".join(s.replace("–", "-").split()).replace("--", "-")
 
 
+def url_slug(d):
+    """В адресах Otodom у Праги двойной дефис: praga--poludnie."""
+    return d.replace("praga-", "praga--", 1) if d.startswith("praga-") else d
+
+
+def compare_total(item):
+    """Цена «всего в месяц» против медианы района для того же числа комнат. -> % или None.
+    (По zł/м² маленькие студии всегда выглядят «дороже рынка», поэтому здесь сравниваем сумму.)"""
+    with LOCK:
+        days = DATA.get("days") or {}
+        if not days:
+            return None
+        last = days[max(days)]
+    d = last.get(slug(item.get("district")))
+    tot = item.get("total") or item.get("price")
+    if not d or not tot:
+        return None
+    r = str(item.get("rooms") or "")
+    r = r if r in ("1", "2", "3") else ("4" if r else "")
+    ref = ((d.get("rooms") or {}).get(r) or {}).get("median") if r else None
+    if not ref:
+        return None
+    return round((tot / ref - 1) * 100)
+
+
 def _med(xs):
     xs = [x for x in xs if x]
     return round(statistics.median(xs)) if xs else None
@@ -89,7 +114,7 @@ def snapshot(http_factory, log=print, pause=4.0):
     res = {}
     for d in DISTRICTS:
         try:
-            r = sess.get(BASE.format(d=d), timeout=40)
+            r = sess.get(BASE.format(d=url_slug(d)), timeout=40)
             if r.status_code in (403, 429):
                 raise RuntimeError(f"HTTP {r.status_code}")
             r.raise_for_status()

@@ -19,7 +19,7 @@ ru: {
   ow_obj: "Если возражает",
   w_days: "{n} дн. на сайте", w_old: "объявлению {n} мес., выставлено снова", w_drop: "цену снизили на {n} zł", w_relisted: "перевыставлено",
   w_pushed: "платит за поднятие", w_promoted: "платная реклама", w_above: "дороже рынка на {n}%", w_photos: "всего {n} фото",
-  w_neg: "пишет «без посредников»", w_pos: "агенты приветствуются", w_empty: "уже пустует", w_short: "короткое описание", w_others: "{n} объявл. у владельца",
+  w_neg: "пишет «без посредников»", w_pos: "агенты приветствуются", w_empty: "давно пустует", w_short: "короткое описание", w_others: "{n} объявл. у владельца", w_many: "{n} объявлений: похоже на компанию",
 },
 uk: {
   m_owners: "Власники",
@@ -37,7 +37,7 @@ uk: {
   ow_obj: "Якщо заперечує",
   w_days: "{n} дн. на сайті", w_old: "оголошенню {n} міс., виставлено знову", w_drop: "ціну знизили на {n} zł", w_relisted: "перевиставлено",
   w_pushed: "платить за підняття", w_promoted: "платна реклама", w_above: "дорожче ринку на {n}%", w_photos: "лише {n} фото",
-  w_neg: "пише «без посередників»", w_pos: "агентів запрошують", w_empty: "вже пустує", w_short: "короткий опис", w_others: "{n} оголош. у власника",
+  w_neg: "пише «без посередників»", w_pos: "агентів запрошують", w_empty: "давно пустує", w_short: "короткий опис", w_others: "{n} оголош. у власника", w_many: "{n} оголошень: схоже на компанію",
 },
 pl: {
   m_owners: "Właściciele",
@@ -55,7 +55,7 @@ pl: {
   ow_obj: "Jeśli ma obiekcje",
   w_days: "{n} dni na portalu", w_old: "ogłoszenie ma {n} mies., wystawione ponownie", w_drop: "cena obniżona o {n} zł", w_relisted: "wystawione ponownie",
   w_pushed: "płaci za podbicie", w_promoted: "płatna promocja", w_above: "{n}% drożej niż rynek", w_photos: "tylko {n} zdjęć",
-  w_neg: "pisze „bez pośredników”", w_pos: "biura mile widziane", w_empty: "już stoi puste", w_short: "krótki opis", w_others: "{n} ogłosz. właściciela",
+  w_neg: "pisze „bez pośredników”", w_pos: "biura mile widziane", w_empty: "długo stoi puste", w_short: "krótki opis", w_others: "{n} ogłosz. właściciela", w_many: "{n} ogłoszeń: raczej firma",
 },
 };
 Object.assign(L.ru, OW_L.ru); Object.assign(L.uk, OW_L.uk); Object.assign(L.pl, OW_L.pl);
@@ -78,7 +78,7 @@ async function ownersOpen(quiet) {
 function owWhy(w) {
   const [k, v] = w;
   const txt = k === "days" ? t("w_days", { n: v }) : k === "old" ? t("w_old", { n: v }) : k === "drop" ? t("w_drop", { n: zl(v) })
-    : k === "above" ? t("w_above", { n: v }) : k === "photos" ? t("w_photos", { n: v }) : k === "others" ? t("w_others", { n: v })
+    : k === "above" ? t("w_above", { n: v }) : k === "photos" ? t("w_photos", { n: v }) : k === "others" ? t("w_others", { n: v }) : k === "many" ? t("w_many", { n: v })
     : t("w_" + k);
   const cls = k === "neg" ? "bad" : k === "pos" || k === "empty" || k === "drop" ? "good" : "";
   return `<span class="ow-why ${cls}">${esc(txt)}</span>`;

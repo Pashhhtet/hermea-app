@@ -1,9 +1,9 @@
 {
- "version": "1.5.0",
+ "version": "1.5.1",
  "notes": {
-  "ru": "Новая вкладка «Собственники»: частные объявления Otodom по всей Варшаве с оценкой, кому агент нужнее всего (долго висит, снижали цену, дороже рынка, слабое объявление). Скрипт звонка на польском, ответы на возражения, статусы и заметки.",
-  "uk": "Нова вкладка «Власники»: приватні оголошення Otodom по всій Варшаві з оцінкою, кому агент потрібен найбільше (довго висить, знижували ціну, дорожче ринку, слабке оголошення). Скрипт дзвінка польською, відповіді на заперечення, статуси й нотатки.",
-  "pl": "Nowa karta „Właściciele”: prywatne ogłoszenia z Otodom w całej Warszawie z oceną, komu agent jest najbardziej potrzebny (długo wisi, obniżana cena, drożej niż rynek, słabe ogłoszenie). Skrypt rozmowy, odpowiedzi na obiekcje, statusy i notatki."
+  "ru": "Собственники: добавлены Praga-Południe и Praga-Północ, точнее оценка (сравнение с рынком по числу комнат, «давно пустует», компании с десятками объявлений). Рынок теперь тоже собирает обе Праги.",
+  "uk": "Власники: додано Praga-Południe і Praga-Północ, точніша оцінка (порівняння з ринком за кількістю кімнат, «давно пустує», компанії з десятками оголошень). Ринок тепер теж збирає обидві Праги.",
+  "pl": "Właściciele: dodane Praga-Południe i Praga-Północ, dokładniejsza ocena (porównanie z rynkiem wg liczby pokoi, „długo puste”, firmy z dziesiątkami ogłoszeń). Rynek też zbiera teraz obie Pragi."
  },
  "pip": [
   "pypdf>=4",
@@ -91,7 +91,7 @@
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "331c54e5531268143e2c149c111386825003468a326619d59eed857287aa30a0",
+   "sha256": "6a990341aae92d4a987d875d32a35db55158343e462eb169e458d71142a03aaa",
    "exec": false
   },
   {
@@ -133,13 +133,13 @@
   {
    "path": "app_market.py",
    "src": "program/app_market.py",
-   "sha256": "af0b2128acc2e2fd352205b71fb7f494acf13f62c125447ac50e49338786b400",
+   "sha256": "846c08a0da9545486ff907fa068178e157cdc81ec37cfe7b6024610c878800af",
    "exec": false
   },
   {
    "path": "app_owners.py",
    "src": "program/app_owners.py",
-   "sha256": "dbc842b57491ae900f6d5b488af072d8f5ea546c96ba5f13c2fb640a60897738",
+   "sha256": "7a6006ef22dc729f787edb97292bc6cd3dd51b88271fedc7015657a3c1d85744",
    "exec": false
   },
   {

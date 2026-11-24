@@ -46,6 +46,14 @@ def init(prog_dir):
         DATA.update(json.load(open(FILE, encoding="utf-8")))
     except Exception:
         pass
+    # пересчёт при запуске: свежие медианы рынка и новые веса оценки
+    with LOCK:
+        for a in DATA["ads"].values():
+            try:
+                a["market"] = app_market.compare_total(a)
+            except Exception:
+                pass
+        _rescore()
 
 
 def _save():
@@ -163,16 +171,16 @@ def score(a, today=None):
     if a.get("relisted"):
         pts += 15
         why.append(["relisted", a["relisted"]])
-    if a.get("pushed") and (_days(a["pushed"], today) or 99) <= 14:
-        pts += 10
+    if a.get("pushed") and (_days(a["pushed"], today) or 99) <= 7 and days >= 14:
+        pts += 5                          # старое объявление, а собственник всё ещё поднимает его
         why.append(["pushed", a["pushed"]])
     if a.get("promoted"):
         pts += 6
         why.append(["promoted", 1])
     mk = a.get("market")
     if mk is not None:
-        if mk >= 6:
-            pts += min(18, round(mk * 0.9))
+        if mk >= 8:
+            pts += min(15, round(mk * 0.5))
             why.append(["above", mk])
         elif mk <= -10:
             pts -= 8                      # дешевле рынка — сдастся само
@@ -192,15 +200,18 @@ def score(a, today=None):
             pts += 18
             why.append(["pos", 1])
         ff = d.get("free_from")
-        if ff and ff <= today:
-            pts += 10
+        if ff and (_days(ff, today) or 0) >= 14:     # «свободна с» давно прошла — стоит пустая
+            pts += 8
             why.append(["empty", ff])
         if d.get("desc_len", 999) < 250:
             pts += 5
             why.append(["short", d.get("desc_len")])
-        if d.get("others", 0) >= 1:
+        n = d.get("others", 0)
+        if 1 <= n <= 4:                   # несколько квартир: сдаёт регулярно, агент экономит ему время
             pts += 8
-            why.append(["others", d["others"] + 1])
+            why.append(["others", n + 1])
+        elif n >= 5:                      # много объявлений — скорее всего компания со своими условиями
+            why.append(["many", n + 1])
     return max(0, min(100, pts)), why
 
 
@@ -248,7 +259,7 @@ def merge(items, today=None):
                 a["prices"].append([today, tot])
             a["drops"] = [[p[0], q[1], p[1]] for q, p in zip(a["prices"], a["prices"][1:]) if p[1] < q[1]]
             try:
-                a["market"] = app_market.compare(a)
+                a["market"] = app_market.compare_total(a)
             except Exception:
                 a["market"] = None
         # давно снятые — убираем
@@ -273,7 +284,7 @@ def scan(http_factory, log=print, pause=3.5):
             p, pages = 1, 1
             while p <= min(pages, MAX_PAGES):
                 try:
-                    got, pages = parse_list(_get(sess, BASE.format(d=d, p=p)))
+                    got, pages = parse_list(_get(sess, BASE.format(d=app_market.url_slug(d), p=p)))
                     items += got
                     ok += 1
                 except Exception as e:
