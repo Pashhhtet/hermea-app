@@ -1,9 +1,9 @@
 {
- "version": "1.5.2",
+ "version": "1.5.3",
  "notes": {
-  "ru": "Собственники: фильтр по цене (до 4 000 / 6 000 / 8 000 zł или дороже).",
-  "uk": "Власники: фільтр за ціною (до 4 000 / 6 000 / 8 000 zł або дорожче).",
-  "pl": "Właściciele: filtr ceny (do 4 000 / 6 000 / 8 000 zł lub drożej)."
+  "ru": "Telegram подключается сам: достаточно вставить токен и написать боту /start, программа сама найдёт чат за 10 секунд (без «Проверить Telegram.command»).",
+  "uk": "Telegram підключається сам: достатньо вставити токен і написати боту /start, програма сама знайде чат за 10 секунд.",
+  "pl": "Telegram łączy się sam: wystarczy wkleić token i napisać do bota /start, program sam znajdzie czat w 10 sekund."
  },
  "pip": [
   "pypdf>=4",
@@ -127,7 +127,7 @@
   {
    "path": "app_i18n.py",
    "src": "program/app_i18n.py",
-   "sha256": "6afdf17a77a35d4e0fcd29f965f474eeb1c2220f4fed76c65f1a4957cee828bc",
+   "sha256": "981f7c11bdc123c2be80457164e4016cf6bfff916c8723cae514e1d44381a216",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "fca13287e9e02a364b2b73d3247346e1e1197606352aba92ba3d69fb2f166bd8",
+   "sha256": "f0f305c09b0f6b21c4d8f9e12a7ca737f6379bcb02e7285c03852f8645f71d67",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "58383e3aa4de501c297776ac00734fb8dcbd854c11eb15a331b2867a0a9012b5",
+   "sha256": "99653eab707c6e74e62e3cb70698b4b4caf7cede631ceb70709bbd5fc5704bb0",
    "exec": false
   },
   {

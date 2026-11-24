@@ -392,6 +392,7 @@ def tg_find_chat(token):
         m = u.get("message") or u.get("channel_post") or u.get("my_chat_member") or {}
         c = m.get("chat")
         if c:
+            chats.pop(c["id"], None)          # последний чат, где писали боту, — в конце
             chats[c["id"]] = c.get("title") or c.get("first_name") or str(c["id"])
     return chats
 

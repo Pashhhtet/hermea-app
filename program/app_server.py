@@ -329,9 +329,59 @@ def tg_check():
         return
     bot = "@" + me.get("username", "bot")
     if not chat:
+        chat = tg_pick_chat(token)
+    if not chat:
         TG.update(state="nochat", key="tg_nochat", hint_key="tg_nochat_hint", bot=bot, detail="")
+        _tg_wait_chat()
         return
     TG.update(state="ok", key="tg_ok", hint_key="tg_ok_hint", bot=bot, detail="")
+
+
+def tg_pick_chat(token):
+    """CHAT_ID пустой: берём чат, где боту последним написали /start, сохраняем и здороваемся."""
+    try:
+        hermea.tg_call(token, "deleteWebhook")
+    except Exception:
+        pass
+    try:
+        chats = hermea.tg_find_chat(token)
+    except Exception as e:
+        log("telegram:", e)
+        return ""
+    if not chats:
+        return ""
+    cid, title = list(chats.items())[-1]
+    hermea._save_chat(cid)
+    log(f"telegram: выбран чат «{title}» ({cid})")
+    try:
+        hermea.tg_call(token, "sendMessage", {"chat_id": cid, "text": "✅ HERMEA подключена к этому чату"})
+    except Exception as e:
+        log("telegram:", e)
+    return str(cid)
+
+
+_TG_WAIT = {"on": False}
+
+
+def _tg_wait_chat():
+    """Пока чат не выбран — каждые 10 секунд (до 15 минут) смотрим, не написали ли боту /start."""
+    if _TG_WAIT["on"]:
+        return
+    _TG_WAIT["on"] = True
+
+    def run():
+        try:
+            for _ in range(90):
+                time.sleep(10)
+                token, chat = hermea.tg_config()
+                if not token:
+                    return
+                if chat or tg_pick_chat(token):
+                    tg_check()
+                    return
+        finally:
+            _TG_WAIT["on"] = False
+    threading.Thread(target=run, daemon=True).start()
 
 
 def tg_public():
