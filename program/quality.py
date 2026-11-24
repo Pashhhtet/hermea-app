@@ -165,11 +165,14 @@ def _vertical_vp_ransac(segs, w, h, iters=600, tol=1.6, seed=7):
 
 
 MAX_ROT = 10.0
-MAX_K = 1.15        # сильный наклон телефона (0.5x) тоже выпрямляем полностью
-MIN_KEEP = 0.6
+MAX_K = 1.15
+MIN_KEEP = 0.9        # отрезаем по краям не больше 10% — иначе фото «приближается» и мылится
+MAX_STRETCH = 1.12    # низ кадра не должен растягиваться относительно верха больше чем на 12%
 
 
 def straighten(img, verbose=False):
+    """Бережное выпрямление: наклон убираем, вертикали сводим настолько, насколько можно
+    без заметной обрезки и без «растянутой» мебели. Пикселей не увеличиваем больше чем на ~5%."""
     h, w = img.shape[:2]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     segs = _segments(gray)
@@ -187,36 +190,43 @@ def straighten(img, verbose=False):
     dist = math.hypot(vx, vy)
     inv_d = vw / dist if dist > 1e-12 else 0.0
     c, f = np.array([w / 2.0, h / 2.0]), float(max(w, h))
-    for strength in (1.0, 0.85, 0.7, 0.55, 0.4):
-        k = max(-MAX_K, min(MAX_K, inv_d)) * strength
-        rot = theta * max(strength, 0.6)
+    N = np.array([[1 / f, 0, -c[0] / f], [0, 1 / f, -c[1] / f], [0, 0, 1]])
+    corners = np.array([[0, 0, 1], [w, 0, 1], [w, h, 1], [0, h, 1]], float)
+    k_full = max(-MAX_K, min(MAX_K, inv_d))
+    # сначала пробуем полный наклон + сколько получится вертикалей, потом уменьшаем всё
+    plans = [(1.0, s) for s in (1.0, 0.8, 0.65, 0.5, 0.4, 0.3, 0.2, 0.12, 0.0)]
+    plans += [(r, 0.0) for r in (0.75, 0.5, 0.3)]
+    for rs, ks in plans:
+        k = k_full * ks
+        rot = theta * rs
+        if abs(k) < 0.01 and abs(math.degrees(rot)) < 0.15:
+            return img, "ровно"
         cr, sr = math.cos(rot), math.sin(rot)
-        N = np.array([[1 / f, 0, -c[0] / f], [0, 1 / f, -c[1] / f], [0, 0, 1]])
         R = np.array([[cr, -sr, 0], [sr, cr, 0], [0, 0, 1]])
         K = np.array([[1, 0, 0], [0, 1, 0], [0, -k, 1]])
         Hn = K @ R
-        corners = np.array([[0, 0, 1], [w, 0, 1], [w, h, 1], [0, h, 1]], float)
-        qq = (Hn @ N @ corners.T)
+        qq = Hn @ N @ corners.T
         if qq[2].min() <= 0:
             continue
         qq = (qq[:2] / qq[2]).T
         if not np.isfinite(qq).all():
             continue
         x0, y0, cw, ch = _inner_crop(qq, w / h)
-        # сколько исходного кадра реально осталось: прообраз рамки обрезки
         S = np.array([[w / cw, 0, -x0 * w / cw], [0, h / ch, -y0 * h / ch], [0, 0, 1]])
         H = S @ Hn @ N
-        Hi = np.linalg.inv(H)
-        pre = (Hi @ corners.T)
+        pre = np.linalg.inv(H) @ corners.T
         pre = (pre[:2] / pre[2]).T.astype(np.float32)
         keep = cv2.contourArea(pre) / (w * h)
-        if keep >= MIN_KEEP or strength == 0.4:
-            if keep < 0.55:
-                return img, "пропуск (слишком сильно)"
+        # насколько низ увеличен относительно верха (вертикальное растяжение мебели)
+        ys = [y0, y0 + ch]
+        den = [1.0 + k * y / (1.0 - 0) for y in ys]          # знаменатель после K в координатах результата
+        stretch = max(den) / max(min(den), 1e-6)
+        if keep >= MIN_KEEP and stretch <= MAX_STRETCH:
             out = cv2.warpPerspective(img, H, (w, h), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REPLICATE)
-            how = f"поворот {math.degrees(rot):+.1f}°, вертикали {k:+.2f} из {inv_d:+.2f}, в кадре {keep:.0%}"
+            how = (f"поворот {math.degrees(rot):+.1f}° из {math.degrees(theta):+.1f}°, вертикали {k:+.2f} из {inv_d:+.2f}, "
+                   f"в кадре {keep:.0%}, растяжение {stretch:.2f}")
             return out, how if verbose else "ok"
-    return img, "пропуск"
+    return img, "пропуск (без потерь нельзя)"
 
 
 # =================================================================== чёткость
