@@ -7,7 +7,7 @@
  },
  "pip": [
   "pypdf>=4",
-  "reportlab>=4"
+  "reportlab>=4,<4.3"
  ],
  "files": [
   {
@@ -109,7 +109,7 @@
   {
    "path": "app_contract.py",
    "src": "program/app_contract.py",
-   "sha256": "4b848eb11e735668866fcdf1d6c773e1a58acd92164c9b382dcad30bad99bef4",
+   "sha256": "73093d53d1d6ac5f338a2655f4c17414f9f54fd8388c5e0230c89aff59e0ef6f",
    "exec": false
   },
   {

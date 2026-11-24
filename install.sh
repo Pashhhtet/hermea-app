@@ -46,7 +46,7 @@ if [ -d "$PROG/.venv" ] && ! "$PROG/.venv/bin/python" -m pip --version >/dev/nul
 [ -d "$PROG/.venv" ] || "$PY" -m venv "$PROG/.venv"
 VPY="$PROG/.venv/bin/python"
 "$VPY" -m pip install --upgrade pip -q --disable-pip-version-check
-"$VPY" -m pip install -q --disable-pip-version-check torch opencv-python-headless pillow numpy curl_cffi certifi open_clip_torch pypdf reportlab
+"$VPY" -m pip install -q --disable-pip-version-check torch opencv-python-headless pillow numpy curl_cffi certifi open_clip_torch pypdf "reportlab>=4,<4.3"
 
 if [ -z "$HERMEA_SKIP_MODELS" ]; then
   step "Нейросети (около 600 МБ, один раз)"

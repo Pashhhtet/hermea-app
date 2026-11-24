@@ -147,10 +147,9 @@ def build(client, out_path, today=None):
                     _draw(cv, txt, x0 + 2, x1 - 2, y, size=8.5, center=col != "addr")
         cv.save()
         overlays.append(PdfReader(io.BytesIO(buf.getvalue())).pages[0])
-    w = PdfWriter()
-    for pi, page in enumerate(reader.pages):
+    w = PdfWriter(clone_from=TEMPLATE)          # страницы сначала в «писателе», потом накладываем (pypdf 7)
+    for pi, page in enumerate(w.pages):
         page.merge_page(overlays[pi])
-        w.add_page(page)
     tmp = out_path + ".tmp"
     with open(tmp, "wb") as f:
         w.write(f)

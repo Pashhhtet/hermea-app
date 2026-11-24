@@ -82,7 +82,7 @@ $vpy = Join-Path $venv "Scripts\python.exe"
 & $vpy -m pip install --upgrade pip -q --disable-pip-version-check
 & $vpy -m pip install -q --disable-pip-version-check torch torchvision --index-url https://download.pytorch.org/whl/cpu
 if ($LASTEXITCODE -ne 0) { throw "Не установилась библиотека torch" }
-& $vpy -m pip install -q --disable-pip-version-check opencv-python-headless pillow numpy curl_cffi certifi open_clip_torch pypdf reportlab pillow-heif
+& $vpy -m pip install -q --disable-pip-version-check opencv-python-headless pillow numpy curl_cffi certifi open_clip_torch pypdf "reportlab>=4,<4.3" pillow-heif
 if ($LASTEXITCODE -ne 0) { throw "Не установились библиотеки" }
 
 # ---------------------------------------------------------------- нейросети

@@ -4,7 +4,7 @@ import hashlib, json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTES = json.load(open(os.path.join(ROOT, "tools", "notes.json"), encoding="utf-8"))
 EXEC_EXT = (".command",)
-PIP = ["pypdf>=4", "reportlab>=4"]          # библиотеки, которые нужно доставить при обновлении
+PIP = ["pypdf>=4", "reportlab>=4,<4.3"]    # reportlab 4.3+ не работает на Python 3.9 (встроенный в macOS)          # библиотеки, которые нужно доставить при обновлении
 SKIP = {"telegram.txt", "готово.txt", "app_settings.json", "app_searches.json", "app_svk.json", "update.json"}
 
 
