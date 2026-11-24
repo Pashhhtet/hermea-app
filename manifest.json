@@ -1,9 +1,9 @@
 {
- "version": "1.6.2",
+ "version": "1.6.3",
  "notes": {
-  "ru": "«Слежу за поиском»: дубли одного объявления схлопываются, перевыставленная квартира больше не считается «новой»; метки на фото переносятся и не наезжают друг на друга; кнопки в карточке не обрезаются; вместо пустого фото — логотип.",
-  "uk": "«Стежу за пошуком»: дублі одного оголошення об'єднуються, перевиставлена квартира більше не вважається «новою»; мітки на фото переносяться й не налазять одна на одну; кнопки в картці не обрізаються.",
-  "pl": "Obserwowane wyszukiwania: duplikaty ogłoszenia są łączone, ponownie wystawione mieszkanie nie jest już „nowe”; etykiety na zdjęciu się zawijają i nie nachodzą na siebie; przyciski w karcie nie są ucinane."
+  "ru": "«Слежу за поиском»: новые квартиры в отдельном блоке «Новые» в самом верху, ниже — «Уже просмотренные».",
+  "uk": "«Стежу за пошуком»: нові квартири в окремому блоці «Нові» на самому верху, нижче — «Вже переглянуті».",
+  "pl": "Obserwowane wyszukiwania: nowe mieszkania w osobnym bloku „Nowe” na samej górze, niżej „Już przejrzane”."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "efd4d909d782485c25ed46ce45acb56187f424c9cf56e4f2aab3244d1db11c04",
+   "sha256": "bf1ee892e3644ee8ae1c2b27a5ab85b74e9c5c0e097b65c2bfb2a088b3f25725",
    "exec": false
   },
   {
