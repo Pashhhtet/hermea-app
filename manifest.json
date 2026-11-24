@@ -1,9 +1,9 @@
 {
- "version": "1.6.0",
+ "version": "1.6.1",
  "notes": {
-  "ru": "Уведомления теперь показывает само окно Hermea: клик по уведомлению открывает новую квартиру в поиске (или готовую квартиру), а не «Редактор скриптов». При первом клике в окне Chrome спросит разрешение на уведомления — нажми «Разрешить».",
-  "uk": "Сповіщення тепер показує саме вікно Hermea: клік відкриває нову квартиру в пошуку (або готову квартиру), а не «Редактор скриптів». При першому кліку у вікні Chrome спитає дозвіл на сповіщення — натисни «Дозволити».",
-  "pl": "Powiadomienia pokazuje teraz samo okno Hermea: kliknięcie otwiera nowe mieszkanie w wyszukiwaniu (albo gotowe mieszkanie), a nie „Edytor skryptów”. Przy pierwszym kliknięciu Chrome zapyta o zgodę na powiadomienia — kliknij „Zezwól”."
+  "ru": "«Слежу за поиском»: новые квартиры всегда первыми и в золотой рамке. Если новая от агентства и её прячет фильтр «Только собственники», над карточками это написано и есть кнопка «Показать все».",
+  "uk": "«Стежу за пошуком»: нові квартири завжди першими й у золотій рамці. Якщо нова від агентства і її ховає фільтр «Тільки власники», над картками це написано і є кнопка «Показати всі».",
+  "pl": "Obserwowane wyszukiwania: nowe mieszkania zawsze na początku i w złotej ramce. Jeśli nowe jest od agencji i ukrywa je filtr „Tylko właściciele”, pojawia się informacja i przycisk „Pokaż wszystkie”."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "5a811efc9825e8036e7c26bb2b77e7e92b4869fb5356c51a020de8291f904e3e",
+   "sha256": "8737a01376d5bc78cf9a7d53eddfdebcedad5805aab7fa34f35d15b3867c4098",
    "exec": false
   },
   {

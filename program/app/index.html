@@ -337,6 +337,7 @@ button.frame:hover { box-shadow: 0 0 0 2px var(--accent); }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
 .card.new { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.hidden-new { color: var(--accent); font-weight: 600; font-size: 14px; display: inline-flex; gap: 8px; align-items: baseline; }
 .card .pic { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); flex: none; overflow: hidden; }
 .card .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .card .tags { position: absolute; left: 8px; top: 8px; display: flex; gap: 6px; }
@@ -643,7 +644,7 @@ ru: {
   srch_ph: "https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/…", srch_watch: "Следить", srch_checked: "проверено {when}",
   srch_checking: "проверяю…", srch_found: "{n} на сайте", srch_check_now: "Проверить сейчас",
   srch_mark_seen: "Отметить все просмотренными", srch_remove: "Перестать следить", srch_remove_confirm: "Перестать следить за этим поиском?",
-  srch_owners: "Только собственники", srch_new: "новая", srch_owner: "Собственник", srch_process: "Обработать",
+  srch_owners: "Только собственники", srch_hidden_new: "Новых от агентств: {n}, они скрыты фильтром.", srch_show_all: "Показать все", srch_new: "новая", srch_owner: "Собственник", srch_process: "Обработать",
   srch_open: "На Otodom", srch_empty: "Пока нет квартир по этому поиску.",
   srch_first: "Квартиры, которые есть в поиске сейчас, отмечены как просмотренные. Новые будут с меткой «новая».",
   rooms_n: "{n} комн.", total_word: "в месяц", srch_added: "Слежу за поиском", srch_hidden: "Скрыто", just_now: "только что",
@@ -700,7 +701,7 @@ uk: {
   srch_ph: "https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/…", srch_watch: "Стежити", srch_checked: "перевірено {when}",
   srch_checking: "перевіряю…", srch_found: "{n} на сайті", srch_check_now: "Перевірити зараз",
   srch_mark_seen: "Позначити все переглянутим", srch_remove: "Перестати стежити", srch_remove_confirm: "Перестати стежити за цим пошуком?",
-  srch_owners: "Тільки власники", srch_new: "нова", srch_owner: "Власник", srch_process: "Обробити",
+  srch_owners: "Тільки власники", srch_hidden_new: "Нових від агентств: {n}, їх приховано фільтром.", srch_show_all: "Показати всі", srch_new: "нова", srch_owner: "Власник", srch_process: "Обробити",
   srch_open: "На Otodom", srch_empty: "Поки немає квартир за цим пошуком.",
   srch_first: "Квартири, які зараз є в пошуку, позначено як переглянуті. Нові будуть з міткою «нова».",
   rooms_n: "{n} кімн.", total_word: "на місяць", srch_added: "Стежу за пошуком", srch_hidden: "Сховано", just_now: "щойно",
@@ -757,7 +758,7 @@ pl: {
   srch_ph: "https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/…", srch_watch: "Obserwuj", srch_checked: "sprawdzono {when}",
   srch_checking: "sprawdzam…", srch_found: "{n} na stronie", srch_check_now: "Sprawdź teraz",
   srch_mark_seen: "Oznacz wszystkie jako przejrzane", srch_remove: "Przestań obserwować", srch_remove_confirm: "Przestać obserwować to wyszukiwanie?",
-  srch_owners: "Tylko właściciele", srch_new: "nowe", srch_owner: "Właściciel", srch_process: "Przetwórz",
+  srch_owners: "Tylko właściciele", srch_hidden_new: "Nowe od agencji: {n}, ukryte filtrem.", srch_show_all: "Pokaż wszystkie", srch_new: "nowe", srch_owner: "Właściciel", srch_process: "Przetwórz",
   srch_open: "Na Otodom", srch_empty: "Na razie brak mieszkań w tym wyszukiwaniu.",
   srch_first: "Mieszkania, które są teraz w wyszukiwaniu, oznaczono jako przejrzane. Nowe dostaną etykietę „nowe”.",
   rooms_n: "{n} pok.", total_word: "miesięcznie", srch_added: "Obserwuję wyszukiwanie", srch_hidden: "Ukryto", just_now: "przed chwilą",
@@ -1447,7 +1448,10 @@ function refreshSearchIfNeeded() {
   if (S.srch && (s.last_check !== S.srch.last_check || s.checking !== S.srch.checking) && Date.now() - (S.srchAt || 0) > 1200) loadSearch(s.id);
 }
 function drawSearch(d) {
-  const items = S.ownersOnly ? d.items.filter((i) => i.owner) : d.items;
+  // новые — всегда первыми; если фильтр «Только собственники» прячет новые, говорим об этом
+  const all = d.items.map((i, k) => [i, k]).sort((a, b) => (b[0].new ? 1 : 0) - (a[0].new ? 1 : 0) || a[1] - b[1]).map((x) => x[0]);
+  const items = S.ownersOnly ? all.filter((i) => i.owner) : all;
+  const hiddenNew = S.ownersOnly ? all.filter((i) => i.new && !i.owner).length : 0;
   const key = "srch:" + d.id + ":" + d.last_check + ":" + d.checking + ":" + items.map((i) => i.id + (i.new ? "n" : "")).join(",") + ":" + S.ownersOnly + ":" + LANG;
   if (S.view === key) return;
   S.view = key;
@@ -1482,7 +1486,8 @@ function drawSearch(d) {
         <button class="text-btn" type="button" id="sRemove">${t("srch_remove")}</button>
       </div></div>
     <div class="filters"><label class="switch"><input type="checkbox" id="sOwners"${S.ownersOnly ? " checked" : ""}><span class="track"></span>${t("srch_owners")}</label>
-      ${d.last_check && !d.new && d.items.length ? `<span class="hint">${t("srch_first")}</span>` : ""}</div>
+      ${d.last_check && !d.new && d.items.length ? `<span class="hint">${t("srch_first")}</span>` : ""}
+      ${hiddenNew ? `<span class="hidden-new">${esc(t("srch_hidden_new", { n: hiddenNew }))} <button class="text-btn" type="button" id="sShowAll">${t("srch_show_all")}</button></span>` : ""}</div>
     ${items.length ? `<div class="cards" id="sCards">${items.map(card).join("")}</div>`
       : `<div class="opis-wait">${d.checking ? t("srch_checking") : t("srch_empty")}</div>`}`;
   revealCards(d.id);
@@ -1491,6 +1496,7 @@ function drawSearch(d) {
     try { S.srch = await api("/api/search_check", { id: d.id }); S.view = ""; drawSearch(S.srch); } catch (e) { toast(e.message, true); $("#sCheck").disabled = false; }
     tick1();
   };
+  if ($("#sShowAll")) $("#sShowAll").onclick = () => { $("#sOwners").checked = false; $("#sOwners").dispatchEvent(new Event("change")); };
   if ($("#sSeen")) $("#sSeen").onclick = async () => { await api("/api/search_seen", { id: d.id }).catch(() => {}); loadSearch(d.id); tick1(); };
   $("#sRemove").onclick = async () => {
     if (!confirm(t("srch_remove_confirm"))) return;
