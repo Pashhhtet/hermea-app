@@ -28,5 +28,10 @@
   "ru": "Hermea открывается без Терминала и на Mac с чипом M.",
   "uk": "Hermea відкривається без Термінала і на Mac з чипом M.",
   "pl": "Hermea otwiera się bez Terminala także na Macu z procesorem M."
+ },
+ "1.4.3": {
+  "ru": "Повторный клик по значку Hermea больше не выдаёт «программа не отвечает».",
+  "uk": "Повторний клік по значку Hermea більше не видає «програма не відповідає».",
+  "pl": "Ponowne kliknięcie ikony Hermea nie pokazuje już „program nie odpowiada”."
  }
 }

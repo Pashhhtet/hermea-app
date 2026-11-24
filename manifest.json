@@ -1,9 +1,9 @@
 {
- "version": "1.4.2",
+ "version": "1.4.3",
  "notes": {
-  "ru": "Hermea открывается без Терминала и на Mac с чипом M.",
-  "uk": "Hermea відкривається без Термінала і на Mac з чипом M.",
-  "pl": "Hermea otwiera się bez Terminala także na Macu z procesorem M."
+  "ru": "Повторный клик по значку Hermea больше не выдаёт «программа не отвечает».",
+  "uk": "Повторний клік по значку Hermea більше не видає «програма не відповідає».",
+  "pl": "Ponowne kliknięcie ikony Hermea nie pokazuje już „program nie odpowiada”."
  },
  "pip": [
   "pypdf>=4",
@@ -19,7 +19,7 @@
   {
    "path": "../Hermea.app/Contents/MacOS/Hermea",
    "src": "bundle/Contents/MacOS/Hermea",
-   "sha256": "6bdf3a548c54add3c554418db7ce6bd987e3d052214b46c7c3be24af93d55e79",
+   "sha256": "208a88d35bd05b629474ed3d2df3d266f76638ba7f3ad53bf2d6422b69169896",
    "exec": true
   },
   {

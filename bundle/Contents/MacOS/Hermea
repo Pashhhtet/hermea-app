@@ -21,13 +21,15 @@ RUN=""
 [ "$(sysctl -n hw.optional.arm64 2>/dev/null)" = "1" ] && RUN="/usr/bin/arch -arm64"
 
 # --- обычный запуск ---
-$RUN "$PY" -W ignore hermea_app.py >> "$LOG" 2>&1 &
+nohup $RUN "$PY" -W ignore hermea_app.py >> "$LOG" 2>&1 &
 PID=$!
-for i in $(seq 1 25); do                       # 5 секунд: если Python не пустили, он падает сразу
+for i in $(seq 1 18); do                       # 3.5 секунды: если Python не запустился, он падает сразу
   kill -0 $PID 2>/dev/null || break
   sleep 0.2
 done
-if kill -0 $PID 2>/dev/null; then wait $PID; exit 0; fi   # работает — ждём, пока закроют окно
+# Работает — сразу выходим: программа живёт сама, а значок не «висит» (иначе повторный клик
+# по Hermea выдаёт «программа не отвечает»).
+if kill -0 $PID 2>/dev/null; then exit 0; fi
 wait $PID; RC=$?
 [ $RC -eq 0 ] && exit 0                         # окно уже было открыто — просто показали его
 
