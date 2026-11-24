@@ -4,6 +4,7 @@ import hashlib, json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTES = json.load(open(os.path.join(ROOT, "tools", "notes.json"), encoding="utf-8"))
 EXEC_EXT = (".command",)
+SKIP = {"telegram.txt", "готово.txt", "app_settings.json", "app_searches.json", "app_svk.json", "update.json"}
 
 
 def sha(p):
@@ -13,8 +14,11 @@ def sha(p):
 def main(version):
     files = []
     for base, target in (("program", ""), ("bundle", "../Hermea.app/")):
-        for dp, _, fs in os.walk(os.path.join(ROOT, base)):
+        for dp, dirs, fs in os.walk(os.path.join(ROOT, base)):
+            dirs[:] = [d for d in dirs if d != "__pycache__" and not d.startswith(".")]
             for f in sorted(fs):
+                if f.endswith((".pyc", ".DS_Store")) or f in SKIP:
+                    continue
                 full = os.path.join(dp, f)
                 rel = os.path.relpath(full, os.path.join(ROOT, base)).replace(os.sep, "/")
                 files.append({"path": target + rel, "src": base + "/" + rel, "sha256": sha(full),
