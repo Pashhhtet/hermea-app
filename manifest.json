@@ -1,9 +1,9 @@
 {
  "version": "1.5.4",
  "notes": {
-  "ru": "Скрипт звонка собственнику: условия теперь «50% одного czynszu + 23% VAT».",
-  "uk": "Скрипт дзвінка власнику: умови тепер «50% одного czynszu + 23% VAT».",
-  "pl": "Skrypt rozmowy z właścicielem: warunki „50% jednego czynszu + 23% VAT”."
+  "ru": "Скрипт звонка собственнику: в условиях указано 50% одного czynszu + 23% VAT.",
+  "uk": "Скрипт дзвінка власнику: в умовах вказано 50% одного czynszu + 23% VAT.",
+  "pl": "Skrypt rozmowy z właścicielem: w warunkach 50% jednego czynszu + 23% VAT."
  },
  "pip": [
   "pypdf>=4",
