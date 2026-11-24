@@ -1,9 +1,9 @@
 {
- "version": "1.7.1",
+ "version": "1.7.2",
  "notes": {
-  "ru": "Исправлена вёрстка: кнопки лидов и публикаций в СВК больше не обрезаны, экран «Клиенты» снова ровный. Мелочи: приветствие в СВК, ⌘1…⌘5 (Ctrl+1…5) для вкладок, в заголовке окна видно вкладку и сколько перезвонов на сегодня, понятный пустой экран «Перезвонов», тонкие полосы прокрутки.",
-  "uk": "Виправлено верстку: кнопки лідів і публікацій у СВК більше не обрізані, екран «Клієнти» знову рівний. Дрібниці: привітання в СВК, ⌘1…⌘5 (Ctrl+1…5) для вкладок, у заголовку вікна видно вкладку і скільки передзвонів на сьогодні, зрозумілий порожній екран «Передзвонів», тонкі смуги прокрутки.",
-  "pl": "Poprawiony układ: przyciski leadów i publikacji w raporcie nie są już ucięte, ekran «Klienci» znów równy. Drobiazgi: powitanie w raporcie, ⌘1…⌘5 (Ctrl+1…5) do zakładek, w tytule okna widać zakładkę i liczbę oddzwonień na dziś, czytelny pusty ekran oddzwonień, cienkie paski przewijania."
+  "ru": "Список клиентов слева теперь на всю высоту окна при любом масштабе интерфейса. Шапка СВК снова в одну строку. Заголовок окна больше не сбрасывается.",
+  "uk": "Список клієнтів ліворуч тепер на всю висоту вікна за будь-якого масштабу інтерфейсу. Шапка СВК знову в один рядок. Заголовок вікна більше не скидається.",
+  "pl": "Lista klientów po lewej sięga teraz do dołu okna przy każdej skali interfejsu. Nagłówek raportu znów w jednym wierszu. Tytuł okna już się nie resetuje."
  },
  "pip": [
   "pypdf>=4",
@@ -43,7 +43,7 @@
   {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
-   "sha256": "d22b9ecae27851a88c115f94f3a394727c4637623b1f4675f89da356541ef589",
+   "sha256": "54ac4f6b2a639821e3c0f5df67432bd7664a888ef9ecef2e51308cc200457b46",
    "exec": false
   },
   {
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "e67d0237846a4b24fb998c27ea6c2fdb7006339390bbf0bc2031b4c13976d64f",
+   "sha256": "2631e87c11c67979157febb4e8404fd0fc448174f2b8270265ae83e52bb451ec",
    "exec": false
   },
   {
@@ -97,7 +97,7 @@
   {
    "path": "app/svk.css",
    "src": "program/app/svk.css",
-   "sha256": "6cb390b36894d6c2694ebc2d6309eb2cee2841fc15cc7b98ea42e951ffef0a19",
+   "sha256": "2e9bca0e48f07e8abe379f88ba00c63a0832048a8529401bfff4eec3cbf34703",
    "exec": false
   },
   {

@@ -12,6 +12,8 @@
   document.documentElement.lang = (window.BOOT && window.BOOT.lang) || "ru";
   window.ZOOM = ((window.BOOT && window.BOOT.scale) || 100) / 100;
   if (window.ZOOM !== 1) document.documentElement.style.zoom = window.ZOOM;
+  // при масштабе окна (80%, 110%…) 100vh не совпадает с реальной высотой — считаем свою
+  document.documentElement.style.setProperty("--z", window.ZOOM);
 </script>
 <style>
 @font-face {
@@ -77,6 +79,7 @@ body {
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:root { --vh: calc(100vh / var(--z, 1)); --vw: calc(100vw / var(--z, 1)); }
 /* тонкие полосы прокрутки в цвет темы и золотое выделение текста */
 * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted) 45%, transparent) transparent; }
 ::selection { background: color-mix(in srgb, var(--accent) 38%, transparent); color: inherit; }
@@ -365,7 +368,7 @@ button.frame:hover { box-shadow: 0 0 0 2px var(--accent); }
 .lb { position: fixed; inset: 0; z-index: 20; background: rgba(12, 18, 20, .96); display: grid; grid-template-rows: minmax(0, 1fr) auto; }
 .lb-wrap { display: grid; place-items: center; padding: 28px 80px 12px; min-height: 0; }
 .lb-stage { position: relative; display: inline-block; max-width: 100%; max-height: 100%; user-select: none; touch-action: none; }
-.lb-stage > img { display: block; max-width: calc(100vw - 160px); max-height: calc(100vh - 110px); border-radius: 4px; }
+.lb-stage > img { display: block; max-width: calc(var(--vw) - 160px); max-height: calc(var(--vh) - 110px); border-radius: 4px; }
 .lb-before { position: absolute; inset: 0; overflow: hidden; border-radius: 4px; }
 .lb-before img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .lb-handle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); transform: translateX(-1px); cursor: ew-resize; }
@@ -801,7 +804,7 @@ function plural(n, key) {
 }
 function applyStatic() {
   document.documentElement.lang = LANG;
-  document.title = "Hermea — " + t("app_name");
+  if (typeof winTitle === "function") winTitle(); else document.title = "Hermea — " + t("app_name");
   document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
   document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
@@ -1076,6 +1079,7 @@ $("#segScale").addEventListener("click", (e) => {
   morphish(() => {
     window.ZOOM = v / 100;
     document.documentElement.style.zoom = v === 100 ? "" : window.ZOOM;
+    document.documentElement.style.setProperty("--z", window.ZOOM);
   });
   if (S.st) S.st.settings.scale = v;
   renderPop();

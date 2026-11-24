@@ -161,7 +161,7 @@ html[data-theme="dark"] .sv-card:hover { box-shadow: 0 10px 28px rgba(0, 0, 0, .
 @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 4px) scale(.8); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -34px) scale(1.1); } }
 
 /* journal */
-.sv-log { position: sticky; top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 10px; max-height: calc(100vh - 170px); display: flex; flex-direction: column; }
+.sv-log { position: sticky; top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 10px; max-height: calc(var(--vh) - 170px); display: flex; flex-direction: column; }
 @media (max-width: 1180px) { .sv-log { position: static; max-height: none; } }
 .sv-log h3 { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
 .sv-log .scroll { overflow-anchor: none; overflow-y: auto; margin: 0 -18px; padding: 0 18px; scroll-behavior: smooth; }
@@ -198,7 +198,7 @@ html[data-theme="dark"] .sv-card:hover { box-shadow: 0 10px 28px rgba(0, 0, 0, .
 .sv-pop .chk { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 13.5px; }
 
 /* ---------- week / month table */
-.sv-table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: auto; max-height: calc(100vh - 190px); }
+.sv-table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: auto; max-height: calc(var(--vh) - 190px); }
 .sv-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
 .sv-table th, .sv-table td { padding: 8px 9px; text-align: right; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
 .sv-table thead th { position: sticky; top: 0; background: var(--surface-2); font-weight: 600; color: var(--muted); font-size: 12.5px; z-index: 2; }
@@ -291,4 +291,13 @@ html[data-theme="dark"] .sv-table td.zero { color: #3B4B4F; }
 @media (prefers-reduced-motion: reduce) {
   .rise, .slide-l, .slide-r, .num.bump, .jrow.in, .jrow.out, .spark i, .sv-card.hit-now::after, .sv-dial.full, .modes .dot, .sv-pop { animation: none !important; }
   .sv-card, .sv-card:hover { transform: none; transition: none; }
+}
+
+/* шапка дня в одну строку: заголовок с приветствием сжимается, кнопки справа не переносятся */
+@media (min-width: 760px) {
+  .sv-head { flex-wrap: nowrap; }
+  .sv-when { flex: 1 1 auto; }
+  .sv-title-box { flex: 0 1 auto; }
+  .sv-tools { flex-wrap: nowrap; flex: none; }
+  .sv-tools .seg { min-width: 0; }
 }
