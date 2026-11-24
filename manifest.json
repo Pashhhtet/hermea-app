@@ -1,9 +1,9 @@
 {
- "version": "1.4.3",
+ "version": "1.4.4",
  "notes": {
-  "ru": "Повторный клик по значку Hermea больше не выдаёт «программа не отвечает».",
-  "uk": "Повторний клік по значку Hermea більше не видає «програма не відповідає».",
-  "pl": "Ponowne kliknięcie ikony Hermea nie pokazuje już „program nie odpowiada”."
+  "ru": "Обработка фото стала естественнее: без пересвета и «выжженного» белого, без зерна, меньше обрезки по краям — качество как у оригинала.",
+  "uk": "Обробка фото природніша: без пересвіту й «випаленого» білого, без зерна, менше обрізки по краях — якість як в оригіналу.",
+  "pl": "Naturalniejsza obróbka zdjęć: bez prześwietlenia i „wypalonej” bieli, bez ziarna, mniej przycinania krawędzi — jakość jak w oryginale."
  },
  "pip": [
   "pypdf>=4",
@@ -163,7 +163,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "7bccc04ef5975ecdd9c8486cb67a9e5ccd2a23f452b4c46674842c27957a6f45",
+   "sha256": "288e9dd9675e73263dfe4d50fcb6053667262873d81d78905ad053fd0b87adc0",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "quality.py",
    "src": "program/quality.py",
-   "sha256": "34f7ff23d3af57c998bab57eb427a8479c8be2ff570930dffe241a80b4725bfa",
+   "sha256": "929d4b2153bd5f5abcac5bbce51ee4d8a6b810b262a5cb06836fa03ccbde0862",
    "exec": false
   },
   {

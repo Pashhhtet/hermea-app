@@ -168,8 +168,8 @@ class Lama:
         return res
 
 # ======================================================================= colour
-# Цель взята с эталонных объявлений: середина яркости ~0.74, светлые стены ~0.9,
-# белый чуть тёплый (b≈+4), тени подняты, детали сохранены.
+# Белый чуть тёплый (b≈+4). Яркость поднимаем умеренно: раньше всё тянулось к одной
+# яркости (~0.74) и белое выжигалось, а шум сжатия Otodom превращался в «зерно».
 TARGET_A, TARGET_B = 1.2, 3.5      # светлые стены: чуть тёплые, как на хороших объявлениях
 
 
@@ -209,38 +209,28 @@ def tame_cast(lab, k=0.9):
 
 
 def tone(lab):
-    """Местное выравнивание света (тени светлее, окна не выбиты) + кривая под «светлый интерьер»."""
+    """Мягко: тени чуть светлее, середина подтягивается не больше чем на ~7 пунктов,
+    светлые стены и белая мебель сохраняют свой рисунок (без сжатия светов)."""
     L = lab[..., 0] / 255.0
     eps = 1e-3
-    logL = np.log(L + eps)
     h, w = L.shape
+    logL = np.log(L + eps)
     r = max(8, int(max(h, w) * 0.02))
     small = cv2.resize(logL.astype(np.float32), (w // 4, h // 4), interpolation=cv2.INTER_AREA)
-    base_s = cv2.bilateralFilter(small, 0, 0.35, r / 4)
-    base = cv2.resize(base_s, (w, h), interpolation=cv2.INTER_LINEAR)
+    base = cv2.resize(cv2.bilateralFilter(small, 0, 0.35, r / 4), (w, h), interpolation=cv2.INTER_LINEAR)
     detail = logL - base
     mid = np.percentile(base, 60)
-    # сжимаем «освещённость», детали оставляем: тени поднимаются, светлое не выбивается
-    comp = mid + (base - mid) * 0.72
-    L2 = np.exp(comp + detail * 1.08) - eps
-    L2 = np.clip(L2, 0, 1.2)
-    # кривая по процентилям: середина около 0.74, светлые стены ~0.9, блики ~0.97
-    p = np.percentile(L2, [1, 10, 50, 90, 99.5])
-    t50 = np.clip(0.74, p[2], p[2] + 0.26)
-    t10 = np.clip(max(p[1] * 1.3, 0.28), p[1], 0.45)
-    t90 = np.clip(max(p[3], 0.9), p[3], 0.93)
-    src = np.array([0, p[0], p[1], p[2], p[3], p[4], max(p[4] + 1e-3, 1.2)])
-    dst = np.array([0, min(p[0], 0.03), t10, t50, t90, 0.975, 1.0])
-    src = np.maximum.accumulate(src + np.arange(7) * 1e-6)
-    xs = np.linspace(0, 1.2, 1201)
-    lut = np.interp(xs, src, dst)
-    lut = cv2.GaussianBlur(lut.reshape(1, -1).astype(np.float32), (0, 0), 18).ravel()
-    lut = np.maximum.accumulate(lut)
-    L3 = np.interp(L2, xs, lut)
+    # тени поднимаем только ниже середины, светлое не трогаем
+    lift = np.where(base < mid, (mid - base) * 0.12, 0.0)
+    L2 = np.clip(np.exp(base + lift + detail) - eps, 0, 1)
+    m = float(np.median(L2))
+    target = m + float(np.clip(0.70 - m, 0, 0.12)) * 0.6
+    g = np.log(max(target, 1e-3)) / np.log(max(m, 1e-3)) if 0.02 < m < 0.98 else 1.0
+    g = float(np.clip(g, 0.82, 1.0))
+    L3 = L2 ** g
     gain = (L3 + 0.02) / (L + 0.02)
     lab[..., 0] = np.clip(L3 * 255, 0, 255)
-    # цвет вслед за яркостью, но мягко (иначе поднятые тени «кислотные»)
-    sat = np.clip(gain, 0.8, 1.6) ** 0.35
+    sat = np.clip(gain, 0.85, 1.4) ** 0.3
     lab[..., 1] = (lab[..., 1] - 128) * sat + 128
     lab[..., 2] = (lab[..., 2] - 128) * sat + 128
     return lab
@@ -264,16 +254,17 @@ def clarity(img, amt=0.18):
 
 
 def enhance(img):
-    """Светлый «журнальный» интерьер: чистый, чуть тёплый белый, поднятые тени, окна не выбиты."""
+    """Естественный светлый интерьер: чистый белый, чуть светлее тени, без пересвета и «зерна».
+    Яркость поднимаем умеренно, светлые поверхности не выжигаем, мелкий шум сжатия не усиливаем."""
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
-    med = float(np.median(lab[..., 0])) / 2.55          # уже светлое и чистое фото трогаем мягче
-    soft = float(np.clip((med - 62) / 14, 0, 1))
+    med = float(np.median(lab[..., 0])) / 2.55          # уже светлое фото трогаем ещё мягче
+    soft = float(np.clip((med - 55) / 15, 0, 1))
     lab = white_balance(lab)
-    lab = tame_cast(lab)
+    lab = tame_cast(lab, 0.7)
     lab = tone(lab)
     out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
-    out = clarity(out, 0.18 - 0.12 * soft)
-    out = vibrance(out, 0.12 - 0.08 * soft)
+    out = clarity(out, 0.10 - 0.06 * soft)
+    out = vibrance(out, 0.08 - 0.05 * soft)
     return out
 
 
@@ -638,7 +629,7 @@ def process_photo(img, plan=False, watermark=None):
         img, _ = quality.upscale_to(img, 1280, None)
     if not plan:
         img = enhance(img)
-        img = quality.sharpen(img, amount=0.45, radius=1.0, threshold=2)
+        img = quality.sharpen(img, amount=0.3, radius=0.8, threshold=3)
     img = add_logo(img)
     ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 93])
     return buf.tobytes(), tags

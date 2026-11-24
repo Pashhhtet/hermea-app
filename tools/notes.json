@@ -33,5 +33,10 @@
   "ru": "Повторный клик по значку Hermea больше не выдаёт «программа не отвечает».",
   "uk": "Повторний клік по значку Hermea більше не видає «програма не відповідає».",
   "pl": "Ponowne kliknięcie ikony Hermea nie pokazuje już „program nie odpowiada”."
+ },
+ "1.4.4": {
+  "ru": "Обработка фото стала естественнее: без пересвета и «выжженного» белого, без зерна, меньше обрезки по краям — качество как у оригинала.",
+  "uk": "Обробка фото природніша: без пересвіту й «випаленого» білого, без зерна, менше обрізки по краях — якість як в оригіналу.",
+  "pl": "Naturalniejsza obróbka zdjęć: bez prześwietlenia i „wypalonej” bieli, bez ziarna, mniej przycinania krawędzi — jakość jak w oryginale."
  }
 }
