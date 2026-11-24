@@ -1,9 +1,9 @@
 {
- "version": "1.5.3",
+ "version": "1.5.4",
  "notes": {
-  "ru": "Telegram подключается сам: достаточно вставить токен и написать боту /start, программа сама найдёт чат за 10 секунд (без «Проверить Telegram.command»).",
-  "uk": "Telegram підключається сам: достатньо вставити токен і написати боту /start, програма сама знайде чат за 10 секунд.",
-  "pl": "Telegram łączy się sam: wystarczy wkleić token i napisać do bota /start, program sam znajdzie czat w 10 sekund."
+  "ru": "Скрипт звонка собственнику: условия теперь «50% одного czynszu + 23% VAT».",
+  "uk": "Скрипт дзвінка власнику: умови тепер «50% одного czynszu + 23% VAT».",
+  "pl": "Skrypt rozmowy z właścicielem: warunki „50% jednego czynszu + 23% VAT”."
  },
  "pip": [
   "pypdf>=4",
@@ -91,7 +91,7 @@
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "b73504d86da12b842efb126844e020623e14cb2d727804c9f02fb4e86335de8a",
+   "sha256": "2a2e53314fca6552a0711b7c923fba84dcab76186ab72e2c1b212b55bff5e1bb",
    "exec": false
   },
   {

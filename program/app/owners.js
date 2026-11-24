@@ -107,14 +107,14 @@ function owScript(a) {
 
 ${hook}${photos}
 
-Pracujemy tak: robimy prezentacje, sprawdzamy najemców i ich dokumenty, przygotowujemy umowę, także najem okazjonalny. Nasze wynagrodzenie to 50% jednego czynszu najmu, płatne dopiero po podpisaniu umowy z najemcą. Jeśli nie znajdziemy najemcy, nic Pan/Pani nie płaci.
+Pracujemy tak: robimy prezentacje, sprawdzamy najemców i ich dokumenty, przygotowujemy umowę, także najem okazjonalny. Nasze wynagrodzenie to 50% jednego czynszu najmu plus 23% VAT, płatne dopiero po podpisaniu umowy z najemcą. Jeśli nie znajdziemy najemcy, nic Pan/Pani nie płaci.
 
 Czy mogę zaprosić naszych klientów na prezentację? Kiedy byłoby wygodnie pokazać mieszkanie?`;
 }
 function owObjections() {
   return [
     ["Mam dużo telefonów", "Rozumiem. My przyprowadzamy już sprawdzonych najemców z dokumentami, więc oszczędza Pan/Pani czas na niepotrzebnych prezentacjach."],
-    ["Nie chcę płacić prowizji", "Rozumiem. Płaci Pan/Pani tylko po podpisaniu umowy i to połowę jednego czynszu, a jeden pusty miesiąc kosztuje cały czynsz."],
+    ["Nie chcę płacić prowizji", "Rozumiem. Płaci Pan/Pani tylko po podpisaniu umowy i to połowę jednego czynszu plus VAT, a jeden pusty miesiąc kosztuje cały czynsz."],
     ["Sam/sama sobie poradzę", "Oczywiście. Proponuję tylko dodatkowy kanał: jeśli nasz klient będzie pierwszy, wynajmie Pan/Pani szybciej, a jeśli nie, nic Pan/Pani nie traci."],
     ["Proszę zadzwonić później", "Jasne. Kiedy będzie wygodnie? Zapiszę i zadzwonię dokładnie wtedy."],
   ];

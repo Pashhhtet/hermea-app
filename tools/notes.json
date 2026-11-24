@@ -63,5 +63,10 @@
   "ru": "Telegram подключается сам: достаточно вставить токен и написать боту /start, программа сама найдёт чат за 10 секунд (без «Проверить Telegram.command»).",
   "uk": "Telegram підключається сам: достатньо вставити токен і написати боту /start, програма сама знайде чат за 10 секунд.",
   "pl": "Telegram łączy się sam: wystarczy wkleić token i napisać do bota /start, program sam znajdzie czat w 10 sekund."
+ },
+ "1.5.4": {
+  "ru": "Скрипт звонка собственнику: условия теперь «50% одного czynszu + 23% VAT».",
+  "uk": "Скрипт дзвінка власнику: умови тепер «50% одного czynszu + 23% VAT».",
+  "pl": "Skrypt rozmowy z właścicielem: warunki „50% jednego czynszu + 23% VAT”."
  }
 }
