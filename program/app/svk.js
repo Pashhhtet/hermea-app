@@ -201,8 +201,9 @@ function floater(anchor, text, neg) {
   const f = document.createElement("span");
   f.className = "float" + (neg ? " neg" : "");
   f.textContent = text;
-  f.style.left = r.left + r.width / 2 + "px";
-  f.style.top = r.top - 4 + "px";
+  const Z = window.ZOOM || 1;
+  f.style.left = (r.left + r.width / 2) / Z + "px";
+  f.style.top = (r.top - 4) / Z + "px";
   document.body.appendChild(f);
   f.addEventListener("animationend", () => f.remove());
 }
@@ -665,11 +666,12 @@ function askPop(anchor, kind, metric) {
   p.innerHTML = body + `<div class="row-btns"><button class="btn-primary sm" type="submit">${t("p_save")}</button>
     <button class="btn" type="button" data-close="1">${t("p_cancel")}</button></div>`;
   document.body.appendChild(p);
-  const r = anchor.getBoundingClientRect();
-  const x = Math.min(window.innerWidth - p.offsetWidth - 12, Math.max(12, r.left));
-  const below = r.bottom + 8 + p.offsetHeight < window.innerHeight;
-  p.style.left = x + "px";
-  p.style.top = (below ? r.bottom + 8 : Math.max(12, r.top - p.offsetHeight - 8)) + "px";
+  const r = anchor.getBoundingClientRect(), Z = window.ZOOM || 1;
+  const pw = p.offsetWidth * Z, ph = p.offsetHeight * Z;           // на экране, с учётом масштаба
+  const x = Math.min(window.innerWidth - pw - 12, Math.max(12, r.left));
+  const below = r.bottom + 8 + ph < window.innerHeight;
+  p.style.left = x / Z + "px";
+  p.style.top = (below ? r.bottom + 8 : Math.max(12, r.top - ph - 8)) / Z + "px";
   const inp = $("#svPopIn");
   inp.focus(); if (inp.select) inp.select();
   p.querySelector("[data-close]").onclick = closePop;

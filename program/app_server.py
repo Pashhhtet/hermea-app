@@ -50,7 +50,7 @@ LAST_SEEN = time.time()
 CLOSED_AT = 0.0           # окно закрыли (страница прислала «пока»)
 FLATS_VERSION = 1
 TG = {"state": "checking", "key": "tg_checking", "hint_key": "", "bot": "", "detail": ""}
-SETTINGS = {"telegram": True, "theme": "auto", "lang": "ru"}
+SETTINGS = {"telegram": True, "theme": "auto", "lang": "ru", "scale": 100}
 UPLOAD_ROOT = os.path.join(__import__("tempfile").gettempdir(), "hermea_uploads")
 WARM = {"state": "idle"}
 
@@ -927,6 +927,8 @@ class Handler(BaseHTTPRequestHandler):
                 if body.get("lang") in app_i18n.LANGS:
                     SETTINGS["lang"] = body["lang"]
                     apply_lang()
+                if body.get("scale") in (80, 90, 100, 110):
+                    SETTINGS["scale"] = body["scale"]
                 save_settings()
                 return self._send(200, SETTINGS)
             if path == "/api/create_local":

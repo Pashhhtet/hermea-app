@@ -98,53 +98,124 @@ def _inner_crop(quad, aspect):
     return best[1] - ww / 2, best[2] - hh / 2, ww, hh
 
 
-MAX_ROT_DEG = 8.0     # больше не крутим — значит, это не наклон, а ракурс
-MAX_KEYSTONE = 0.45   # насколько сильно сводим вертикали (в нормированных единицах)
-MIN_KEEP = 0.78       # если после выпрямления остаётся меньше 78% кадра — ослабляем
+def _vertical_vp_ransac(segs, w, h, iters=600, tol=1.6, seed=7):
+    """Точка схода вертикалей через RANSAC по парам отрезков. -> (v, support) или (None, 0)."""
+    if len(segs) == 0:
+        return None, 0
+    dx, dy = segs[:, 2] - segs[:, 0], segs[:, 3] - segs[:, 1]
+    length = np.hypot(dx, dy)
+    ang = np.degrees(np.arctan2(np.abs(dx), np.abs(dy)))
+    sel = (ang < 25) & (length > 0.08 * h)
+    s, L = segs[sel], length[sel]
+    if len(s) < 4 or L.sum() < 0.8 * h:
+        return None, 0
+    c, f = np.array([w / 2.0, h / 2.0]), float(max(w, h))
+    p1 = np.c_[(s[:, :2] - c) / f, np.ones(len(s))]
+    p2 = np.c_[(s[:, 2:] - c) / f, np.ones(len(s))]
+    lines = np.cross(p1, p2)
+    lines /= np.linalg.norm(lines[:, :2], axis=1, keepdims=True)
+    mid = (p1[:, :2] + p2[:, :2]) / 2
+    seg_dir = p2[:, :2] - p1[:, :2]
+    seg_dir /= np.linalg.norm(seg_dir, axis=1, keepdims=True)
+
+    def errs(v):
+        if abs(v[2]) > 1e-9:
+            d = v[:2] / v[2] - mid
+        else:
+            d = np.tile(v[:2], (len(mid), 1))
+        d /= np.linalg.norm(d, axis=1, keepdims=True) + 1e-12
+        return np.degrees(np.arccos(np.clip(np.abs((d * seg_dir).sum(1)), -1, 1)))
+
+    rng = np.random.default_rng(seed)
+    wts = L / L.sum()
+    best, best_score = None, 0
+    # кандидат «вертикали уже параллельны»
+    cands = [np.array([0.0, 1.0, 0.0])]
+    for _ in range(iters):
+        i, j = rng.choice(len(s), 2, replace=False, p=wts)
+        v = np.cross(lines[i], lines[j])
+        if np.linalg.norm(v) < 1e-12:
+            continue
+        cands.append(v / np.linalg.norm(v))
+    for v in cands:
+        if v[1] < 0:
+            v = -v
+        # точка схода должна быть «снизу или сверху», не сбоку
+        if abs(math.degrees(math.atan2(v[0], v[1]))) > 12:
+            continue
+        sc = L[errs(v) < tol].sum()
+        if sc > best_score:
+            best, best_score = v, sc
+    if best is None:
+        return None, 0
+    keep = errs(best) < tol
+    for _ in range(3):
+        A = lines[keep] * np.sqrt(L[keep] / L.max())[:, None]
+        _, _, vt = np.linalg.svd(A)
+        v = vt[-1]
+        v = v if v[1] >= 0 else -v
+        nk = errs(v) < tol
+        if nk.sum() < 4:
+            break
+        best, keep = v, nk
+    support = L[keep].sum() / L.sum()
+    if keep.sum() < 4 or support < 0.35 or L[keep].sum() < 0.8 * h:
+        return None, 0
+    return best, support
+
+
+MAX_ROT = 10.0
+MAX_K = 1.15        # сильный наклон телефона (0.5x) тоже выпрямляем полностью
+MIN_KEEP = 0.6
 
 
 def straighten(img, verbose=False):
     h, w = img.shape[:2]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    v, conf = _vertical_vp(_segments(gray), w, h)
+    segs = _segments(gray)
+    v, conf = _vertical_vp_ransac(segs, w, h)
+    if v is None:                                   # запасной способ — прежний
+        v, conf = _vertical_vp(segs, w, h)
+        if v is not None and v[1] < 0:
+            v = -v
     if v is None:
         return img, "пропуск"
-    if v[1] < 0 or (abs(v[1]) < 1e-12 and v[0] < 0):
-        v = -v
     vx, vy, vw = v
-    theta = math.atan2(vx, vy)                     # поворот, чтобы точка схода ушла на вертикальную ось
-    if abs(math.degrees(theta)) > MAX_ROT_DEG:
+    theta = math.atan2(vx, vy)
+    if abs(math.degrees(theta)) > MAX_ROT:
         return img, "пропуск (угол)"
     dist = math.hypot(vx, vy)
-    inv_d = vw / dist if dist > 1e-12 else 0.0    # 1/d: 0 — вертикали уже параллельны
+    inv_d = vw / dist if dist > 1e-12 else 0.0
     c, f = np.array([w / 2.0, h / 2.0]), float(max(w, h))
-    for strength in (1.0, 0.75, 0.5, 0.3):
-        k = max(-MAX_KEYSTONE, min(MAX_KEYSTONE, inv_d)) * strength
-        rot = theta * strength if strength >= 0.5 else theta * 0.5
+    for strength in (1.0, 0.85, 0.7, 0.55, 0.4):
+        k = max(-MAX_K, min(MAX_K, inv_d)) * strength
+        rot = theta * max(strength, 0.6)
         cr, sr = math.cos(rot), math.sin(rot)
         N = np.array([[1 / f, 0, -c[0] / f], [0, 1 / f, -c[1] / f], [0, 0, 1]])
         R = np.array([[cr, -sr, 0], [sr, cr, 0], [0, 0, 1]])
         K = np.array([[1, 0, 0], [0, 1, 0], [0, -k, 1]])
         Hn = K @ R
         corners = np.array([[0, 0, 1], [w, 0, 1], [w, h, 1], [0, h, 1]], float)
-        q = (Hn @ N @ corners.T).T
-        q = q[:, :2] / q[:, 2:3]
-        if not np.isfinite(q).all() or (Hn @ N @ corners.T)[2].min() <= 0:
+        qq = (Hn @ N @ corners.T)
+        if qq[2].min() <= 0:
             continue
-        x0, y0, cw, ch = _inner_crop(q, w / h)
-        if cw * ch / ((q[:, 0].max() - q[:, 0].min()) * (q[:, 1].max() - q[:, 1].min()) + 1e-9) < 0.5:
+        qq = (qq[:2] / qq[2]).T
+        if not np.isfinite(qq).all():
             continue
-        # перевод в пиксели результата того же размера
+        x0, y0, cw, ch = _inner_crop(qq, w / h)
+        # сколько исходного кадра реально осталось: прообраз рамки обрезки
         S = np.array([[w / cw, 0, -x0 * w / cw], [0, h / ch, -y0 * h / ch], [0, 0, 1]])
         H = S @ Hn @ N
-        keep = (cw * ch) * (f * f) / (w * h)   # доля исходной площади, оставшаяся в кадре (приблизительно)
-        if keep >= MIN_KEEP or strength == 0.3:
-            if keep < 0.6:
+        Hi = np.linalg.inv(H)
+        pre = (Hi @ corners.T)
+        pre = (pre[:2] / pre[2]).T.astype(np.float32)
+        keep = cv2.contourArea(pre) / (w * h)
+        if keep >= MIN_KEEP or strength == 0.4:
+            if keep < 0.55:
                 return img, "пропуск (слишком сильно)"
             out = cv2.warpPerspective(img, H, (w, h), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REPLICATE)
-            if verbose:
-                return out, f"поворот {math.degrees(rot):+.1f}°, вертикали {k:+.2f}, сила {strength}, в кадре {keep:.0%}"
-            return out, "ok"
+            how = f"поворот {math.degrees(rot):+.1f}°, вертикали {k:+.2f} из {inv_d:+.2f}, в кадре {keep:.0%}"
+            return out, how if verbose else "ok"
     return img, "пропуск"
 
 

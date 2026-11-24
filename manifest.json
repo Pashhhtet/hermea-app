@@ -1,9 +1,9 @@
 {
- "version": "1.2.0",
+ "version": "1.3.0",
  "notes": {
-  "ru": "Новая вкладка «СВК»: счётчики за день, журнал, отчёт в один клик и таблица недели и месяца. Плавные анимации, приближение фото.",
-  "uk": "Нова вкладка «СВК»: лічильники за день, журнал, звіт в один клік і таблиця тижня та місяця. Плавні анімації, наближення фото.",
-  "pl": "Nowa karta „Raport”: liczniki dnia, dziennik, raport jednym kliknięciem oraz tabela tygodnia i miesiąca. Płynne animacje, przybliżanie zdjęć."
+  "ru": "Новая обработка фото: стены строго вертикальные даже со снимков с телефона, светлый чистый белый без желтизны, тени подняты, окна не выбиты. Тень под логотипом меньше. В настройках можно уменьшить или увеличить интерфейс.",
+  "uk": "Нова обробка фото: стіни строго вертикальні навіть зі знімків з телефона, світлий чистий білий без жовтизни, тіні підняті, вікна не вибиті. Тінь під логотипом менша. У налаштуваннях можна зменшити або збільшити інтерфейс.",
+  "pl": "Nowa obróbka zdjęć: ściany idealnie pionowe nawet ze zdjęć z telefonu, jasna czysta biel bez żółci, rozjaśnione cienie, okna nieprzepalone. Mniejszy cień pod logo. W ustawieniach można zmniejszyć lub powiększyć interfejs."
  },
  "pip": [],
  "files": [
@@ -46,7 +46,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "39343c4933ba2bff32ec032e5949e69d18d1182257cf43747c062fafc0af1db9",
+   "sha256": "ac5aad0c5a854c97df33361c0448a92f8f708b6f16f08a3fbaea189781da42b9",
    "exec": false
   },
   {
@@ -70,7 +70,7 @@
   {
    "path": "app/svk.js",
    "src": "program/app/svk.js",
-   "sha256": "a7c3567f680246ff20e47a920fbfc6735914f5934245a061db2028bbf2c2c6ea",
+   "sha256": "ddf89fec693622fb98414ee337160b6dbdb8b0444f03970f34448a7aa5c9153a",
    "exec": false
   },
   {
@@ -88,7 +88,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "6e5cfa4c1f48d7d005e83064333200cf945bc40d15ab147c37b99f90328a46f7",
+   "sha256": "3e53860e0387ec63d0223943aa8bfc76f4b6530b91d7792d9dba673672e9e2f5",
    "exec": false
   },
   {
@@ -106,7 +106,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "ee57e92336902b2391fb576e09b20afe688766b3236f4cd9284efeee1de06787",
+   "sha256": "400f5016fd33e0b76a093e24378b6ea14d4ce3883df40d35eb08b0096bebd8df",
    "exec": false
   },
   {
@@ -124,7 +124,7 @@
   {
    "path": "quality.py",
    "src": "program/quality.py",
-   "sha256": "ec526be892f91b33a802271b5875b90acf0e4dc11bc479d974ec9c06820c1c46",
+   "sha256": "59501bd0d4ae6fab69e7d275713f139a1ac4d95c1b85d22ec083bdedf2524ee4",
    "exec": false
   },
   {

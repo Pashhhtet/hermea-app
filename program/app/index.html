@@ -10,6 +10,8 @@
   window.BOOT = __BOOT__;
   document.documentElement.dataset.theme = (window.BOOT && window.BOOT.theme) || "auto";
   document.documentElement.lang = (window.BOOT && window.BOOT.lang) || "ru";
+  window.ZOOM = ((window.BOOT && window.BOOT.scale) || 100) / 100;
+  if (window.ZOOM !== 1) document.documentElement.style.zoom = window.ZOOM;
 </script>
 <style>
 @font-face {
@@ -501,6 +503,15 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
     </div>
   </section>
   <section>
+    <h4 data-i18n="scale"></h4>
+    <div class="seg" id="segScale">
+      <button type="button" data-scale-v="80">80%</button>
+      <button type="button" data-scale-v="90">90%</button>
+      <button type="button" data-scale-v="100">100%</button>
+      <button type="button" data-scale-v="110">110%</button>
+    </div>
+  </section>
+  <section>
     <h4 id="verTitle"></h4>
     <p class="upd-line" id="updLine"></p>
     <button class="btn" type="button" id="updCheck" data-i18n="upd_check"></button>
@@ -626,7 +637,7 @@ ru: {
   upd_installing: "Устанавливаю обновление…", upd_restarting: "Перезапускаю…", upd_error: "Не получилось: {e}",
   upd_banner: "Вышла версия {v}.", upd_done: "Обновлено до версии {v}",
   zoom_hint: "Колёсико или двойной клик приближают", zoom_back: "Двойной клик вернёт как было, фото можно двигать мышкой",
-  zoom_in: "Приблизить", zoom_out: "Отдалить",
+  zoom_in: "Приблизить", zoom_out: "Отдалить", scale: "Размер интерфейса",
 },
 uk: {
   app_name: "Обробка фото", settings: "Налаштування", tg_recheck: "Натисніть, щоб перевірити ще раз",
@@ -683,7 +694,7 @@ uk: {
   upd_installing: "Встановлюю оновлення…", upd_restarting: "Перезапускаю…", upd_error: "Не вдалося: {e}",
   upd_banner: "Вийшла версія {v}.", upd_done: "Оновлено до версії {v}",
   zoom_hint: "Коліщатко або подвійний клік наближають", zoom_back: "Подвійний клік поверне як було, фото можна рухати мишкою",
-  zoom_in: "Наблизити", zoom_out: "Віддалити",
+  zoom_in: "Наблизити", zoom_out: "Віддалити", scale: "Розмір інтерфейсу",
 },
 pl: {
   app_name: "Obróbka zdjęć", settings: "Ustawienia", tg_recheck: "Kliknij, aby sprawdzić ponownie",
@@ -740,7 +751,7 @@ pl: {
   upd_installing: "Instaluję aktualizację…", upd_restarting: "Uruchamiam ponownie…", upd_error: "Nie udało się: {e}",
   upd_banner: "Jest nowa wersja {v}.", upd_done: "Zaktualizowano do wersji {v}",
   zoom_hint: "Kółko myszy lub podwójne kliknięcie przybliża", zoom_back: "Podwójne kliknięcie przywraca widok, zdjęcie można przesuwać myszką",
-  zoom_in: "Przybliż", zoom_out: "Oddal",
+  zoom_in: "Przybliż", zoom_out: "Oddal", scale: "Rozmiar interfejsu",
 },
 };
 const LOCALE = { ru: "ru-RU", uk: "uk-UA", pl: "pl-PL" };
@@ -961,6 +972,7 @@ function renderPop() {
   const set = st.settings || window.BOOT || {};
   document.querySelectorAll("#segTheme button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeV === (set.theme || "auto"))));
   document.querySelectorAll("#segLang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.langV === LANG)));
+  document.querySelectorAll("#segScale button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.scaleV === Math.round(window.ZOOM * 100))));
   const u = st.update || {};
   $("#verTitle").textContent = t("version", { v: st.version || "" });
   let line = "";
@@ -991,6 +1003,19 @@ $("#segTheme").addEventListener("click", async (e) => {
   if (S.st) S.st.settings.theme = b.dataset.themeV;
   renderPop();
   api("/api/settings", { theme: b.dataset.themeV }).catch(() => {});
+});
+$("#segScale").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-scale-v]");
+  if (!b) return;
+  const v = +b.dataset.scaleV;
+  morphish(() => {
+    window.ZOOM = v / 100;
+    document.documentElement.style.zoom = v === 100 ? "" : window.ZOOM;
+  });
+  if (S.st) S.st.settings.scale = v;
+  renderPop();
+  api("/api/settings", { scale: v }).catch(() => {});
+  setTimeout(() => window.dispatchEvent(new Event("resize")), 60);
 });
 $("#segLang").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-lang-v]");
@@ -1649,7 +1674,8 @@ function setZoom(z, tx, ty, anim) {
   LB.tx = LB.z === 1 ? 0 : Math.min(0, Math.max(minX, tx));
   LB.ty = LB.z === 1 ? 0 : Math.min(0, Math.max(minY, ty));
   stage.classList.toggle("anim", !!anim && !RMQ);
-  stage.style.transform = LB.z === 1 ? "" : `translate(${LB.tx}px, ${LB.ty}px) scale(${LB.z})`;
+  const Z = window.ZOOM || 1;
+  stage.style.transform = LB.z === 1 ? "" : `translate(${LB.tx / Z}px, ${LB.ty / Z}px) scale(${LB.z})`;
   stage.classList.toggle("zoomed", LB.z > 1);
   const zl = $("#lbZoom");
   zl.textContent = Math.round(LB.z * 100) + "%";
@@ -1696,8 +1722,9 @@ function showLb(dir, fromImg) {
     if (fromImg && fromImg.isConnected) {
       const r1 = fromImg.getBoundingClientRect(), r2 = stage.getBoundingClientRect();
       if (r2.width > 0) {
+        const Z = window.ZOOM || 1;
         stage.animate([
-          { transform: `translate(${r1.left - r2.left}px, ${r1.top - r2.top}px) scale(${r1.width / r2.width})`, opacity: .4 },
+          { transform: `translate(${(r1.left - r2.left) / Z}px, ${(r1.top - r2.top) / Z}px) scale(${r1.width / r2.width})`, opacity: .4 },
           { transform: "translate(0, 0) scale(1)", opacity: 1 }],
         { duration: 420, easing: "cubic-bezier(.2, .8, .2, 1)" });
         return;
@@ -1714,7 +1741,7 @@ function setPos() {
 }
 function movePos(e) {
   const r = stage.getBoundingClientRect();
-  LB.pos = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+  LB.pos = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));   // доли — масштаб не важен
   setPos();
 }
 stage.addEventListener("dragstart", (e) => e.preventDefault());

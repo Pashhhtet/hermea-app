@@ -168,55 +168,113 @@ class Lama:
         return res
 
 # ======================================================================= colour
-def _white_balance(img):
-    """Баланс белого по светлым нейтральным поверхностям (стены, потолок, тюль)."""
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+# Цель взята с эталонных объявлений: середина яркости ~0.74, светлые стены ~0.9,
+# белый чуть тёплый (b≈+4), тени подняты, детали сохранены.
+TARGET_A, TARGET_B = 1.2, 3.5      # светлые стены: чуть тёплые, как на хороших объявлениях
+
+
+def white_balance(lab):
     L, A, B = lab[..., 0], lab[..., 1] - 128, lab[..., 2] - 128
     ch = np.hypot(A, B)
-    lo, hi = np.percentile(L, [40, 99.5])
-    sel = (L > lo) & (L < min(hi, 252)) & (ch < np.percentile(ch, 35))
+    lo = np.percentile(L, 45)
+    sel = (L > lo) & (L < 250) & (ch < max(np.percentile(ch, 40), 6))
     if sel.sum() < 500:
-        sel = (L > lo) & (L < 252)
-    da = float(np.clip(np.median(A[sel]), -10, 10))
-    db = float(np.clip(np.median(B[sel]), -14, 14))
-    lab[..., 1] -= da          # красный/розовый оттенок убираем так же, как жёлтый,
-    lab[..., 2] -= db          # иначе тёплый свет превращается в розовый
-    return cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+        sel = (L > lo) & (L < 250)
+    ma, mb = float(np.median(A[sel])), float(np.median(B[sel]))
+    da = np.clip(TARGET_A - ma, -9, 9)
+    db = np.clip(TARGET_B - mb, -14, 8)
+    # сдвиг сильнее в светлом (там видна «грязь»), слабее в тенях — дерево остаётся живым
+    wgt = np.clip((L - 40) / 120, 0.35, 1.0)
+    lab[..., 1] += da * wgt
+    lab[..., 2] += db * wgt
+    return lab
 
 
-def _tame_warm(img, k=0.75):
-    """Жёлто-розовая подсветка на светлых стенах/потолке/полу -> почти белая.
-    Насыщенные предметы (подушки, картины) не трогаем."""
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
-    L, A, B = lab[..., 0] / 255, lab[..., 1] - 128, lab[..., 2] - 128
-    ch = np.hypot(A, B)
-    ang = np.degrees(np.arctan2(B, A))                     # 0 = розовый, 90 = жёлтый
-    warm = ((ang > -35) & (ang < 105)).astype(np.float32)
-    wl = np.clip((L - 0.45) / 0.2, 0, 1)                    # только светлые зоны
-    c0 = 14 + 24 * np.clip((L - 0.6) / 0.25, 0, 1)          # подсветку у потолка тоже ловим
-    wc = np.clip(1 - (ch - c0) / 16, 0, 1)
+def tame_cast(lab, k=0.9):
+    """Жёлто-розовая подсветка ламп на светлых стенах/потолке -> к «чуть тёплому белому».
+    Насыщенные вещи (дерево, подушки, картины) не трогаем."""
+    L = lab[..., 0] / 255
+    A, B = lab[..., 1] - 128, lab[..., 2] - 128
+    dA, dB = A - TARGET_A, B - TARGET_B
+    ch = np.hypot(dA, dB)
+    ang = np.degrees(np.arctan2(B, A))
+    warm = ((ang > -35) & (ang < 110)).astype(np.float32)
+    wl = np.clip((L - 0.42) / 0.2, 0, 1)
+    c0 = 12 + 22 * np.clip((L - 0.6) / 0.25, 0, 1)
+    wc = np.clip(1 - (ch - c0) / 14, 0, 1)
     w = cv2.GaussianBlur(warm * wl * wc, (0, 0), 3) * k
-    lab[..., 1] = 128 + A * (1 - w)
-    lab[..., 2] = 128 + B * (1 - w)
-    return cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+    lab[..., 1] = 128 + TARGET_A + dA * (1 - w)
+    lab[..., 2] = 128 + TARGET_B + dB * (1 - w)
+    return lab
+
+
+def tone(lab):
+    """Местное выравнивание света (тени светлее, окна не выбиты) + кривая под «светлый интерьер»."""
+    L = lab[..., 0] / 255.0
+    eps = 1e-3
+    logL = np.log(L + eps)
+    h, w = L.shape
+    r = max(8, int(max(h, w) * 0.02))
+    small = cv2.resize(logL.astype(np.float32), (w // 4, h // 4), interpolation=cv2.INTER_AREA)
+    base_s = cv2.bilateralFilter(small, 0, 0.35, r / 4)
+    base = cv2.resize(base_s, (w, h), interpolation=cv2.INTER_LINEAR)
+    detail = logL - base
+    mid = np.percentile(base, 60)
+    # сжимаем «освещённость», детали оставляем: тени поднимаются, светлое не выбивается
+    comp = mid + (base - mid) * 0.72
+    L2 = np.exp(comp + detail * 1.08) - eps
+    L2 = np.clip(L2, 0, 1.2)
+    # кривая по процентилям: середина около 0.74, светлые стены ~0.9, блики ~0.97
+    p = np.percentile(L2, [1, 10, 50, 90, 99.5])
+    t50 = np.clip(0.74, p[2], p[2] + 0.26)
+    t10 = np.clip(max(p[1] * 1.3, 0.28), p[1], 0.45)
+    t90 = np.clip(max(p[3], 0.9), p[3], 0.93)
+    src = np.array([0, p[0], p[1], p[2], p[3], p[4], max(p[4] + 1e-3, 1.2)])
+    dst = np.array([0, min(p[0], 0.03), t10, t50, t90, 0.975, 1.0])
+    src = np.maximum.accumulate(src + np.arange(7) * 1e-6)
+    xs = np.linspace(0, 1.2, 1201)
+    lut = np.interp(xs, src, dst)
+    lut = cv2.GaussianBlur(lut.reshape(1, -1).astype(np.float32), (0, 0), 18).ravel()
+    lut = np.maximum.accumulate(lut)
+    L3 = np.interp(L2, xs, lut)
+    gain = (L3 + 0.02) / (L + 0.02)
+    lab[..., 0] = np.clip(L3 * 255, 0, 255)
+    # цвет вслед за яркостью, но мягко (иначе поднятые тени «кислотные»)
+    sat = np.clip(gain, 0.8, 1.6) ** 0.35
+    lab[..., 1] = (lab[..., 1] - 128) * sat + 128
+    lab[..., 2] = (lab[..., 2] - 128) * sat + 128
+    return lab
+
+
+def vibrance(img, amt=0.12):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)
+    s = hsv[..., 1] / 255
+    hsv[..., 1] = np.clip((s + amt * s * (1 - s) * 2) * 255, 0, 255)
+    return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+
+
+def clarity(img, amt=0.18):
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    L = lab[..., 0]
+    r = max(img.shape[:2]) / 80
+    blur = cv2.GaussianBlur(L, (0, 0), r)
+    mid = 1 - np.abs(L / 255 - 0.5) * 2          # меньше всего в самых светлых и тёмных
+    lab[..., 0] = np.clip(L + (L - blur) * amt * np.clip(mid, 0.2, 1), 0, 255)
+    return cv2.cvtColor(lab.astype(np.uint8), cv2.COLOR_LAB2BGR)
 
 
 def enhance(img):
-    """Естественная цветокоррекция: баланс белого, без желтизны и без розового, светлее."""
-    img = _tame_warm(_white_balance(img))
-    f = img.astype(np.float32)
-    lo, hi = np.percentile(f.mean(2), [0.3, 99.7])
-    f = np.clip((f - lo) * (250.0 / max(hi - lo, 1)), 0, 255)
-    mean = f.mean() / 255
-    gamma = np.clip(np.log(0.52) / np.log(max(mean, 0.05)), 0.7, 1.0)
-    img = np.clip(255 * (f / 255) ** gamma, 0, 255).astype(np.uint8)
-    L, A, B = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
-    L = cv2.addWeighted(L, 0.85, cv2.createCLAHE(clipLimit=1.3, tileGridSize=(8, 8)).apply(L), 0.15, 0)
-    img = cv2.cvtColor(cv2.merge([L, A, B]), cv2.COLOR_LAB2BGR)
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)
-    s = hsv[..., 1] / 255
-    hsv[..., 1] = np.clip((s + 0.08 * s * (1 - s)) * 255, 0, 255)
-    return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+    """Светлый «журнальный» интерьер: чистый, чуть тёплый белый, поднятые тени, окна не выбиты."""
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    med = float(np.median(lab[..., 0])) / 2.55          # уже светлое и чистое фото трогаем мягче
+    soft = float(np.clip((med - 62) / 14, 0, 1))
+    lab = white_balance(lab)
+    lab = tame_cast(lab)
+    lab = tone(lab)
+    out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+    out = clarity(out, 0.18 - 0.12 * soft)
+    out = vibrance(out, 0.12 - 0.08 * soft)
+    return out
 
 
 def is_floor_plan(img):
@@ -256,9 +314,9 @@ def add_logo(img_bgr):
             d.text((x - ft.getbbox(c)[0], by + hh + gap - tb[1]), c, font=ft, fill=GOLD + (255,))
             x += cw + spacing
     sh = Image.new("L", (W, H), 0)
-    ex, ey = int(blk_w * 0.45), int(blk_h * 0.35)
-    ImageDraw.Draw(sh).ellipse([bx - ex, by - ey, bx + blk_w + ex, by + blk_h + ey], fill=205)
-    sh = sh.filter(ImageFilter.GaussianBlur(int(s * 0.04)))
+    ex, ey = int(blk_w * 0.16), int(blk_h * 0.14)          # тень только под самим знаком
+    ImageDraw.Draw(sh).ellipse([bx - ex, by - ey, bx + blk_w + ex, by + blk_h + ey], fill=120)
+    sh = sh.filter(ImageFilter.GaussianBlur(int(s * 0.022)))
     dark = Image.new("RGBA", (W, H), (0, 0, 0, 255)); dark.putalpha(sh)
     im = Image.alpha_composite(im, dark)
     glow = layer.split()[3].filter(ImageFilter.GaussianBlur(max(2, s // 500)))
