@@ -10,6 +10,7 @@ ok = lambda m: print("OK  ", m, flush=True)
 
 import numpy as np, cv2
 import hermea, quality, app_contract, app_svk, app_clients, app_market, app_searches  # noqa
+import app_owners, app_calls, otodom_text  # noqa
 ok("модули загружаются")
 
 # фото: синтетическая «комната» с наклонёнными вертикалями
@@ -17,10 +18,11 @@ img = np.full((900, 1200, 3), 200, np.uint8)
 for x in range(150, 1100, 160):
     cv2.line(img, (x, 60), (x + 40, 860), (60, 60, 60), 6)
 img[:, :, 0] = (img[:, :, 0] * 0.8).astype(np.uint8)
-out, how = quality.straighten(img, verbose=True)
-out = hermea.add_logo(quality.sharpen(hermea.enhance(out)))
-assert out.shape == img.shape
-ok(f"обработка фото ({how})")
+# та же цепочка, что и в программе (выравнивание, чистка, цвет, резкость, логотип)
+jpg, tags = hermea.process_photo(img)
+out = cv2.imdecode(np.frombuffer(jpg, np.uint8), cv2.IMREAD_COLOR)
+assert out is not None and out.dtype == np.uint8 and min(out.shape[:2]) >= 900, out.shape
+ok(f"обработка фото ({', '.join(tags) or 'без пометок'})")
 
 # договор: на пустом шаблоне из 4 страниц
 from reportlab.pdfgen import canvas
