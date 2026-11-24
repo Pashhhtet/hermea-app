@@ -38,6 +38,12 @@
    "exec": false
   },
   {
+   "path": "__pycache__/app_update.cpython-313.pyc",
+   "src": "program/__pycache__/app_update.cpython-313.pyc",
+   "sha256": "951d0d37f43e1f9419ed390adc7e65eb51b2cb80ec4ca378ec5900d3caa7d623",
+   "exec": false
+  },
+  {
    "path": "app/cormorant.woff2",
    "src": "program/app/cormorant.woff2",
    "sha256": "b32eaa607cf944903847a3c70e88bb25025ed33b601554a859e2cd1b8084aaf0",
@@ -100,7 +106,7 @@
   {
    "path": "app_update.py",
    "src": "program/app_update.py",
-   "sha256": "fdefb03e9e69ba40a1936e59d7e631347ca92c90334048346fff917ce3138dff",
+   "sha256": "ce32e4c82cf769b07d53178c44c5822e90bea17e71d60de5271b9f066e46d69c",
    "exec": false
   },
   {

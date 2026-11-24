@@ -18,6 +18,7 @@ import ssl
 import subprocess
 import sys
 import time
+import urllib.parse
 import urllib.request
 
 PROG = None
@@ -66,7 +67,9 @@ def _get(url, timeout=40):
 
 
 def _raw(c, path):
-    return f"https://raw.githubusercontent.com/{c['repo']}/{c.get('branch') or 'main'}/{path}?t={int(time.time())}"
+    # кириллица и пробелы в именах файлов («КАК ПОЛЬЗОВАТЬСЯ.txt») должны быть закодированы
+    return (f"https://raw.githubusercontent.com/{c['repo']}/{c.get('branch') or 'main'}/"
+            f"{urllib.parse.quote(path)}?t={int(time.time())}")
 
 
 def check():
