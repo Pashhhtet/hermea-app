@@ -1,0 +1,41 @@
+name: install-test
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["install.ps1", "install.sh", "tools/ci_smoke.py", ".github/workflows/install-test.yml", "program/**"]
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install (as a colleague would)
+        shell: powershell
+        env:
+          HERMEA_DIR: ${{ runner.temp }}\Hermea Photo
+          HERMEA_NO_LAUNCH: "1"
+          HERMEA_SKIP_MODELS: "1"
+        run: irm https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/install.ps1 | iex
+      - name: Smoke test
+        shell: powershell
+        run: |
+          $root = Join-Path "${{ runner.temp }}" "Hermea Photo"
+          & (Join-Path $root "_program\.venv\Scripts\python.exe") tools\ci_smoke.py $root
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          if (-not (Test-Path ([Environment]::GetFolderPath("Desktop") + "\Hermea.lnk"))) { throw "no shortcut" }
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install (as a colleague would)
+        env:
+          HERMEA_DIR: ${{ runner.temp }}/Hermea Photo
+          HERMEA_NO_LAUNCH: "1"
+          HERMEA_SKIP_MODELS: "1"
+        run: curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/install.sh | bash
+      - name: Smoke test
+        run: |
+          "$RUNNER_TEMP/Hermea Photo/_program/.venv/bin/python" tools/ci_smoke.py "$RUNNER_TEMP/Hermea Photo"
+          test -x "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/MacOS/Hermea"

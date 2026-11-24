@@ -22,6 +22,8 @@ ROOMS = {"ONE": "1", "TWO": "2", "THREE": "3", "FOUR": "4", "FIVE": "5", "SIX": 
 TAGS = {"PARKING_SPOT": "parking", "BALCONY": "balcony", "AIR_CONDITIONING": "ac", "GARDEN": "garden",
         "TERRACE": "terrace", "SEPARATE_KITCHEN": "kitchen", "LIFT": "lift"}
 _SESS = {"s": None}
+ON_DROP = {"fn": None}          # уведомление «подешевела» (задаёт app_server)
+COMPARE = {"fn": None}          # сравнение с рынком (app_market.compare)
 
 
 def init(prog_dir):
@@ -143,6 +145,21 @@ def check(s, http_factory, on_new=None):
             if not s.get("title"):
                 s["title"] = title
             s["items"], s["total"], s["error"] = items, total, ""
+            # снижение цены: помним цену каждого объявления
+            prices, drops = s.setdefault("prices", {}), s.setdefault("drops", {})
+            dropped = []
+            for i in items:
+                now = i.get("total") or i.get("price")
+                was = prices.get(i["id"])
+                if now and was and now < was - 49:
+                    drops[i["id"]] = {"from": was, "to": now, "at": time.time()}
+                    dropped.append(i)
+                if now:
+                    prices[i["id"]] = now
+            if len(prices) > 3000:
+                keep = {i["id"] for i in items}
+                s["prices"] = {k: v for k, v in prices.items() if k in keep}
+            s["drops"] = {k: v for k, v in drops.items() if time.time() - v["at"] < 14 * 86400}
             s["last_check"] = time.time()
             ids = [i["id"] for i in items]
             if s.get("first"):                      # первый раз: всё, что есть сейчас, считаем просмотренным
@@ -155,6 +172,8 @@ def check(s, http_factory, on_new=None):
             save()
         if fresh and on_new:
             on_new(s, len(fresh))
+        if dropped and ON_DROP["fn"]:
+            ON_DROP["fn"](s, dropped)
         return s
     except Exception as e:
         s["error"] = str(e)[:200]
@@ -199,7 +218,11 @@ def detail(sid):
         if not s:
             return None
         seen, hidden = set(s.get("seen") or []), set(s.get("hidden") or [])
-        items = [dict(i, new=i["id"] not in seen) for i in s.get("items") or [] if i["id"] not in hidden]
+        drops = s.get("drops") or {}
+        cmp_ = COMPARE["fn"]
+        items = [dict(i, new=i["id"] not in seen, drop=drops.get(i["id"]),
+                      market=cmp_(i) if cmp_ else None)
+                 for i in s.get("items") or [] if i["id"] not in hidden]
         return {"id": s["id"], "title": s.get("title") or "Otodom", "url": s["url"], "items": items,
                 "total": s.get("total"), "last_check": s.get("last_check", 0), "error": s.get("error", ""),
                 "checking": bool(s.get("checking")), "new": new_count(s)}

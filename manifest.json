@@ -1,11 +1,14 @@
 {
- "version": "1.3.1",
+ "version": "1.4.0",
  "notes": {
-  "ru": "Выравнивание стало бережным: фото больше не приближается, мебель не растягивается, чёткость как в оригинале. Свет и цвет как в 1.3.",
-  "uk": "Вирівнювання стало дбайливим: фото більше не наближається, меблі не розтягуються, чіткість як в оригіналі. Світло й колір як у 1.3.",
-  "pl": "Prostowanie jest teraz delikatne: zdjęcie się nie przybliża, meble się nie rozciągają, ostrość jak w oryginale. Światło i kolor jak w 1.3."
+  "ru": "Новые вкладки «Клиенты» и «Рынок»: карточка клиента, договор о сотрудничестве в PDF одной кнопкой, сообщения по скриптам Hermea, калькулятор заселения, цены аренды по районам Варшавы. В поисках видно «дороже рынка» и снижение цены.",
+  "uk": "Нові вкладки «Клієнти» і «Ринок»: картка клієнта, договір про співпрацю в PDF однією кнопкою, повідомлення за скриптами Hermea, калькулятор заселення, ціни оренди по районах Варшави. У пошуках видно «дорожче ринку» і зниження ціни.",
+  "pl": "Nowe karty „Klienci” i „Rynek”: karta klienta, umowa współpracy w PDF jednym kliknięciem, wiadomości według skryptów Hermea, kalkulator wprowadzenia, ceny najmu w dzielnicach Warszawy. W wyszukiwaniach widać „drożej niż rynek” i obniżki cen."
  },
- "pip": [],
+ "pip": [
+  "pypdf>=4",
+  "reportlab>=4"
+ ],
  "files": [
   {
    "path": "../Hermea.app/Contents/Info.plist",
@@ -38,15 +41,33 @@
    "exec": false
   },
   {
+   "path": "app/clients.css",
+   "src": "program/app/clients.css",
+   "sha256": "39df05721ee438bb48f33b5298468809be8858e2ca003a4f7d35534a88a704a6",
+   "exec": false
+  },
+  {
+   "path": "app/clients.js",
+   "src": "program/app/clients.js",
+   "sha256": "b4db92722ee165a0668559c647a6c416461e229a79620fa0e23c3bef4d3b6905",
+   "exec": false
+  },
+  {
    "path": "app/cormorant.woff2",
    "src": "program/app/cormorant.woff2",
    "sha256": "b32eaa607cf944903847a3c70e88bb25025ed33b601554a859e2cd1b8084aaf0",
    "exec": false
   },
   {
+   "path": "app/hermea.ico",
+   "src": "program/app/hermea.ico",
+   "sha256": "d555ba923c436045b45db13524714403cc75bc6109876b8cd27edea6ce011651",
+   "exec": false
+  },
+  {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "ac5aad0c5a854c97df33361c0448a92f8f708b6f16f08a3fbaea189781da42b9",
+   "sha256": "62e5327d5315b045773876eeff1d14a0238cde9ec7533ee1fc33ac8642ff0e88",
    "exec": false
   },
   {
@@ -64,31 +85,55 @@
   {
    "path": "app/svk.css",
    "src": "program/app/svk.css",
-   "sha256": "0c77da227481bd6ac618f46e80e4fb105ac55b8fe17538ec27d3884f391def5b",
+   "sha256": "0a26dd7fc8f71e504aa4bf4020bac31441c6d9b40f4be4d0e0c8a1b14d3ee55f",
    "exec": false
   },
   {
    "path": "app/svk.js",
    "src": "program/app/svk.js",
-   "sha256": "ddf89fec693622fb98414ee337160b6dbdb8b0444f03970f34448a7aa5c9153a",
+   "sha256": "7a9868e4d18f66e11982851aaf9ae7803945ffdf2948b7d34e8e509d7bb650c2",
+   "exec": false
+  },
+  {
+   "path": "app/templates.js",
+   "src": "program/app/templates.js",
+   "sha256": "b4dd97da34e2078c042b060e7a48ac51cdeff647b73c6b58f8b11055944efe23",
+   "exec": false
+  },
+  {
+   "path": "app_clients.py",
+   "src": "program/app_clients.py",
+   "sha256": "b1f3c70e51de787e5badab119c13cc5fd9f73b95860cfa89a96b768ed35cba51",
+   "exec": false
+  },
+  {
+   "path": "app_contract.py",
+   "src": "program/app_contract.py",
+   "sha256": "4b848eb11e735668866fcdf1d6c773e1a58acd92164c9b382dcad30bad99bef4",
    "exec": false
   },
   {
    "path": "app_i18n.py",
    "src": "program/app_i18n.py",
-   "sha256": "9b6ca93ab581b311dad0f017c33a7c007bf35e6c5154ef7ff9f305ce9134ce40",
+   "sha256": "eeedc7cf97b46d7c7158d88bf02633769866642aaa19c118deea2353d4bffa37",
+   "exec": false
+  },
+  {
+   "path": "app_market.py",
+   "src": "program/app_market.py",
+   "sha256": "af0b2128acc2e2fd352205b71fb7f494acf13f62c125447ac50e49338786b400",
    "exec": false
   },
   {
    "path": "app_searches.py",
    "src": "program/app_searches.py",
-   "sha256": "2993e93101a25eacb569308c71b94a2eafd1e6366733e1ce023f68091d54a127",
+   "sha256": "c59e181b79cca92e1ceb8d6b70509c4261d39fe5d8397e768023ece67060c39a",
    "exec": false
   },
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "3e53860e0387ec63d0223943aa8bfc76f4b6530b91d7792d9dba673672e9e2f5",
+   "sha256": "34b531c6728c47a2fa13073c1f8c509b4fcfce70bf3c91bf9625228dcf700e0c",
    "exec": false
   },
   {
@@ -100,19 +145,31 @@
   {
    "path": "app_update.py",
    "src": "program/app_update.py",
-   "sha256": "ce32e4c82cf769b07d53178c44c5822e90bea17e71d60de5271b9f066e46d69c",
+   "sha256": "e84378b5ee2c82c04da0d7939e630d14f75b280b65ff585f908ca85796e0c7d5",
+   "exec": false
+  },
+  {
+   "path": "fonts/DejaVu-LICENSE.txt",
+   "src": "program/fonts/DejaVu-LICENSE.txt",
+   "sha256": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
+   "exec": false
+  },
+  {
+   "path": "fonts/DejaVuSans.ttf",
+   "src": "program/fonts/DejaVuSans.ttf",
+   "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
    "exec": false
   },
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "400f5016fd33e0b76a093e24378b6ea14d4ce3883df40d35eb08b0096bebd8df",
+   "sha256": "7bccc04ef5975ecdd9c8486cb67a9e5ccd2a23f452b4c46674842c27957a6f45",
    "exec": false
   },
   {
    "path": "hermea_app.py",
    "src": "program/hermea_app.py",
-   "sha256": "f9f2dbf54facf4428f02372e48feb618791d1ebfbd5a7530a65b7cb4f189e9fb",
+   "sha256": "7cfbb147a78c4b33953c35244e04dc44ef3f2f4db887f8d8ee1d5879488c7924",
    "exec": false
   },
   {

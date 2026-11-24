@@ -13,5 +13,10 @@
   "ru": "Выравнивание стало бережным: фото больше не приближается, мебель не растягивается, чёткость как в оригинале. Свет и цвет как в 1.3.",
   "uk": "Вирівнювання стало дбайливим: фото більше не наближається, меблі не розтягуються, чіткість як в оригіналі. Світло й колір як у 1.3.",
   "pl": "Prostowanie jest teraz delikatne: zdjęcie się nie przybliża, meble się nie rozciągają, ostrość jak w oryginale. Światło i kolor jak w 1.3."
+ },
+ "1.4.0": {
+  "ru": "Новые вкладки «Клиенты» и «Рынок»: карточка клиента, договор о сотрудничестве в PDF одной кнопкой, сообщения по скриптам Hermea, калькулятор заселения, цены аренды по районам Варшавы. В поисках видно «дороже рынка» и снижение цены.",
+  "uk": "Нові вкладки «Клієнти» і «Ринок»: картка клієнта, договір про співпрацю в PDF однією кнопкою, повідомлення за скриптами Hermea, калькулятор заселення, ціни оренди по районах Варшави. У пошуках видно «дорожче ринку» і зниження ціни.",
+  "pl": "Nowe karty „Klienci” i „Rynek”: karta klienta, umowa współpracy w PDF jednym kliknięciem, wiadomości według skryptów Hermea, kalkulator wprowadzenia, ceny najmu w dzielnicach Warszawy. W wyszukiwaniach widać „drożej niż rynek” i obniżki cen."
  }
 }

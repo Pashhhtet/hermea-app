@@ -4,6 +4,7 @@ import hashlib, json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTES = json.load(open(os.path.join(ROOT, "tools", "notes.json"), encoding="utf-8"))
 EXEC_EXT = (".command",)
+PIP = ["pypdf>=4", "reportlab>=4"]          # библиотеки, которые нужно доставить при обновлении
 SKIP = {"telegram.txt", "готово.txt", "app_settings.json", "app_searches.json", "app_svk.json", "update.json"}
 
 
@@ -24,7 +25,7 @@ def main(version):
                 files.append({"path": target + rel, "src": base + "/" + rel, "sha256": sha(full),
                               "exec": f.endswith(EXEC_EXT) or rel == "Contents/MacOS/Hermea"})
     files.sort(key=lambda x: x["path"])
-    m = {"version": version, "notes": NOTES.get(version, {}), "pip": [], "files": files}
+    m = {"version": version, "notes": NOTES.get(version, {}), "pip": PIP, "files": files}
     json.dump(m, open(os.path.join(ROOT, "manifest.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     open(os.path.join(ROOT, "VERSION"), "w").write(version + "\n")
     print(f"manifest {version}: {len(files)} files")

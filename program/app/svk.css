@@ -1,10 +1,12 @@
 /* ================================================================ СВК */
-.svk {
+.svk, .aux {
   grid-column: 1 / -1; grid-row: 4; overflow-y: auto; min-width: 0; position: relative;
   scroll-behavior: smooth;
 }
-body.mode-svk .side, body.mode-svk .main { display: none; }
+body.mode-aux .side, body.mode-aux .main { display: none; }
 body:not(.mode-svk) .svk { display: none; }
+body:not(.mode-clients) #clients { display: none; }
+body:not(.mode-market) #market { display: none; }
 .sv-wrap { max-width: 1360px; padding: 30px 40px 72px; }
 
 .sv-head { display: flex; align-items: center; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; margin-bottom: 26px; }
@@ -41,6 +43,7 @@ body:not(.mode-svk) .svk { display: none; }
   box-shadow: 0 1px 3px rgba(0, 0, 0, .14); transition: transform .35s cubic-bezier(.2, .8, .2, 1), width .35s cubic-bezier(.2, .8, .2, 1);
   pointer-events: none;
 }
+.seg.slide { position: relative; }
 .seg.slide button { position: relative; z-index: 1; transition: color .2s; }
 .seg.slide button[aria-pressed="true"] { background: none; box-shadow: none; }
 .sv-tools .btn-primary { height: 40px; padding: 0 18px; display: inline-flex; align-items: center; gap: 8px; }

@@ -157,7 +157,9 @@ const SV = {
   mode: "photo", view: "day", date: "", data: null, key: "", range: null, rdata: null, rkey: "",
   report: "day", agent: "", busy: false, hit: {}, goal: {},
 };
-try { SV.mode = localStorage.getItem("hermea_mode") === "svk" ? "svk" : "photo"; } catch (e) {}
+const MODES = ["photo", "svk", "clients", "market"];
+const MODE_OPEN = { svk: () => svkOpen(true) };          // clients.js добавит свои экраны
+try { const m = localStorage.getItem("hermea_mode"); SV.mode = MODES.includes(m) ? m : "photo"; } catch (e) {}
 try { SV.view = ["day", "week", "month"].includes(localStorage.getItem("hermea_svk_view")) ? localStorage.getItem("hermea_svk_view") : "day"; } catch (e) {}
 
 // ================================================================ даты
@@ -240,10 +242,11 @@ function setMode(mode, quiet) {
   if (SV.mode === mode && !quiet) return;
   const go = () => {
     SV.mode = mode;
-    document.body.classList.toggle("mode-svk", mode === "svk");
+    for (const m of MODES) document.body.classList.toggle("mode-" + m, mode === m);
+    document.body.classList.toggle("mode-aux", mode !== "photo");
     try { localStorage.setItem("hermea_mode", mode); } catch (e) {}
     drawModes();
-    if (mode === "svk") svkOpen(true);
+    if (MODE_OPEN[mode]) MODE_OPEN[mode]();
   };
   quiet ? go() : morph(go);
 }
@@ -963,5 +966,5 @@ renderTop = function () { _renderTop(); svkTick(); };   // eslint-disable-line n
 window.addEventListener("resize", () => { drawModes(); slideSeg($("#svView")); slideSeg($("#svRPeriod")); });
 applyStatic();
 SV.lastToday = todayIso();
-setMode(SV.mode, true);
+setMode(SV.mode === "svk" || SV.mode === "photo" ? SV.mode : "photo", true);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawModes(); slideSeg($("#svView")); });

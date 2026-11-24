@@ -458,6 +458,7 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .32s; animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
 </style>
 <link rel="stylesheet" href="/app/svk.css">
+<link rel="stylesheet" href="/app/clients.css">
 </head>
 <body>
 <header class="bar">
@@ -466,6 +467,8 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
     <nav class="modes" id="modes" aria-label="Hermea"><i class="ind"></i>
       <button type="button" data-mode="photo" data-i18n="m_photo"></button>
       <button type="button" data-mode="svk"><span data-i18n="m_svk"></span><span class="dot" id="svkDot" hidden></span></button>
+      <button type="button" data-mode="clients" data-i18n="m_clients"></button>
+      <button type="button" data-mode="market" data-i18n="m_market"></button>
     </nav>
   </div>
   <div class="bar-right">
@@ -549,6 +552,8 @@ html[data-theme="dark"] .card:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .45)
   <section class="work" id="work"></section>
 </main>
 <section class="svk" id="svk" aria-live="polite"></section>
+<section class="aux" id="clients"></section>
+<section class="aux" id="market"></section>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" data-i18n-aria="viewer">
   <div class="lb-wrap">
@@ -1398,7 +1403,8 @@ function drawSearch(d) {
     const place = [i.sub || i.district, i.street].filter(Boolean).join(", ");
     return `<article class="card${i.new ? " new" : ""}">
       <div class="pic">${i.img ? `<img loading="lazy" src="${esc(i.img)}" alt="">` : ""}
-        <div class="tags">${i.new ? `<span class="tag">${t("srch_new")}</span>` : ""}${i.owner ? `<span class="tag own">${t("srch_owner")}</span>` : ""}</div></div>
+        <div class="tags">${i.new ? `<span class="tag">${t("srch_new")}</span>` : ""}${i.owner ? `<span class="tag own">${t("srch_owner")}</span>` : ""}${i.drop ? `<span class="tag drop">${esc(t("srch_drop", { d: zl(i.drop.from - i.drop.to) }))}</span>` : ""}</div>
+        ${i.market != null && Math.abs(i.market) >= 5 ? `<span class="mkt ${i.market > 0 ? "hi" : "lo"}">${esc(t(i.market > 0 ? "srch_mkt_up" : "srch_mkt_down", { p: i.market }))}</span>` : ""}</div>
       <div class="cb">
         <div class="price">${esc(money(i.total || i.price))}<small>${i.rent ? esc(money(i.price) + " + " + money(i.rent)) : esc(t("total_word"))}</small></div>
         <div class="ttl">${esc(i.title)}</div>
@@ -1791,7 +1797,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "-") zoomCenter(1 / 1.6);
 });
 // тень под шапкой, когда страница прокручена
-for (const sc of [$("#main"), $("#svk")]) {
+for (const sc of [$("#main"), $("#svk"), $("#clients"), $("#market")]) {
   sc.addEventListener("scroll", () => document.body.classList.toggle("scrolled", sc.scrollTop > 6), { passive: true });
 }
 
@@ -1807,5 +1813,7 @@ link.focus();
 tick();
 </script>
 <script src="/app/svk.js"></script>
+<script src="/app/templates.js"></script>
+<script src="/app/clients.js"></script>
 </body>
 </html>

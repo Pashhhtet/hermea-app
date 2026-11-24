@@ -130,6 +130,8 @@ def apply(log=print):
     try:
         new = []
         for f in m.get("files") or []:
+            if sys.platform != "darwin" and (f["path"].startswith("../Hermea.app/") or f["path"].endswith(".command")):
+                continue                           # Mac-обёртка на Windows не нужна
             dst = _target(f["path"])
             if os.path.exists(dst) and _sha(open(dst, "rb").read()) == f["sha256"]:
                 continue

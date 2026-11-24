@@ -714,6 +714,11 @@ def process_listing(sess, url, progress=None):
 
 def read_photo_file(path):
     """Фото с телефона: JPG/PNG/HEIC, с учётом поворота из EXIF. -> BGR или None."""
+    try:                                    # HEIC на Windows: библиотека pillow-heif (ставит установщик)
+        import pillow_heif
+        pillow_heif.register_heif_opener()
+    except Exception:
+        pass
     try:
         from PIL import ImageOps
         im = ImageOps.exif_transpose(Image.open(path)).convert("RGB")

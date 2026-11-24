@@ -26,6 +26,9 @@ import hermea
 import app_i18n
 import app_searches
 import app_svk
+import app_clients
+import app_contract
+import app_market
 import app_update
 from app_i18n import tr
 
@@ -50,7 +53,7 @@ LAST_SEEN = time.time()
 CLOSED_AT = 0.0           # окно закрыли (страница прислала «пока»)
 FLATS_VERSION = 1
 TG = {"state": "checking", "key": "tg_checking", "hint_key": "", "bot": "", "detail": ""}
-SETTINGS = {"telegram": True, "theme": "auto", "lang": "ru", "scale": 100}
+SETTINGS = {"telegram": True, "theme": "auto", "lang": "ru", "scale": 100, "agent_name": "", "agent_level": 30}
 UPLOAD_ROOT = os.path.join(__import__("tempfile").gettempdir(), "hermea_uploads")
 WARM = {"state": "idle"}
 
@@ -439,6 +442,17 @@ def add_to_links(url):
 
 
 def notify(title, text):
+    if os.name == "nt":                      # Windows: всплывающее уведомление у часов
+        ps = ("Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; "
+              "$n = New-Object System.Windows.Forms.NotifyIcon; $n.Icon = [System.Drawing.SystemIcons]::Information; "
+              "$n.Visible = $true; $n.ShowBalloonTip(8000, $env:HN_T, $env:HN_X, 'Info'); Start-Sleep -Seconds 9; $n.Dispose()")
+        try:
+            subprocess.Popen(["powershell", "-NoProfile", "-WindowStyle", "Hidden", "-Command", ps],
+                             env=dict(os.environ, HN_T=title, HN_X=text), creationflags=0x08000000,
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception:
+            pass
+        return
     if sys.platform != "darwin":
         return
     def esc(s):
@@ -672,6 +686,64 @@ def search_session():
     return hermea.http()
 
 
+def on_search_drop(s, items):
+    i = items[0]
+    d = (s.get("drops") or {}).get(i["id"]) or {}
+    notify(tr("drop_title"), tr("drop_text", n=len(items), name=i.get("title") or "", was=d.get("from", ""), now=d.get("to", "")))
+
+
+# ======================================================================= клиенты и договор
+CLIENTS_DIR = os.path.join(ROOT, "Клиенты")
+
+
+def svk_events(evs):
+    """События из карточки клиента -> СВК за сегодня. Возвращает, что добавили (для подсказки в окне)."""
+    added = []
+    day = time.strftime("%Y-%m-%d")
+    for ev in evs or []:
+        try:
+            app_svk.apply(dict(ev, date=day))
+            added.append(ev["m"])
+        except Exception as e:
+            log("svk:", e)
+    return added
+
+
+def safe_name(s):
+    s = re.sub(r'[\\/:*?"<>|\n\r\t]+', " ", s or "").strip()
+    return re.sub(r"\s+", " ", s)[:80] or "Клиент"
+
+
+def client_op(body):
+    op, cid = body.get("op"), body.get("id")
+    if op == "create":
+        c, ev = app_clients.create(body.get("data") or {})
+    elif op == "update":
+        c, ev = app_clients.update(cid, body.get("data") or {})
+    elif op == "delete":
+        app_clients.delete(cid)
+        return {"ok": True}
+    elif op == "viewed":
+        c, ev = app_clients.viewed(cid, body.get("data") or {})
+    elif op == "contract":
+        c = app_clients.get(cid)
+        if not c:
+            raise KeyError(cid)
+        folder = os.path.join(CLIENTS_DIR, safe_name(c.get("name")))
+        os.makedirs(folder, exist_ok=True)
+        out = os.path.join(folder, f"Umowa {safe_name(c.get('name'))} {time.strftime('%d.%m.%Y')}.pdf")
+        try:
+            app_contract.build(c, out)
+        except app_contract.ContractError as e:
+            return {"error": tr("contract_" + str(e))}
+        c, ev = app_clients.mark_contract(cid)
+        open_path(out)
+        return {"client": c, "svk": svk_events(ev), "file": os.path.relpath(out, ROOT)}
+    else:
+        raise ValueError("bad op")
+    return {"client": c, "svk": svk_events(ev)}
+
+
 def on_search_new(s, n):
     notify(tr("search_new_title"), tr("search_new_text", n=n, name=s.get("title") or "Otodom"))
 
@@ -739,6 +811,10 @@ def restart():
     except Exception:
         pass
     sys.stdout.flush()
+    if os.name == "nt":                      # на Windows exec не заменяет процесс — запускаем новый и выходим
+        subprocess.Popen([sys.executable, "-W", "ignore", os.path.join(PROG, "hermea_app.py")], env=env,
+                         creationflags=0x08000000, close_fds=True)
+        os._exit(0)
     os.execve(sys.executable, [sys.executable, "-W", "ignore", os.path.join(PROG, "hermea_app.py")], env)
 
 
@@ -843,6 +919,13 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, d) if d else self._send(404, {"error": tr("search_not_found")})
             if path == "/api/svk":
                 return self._send(200, app_svk.get((q.get("from") or [""])[0], (q.get("to") or [""])[0]))
+            if path == "/api/clients":
+                return self._send(200, {"clients": app_clients.summary(), "template": app_contract.available()})
+            if path == "/api/client":
+                c = app_clients.get((q.get("id") or [""])[0])
+                return self._send(200, {"client": c}) if c else self._send(404, {"error": tr("client_not_found")})
+            if path == "/api/market":
+                return self._send(200, app_market.summary())
             if path == "/api/flat":
                 return self._send(200, flat_detail((q.get("f") or [""])[0]))
             if path == "/img":
@@ -896,7 +979,21 @@ class Handler(BaseHTTPRequestHandler):
                 data = self.rfile.read(n)
                 k = save_upload((q.get("u") or [""])[0], (q.get("n") or ["photo.jpg"])[0], data)
                 return self._send(200, {"ok": True, "n": k})
+            if path == "/api/contract_template":      # тело запроса — PDF шаблона договора
+                if n > 30 * 1024 * 1024:
+                    return self._send(413, {"error": tr("upload_big")})
+                try:
+                    app_contract.save_template(self.rfile.read(n))
+                except app_contract.ContractError as e:
+                    return self._send(400, {"error": tr("contract_" + str(e))})
+                return self._send(200, {"ok": True})
             body = json.loads(self.rfile.read(n) or b"{}") if n else {}
+            if path == "/api/client":
+                return self._send(200, client_op(body))
+            if path == "/api/market_refresh":
+                if app_market.STATE.get("state") != "running":
+                    threading.Thread(target=app_market.snapshot, args=(search_session, log), daemon=True).start()
+                return self._send(200, {"ok": True})
             if path == "/api/svk":
                 return self._send(200, app_svk.apply(body))
             if path == "/api/ping":
@@ -929,6 +1026,10 @@ class Handler(BaseHTTPRequestHandler):
                     apply_lang()
                 if body.get("scale") in (80, 90, 100, 110):
                     SETTINGS["scale"] = body["scale"]
+                if "agent_name" in body:
+                    SETTINGS["agent_name"] = str(body["agent_name"] or "")[:60]
+                if body.get("agent_level") in (30, 40, 45, 50):
+                    SETTINGS["agent_level"] = body["agent_level"]
                 save_settings()
                 return self._send(200, SETTINGS)
             if path == "/api/create_local":
@@ -1065,6 +1166,10 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     app_searches.init(PROG)
     app_update.init(PROG)
     app_svk.init(PROG)
+    app_clients.init(PROG)
+    app_market.init(PROG)
+    app_searches.ON_DROP["fn"] = on_search_drop
+    app_searches.COMPARE["fn"] = app_market.compare
     if os.environ.get("HERMEA_PORT"):
         preferred_port = int(os.environ["HERMEA_PORT"])
     srv = None
@@ -1090,6 +1195,7 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     threading.Thread(target=app_searches.loop, args=(search_session, on_search_new, log), daemon=True).start()
     threading.Thread(target=update_loop, daemon=True).start()
     threading.Thread(target=svk_reminder_loop, daemon=True).start()
+    threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
     url = f"http://127.0.0.1:{PORT}/?t={TOKEN}"
     if open_window_fn:
         threading.Thread(target=open_window_fn, args=(url,), daemon=True).start()

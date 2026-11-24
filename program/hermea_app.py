@@ -48,12 +48,15 @@ def open_window(url):
                 pass
         subprocess.run(["open", url], stdout=devnull, stderr=devnull)
     elif os.name == "nt":
+        local = os.environ.get("LOCALAPPDATA", "")
         for exe in (r"C:\Program Files\Google\Chrome\Application\chrome.exe",
                     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+                    os.path.join(local, r"Google\Chrome\Application\chrome.exe"),
                     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
                     r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"):
             if os.path.exists(exe):
-                subprocess.Popen([exe, "--app=" + url, "--window-size=1400,920"])
+                subprocess.Popen([exe, "--app=" + url, "--window-size=1400,920", "--no-first-run",
+                                  "--no-default-browser-check"])
                 return
         os.startfile(url)  # noqa
     else:
@@ -108,6 +111,9 @@ def main():
     rotate_log()
     if "--detach" in sys.argv:
         daemonize()
+    if sys.stdout is None or sys.stderr is None:   # Windows, запуск без консоли (pythonw): пишем в журнал
+        lf = open(LOG_FILE, "a", encoding="utf-8", buffering=1)
+        sys.stdout = sys.stderr = sys.__stdout__ = sys.__stderr__ = lf
     try:
         sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
         sys.stderr.reconfigure(encoding="utf-8", line_buffering=True)
