@@ -39,3 +39,5 @@ jobs:
         run: |
           "$RUNNER_TEMP/Hermea Photo/_program/.venv/bin/python" tools/ci_smoke.py "$RUNNER_TEMP/Hermea Photo"
           test -x "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/MacOS/Hermea"
+          test -f "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/Info.plist"
+          plutil -lint "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/Info.plist"
