@@ -907,9 +907,45 @@ try { S.ownersOnly = localStorage.getItem("hermea_owners") === "1"; } catch (e) 
 const seenDone = new Set();
 let firstTick = true;
 let bootVersion = null;
+// ---------------------------------------------------------------- уведомления
+// Системное уведомление macOS через osascript при клике открывало «Редактор скриптов».
+// Поэтому уведомления показывает само окно: клик по ним открывает Hermea на нужной квартире или поиске.
+const NOTE = { last: null };
+const canNote = () => "Notification" in window && Notification.permission === "granted";
+function askNotes() {
+  if ("Notification" in window && Notification.permission === "default") {
+    try { Notification.requestPermission(); } catch (e) {}
+  }
+}
+document.addEventListener("click", askNotes, { once: true });
+function showNotes(notes) {
+  if (!notes) return;
+  const max = notes.reduce((m, n) => Math.max(m, n.id), 0);
+  if (NOTE.last === null) { NOTE.last = max; return; }      // старые при открытии окна не показываем
+  for (const n of notes) {
+    if (n.id <= NOTE.last) continue;
+    if (canNote()) {
+      try {
+        const no = new Notification(n.title, { body: n.text, tag: "hermea-" + n.id, icon: "/app/mark.png" });
+        no.onclick = () => { window.focus(); no.close(); goTarget(n.target || {}); };
+      } catch (e) {}
+    }
+  }
+  NOTE.last = Math.max(NOTE.last, max);
+}
+function goTarget(tg) {
+  if (tg.mode) { setMode(tg.mode); return; }
+  if (!tg.kind) return;
+  if (SV.mode !== "photo") setMode("photo");
+  if (tg.kind === "search" && tg.id) select({ kind: "search", id: tg.id });
+  else if (tg.kind === "flat" && tg.f) select({ kind: "flat", f: tg.f });
+  else if (tg.kind === "job" && tg.id) select({ kind: "job", id: tg.id });
+}
+
 async function tick1() {
   try {
-    S.st = await api("/api/state");
+    S.st = await api("/api/state" + (canNote() ? "?wn=1" : ""));
+    showNotes(S.st.notes);
     setOnline(true);
     if (bootVersion === null) bootVersion = S.st.version;
     else if (S.st.version !== bootVersion) {          // программа обновилась — перезагружаем окно

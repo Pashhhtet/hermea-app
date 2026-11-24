@@ -498,7 +498,18 @@ def add_to_links(url):
         log("links:", e)
 
 
-def notify(title, text):
+NOTES = []                 # уведомления для окна: показываются как уведомления браузера, клик открывает нужное место
+NOTES_SEQ = [0]
+WEB_NOTIFY = {"at": 0.0}   # окно сообщает, что ему разрешены уведомления — тогда системные не дублируем
+
+
+def notify(title, text, target=None):
+    with LOCK:
+        NOTES_SEQ[0] += 1
+        NOTES.append({"id": NOTES_SEQ[0], "title": title, "text": text, "target": target or {}})
+        del NOTES[:-20]
+    if time.time() - WEB_NOTIFY["at"] < 20:
+        return
     if os.name == "nt":                      # Windows: всплывающее уведомление у часов
         ps = ("Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; "
               "$n = New-Object System.Windows.Forms.NotifyIcon; $n.Icon = [System.Drawing.SystemIcons]::Information; "
@@ -602,7 +613,8 @@ def run_job(job):
             job.tg = "skipped"
         job.status, job.step = "done", "done"
         log("✓", job.name, n, "фото", "telegram:", job.tg)
-        notify(tr("done_title"), tr("done_text", name=job.name, n=n) + (tr("done_tg") if job.tg == "sent" else ""))
+        notify(tr("done_title"), tr("done_text", name=job.name, n=n) + (tr("done_tg") if job.tg == "sent" else ""),
+               {"kind": "flat", "f": os.path.basename(job.out) if job.out else ""})
     except Cancelled:
         job.status, job.step = "cancelled", "cancelled"
         remove_partial(job, always=True)
@@ -612,7 +624,7 @@ def run_job(job):
         log("✗", job.url or job.title, e)
         traceback.print_exc()
         remove_partial(job)
-        notify(tr("fail_title"), job.error[:120])
+        notify(tr("fail_title"), job.error[:120], {"kind": "job", "id": job.id})
     finally:
         if job.upload_dir:
             shutil.rmtree(job.upload_dir, ignore_errors=True)
@@ -746,7 +758,8 @@ def search_session():
 def on_search_drop(s, items):
     i = items[0]
     d = (s.get("drops") or {}).get(i["id"]) or {}
-    notify(tr("drop_title"), tr("drop_text", n=len(items), name=i.get("title") or "", was=d.get("from", ""), now=d.get("to", "")))
+    notify(tr("drop_title"), tr("drop_text", n=len(items), name=i.get("title") or "", was=d.get("from", ""), now=d.get("to", "")),
+           {"kind": "search", "id": s.get("id")})
 
 
 # ======================================================================= клиенты и договор
@@ -802,7 +815,8 @@ def client_op(body):
 
 
 def on_search_new(s, n):
-    notify(tr("search_new_title"), tr("search_new_text", n=n, name=s.get("title") or "Otodom"))
+    notify(tr("search_new_title"), tr("search_new_text", n=n, name=s.get("title") or "Otodom"),
+           {"kind": "search", "id": s.get("id")})
 
 
 def search_check_now(sid):
@@ -835,7 +849,7 @@ def svk_reminder_loop():
             day = time.strftime("%Y-%m-%d", now)
             if now.tm_wday < 5 and now.tm_hour == 18 and sent != day:
                 sent = day
-                notify(tr("svk_remind_title"), tr("svk_remind_text"))
+                notify(tr("svk_remind_title"), tr("svk_remind_text"), {"mode": "svk"})
         except Exception as e:
             log("svk:", e)
 
@@ -888,7 +902,7 @@ def state():
     return {"busy": busy(), "jobs": jobs, "tg": tg_public(), "settings": SETTINGS, "pending": pending_list(),
             "today": today_stats(flats), "flats_version": FLATS_VERSION, "warm": WARM["state"],
             "searches": app_searches.summary(), "update": update_public(), "version": app_update.local_version(),
-            "svk_touched": app_svk.today_touched()}
+            "svk_touched": app_svk.today_touched(), "notes": NOTES[-10:]}
 
 
 def open_path(path, reveal=False):
@@ -967,6 +981,8 @@ class Handler(BaseHTTPRequestHandler):
                 html = html.replace("__BOOT__", json.dumps(SETTINGS, ensure_ascii=False))
                 return self._send(200, html, "text/html; charset=utf-8")
             if path == "/api/state":
+                if (q.get("wn") or [""])[0] == "1":
+                    WEB_NOTIFY["at"] = time.time()
                 return self._send(200, state())
             if path == "/api/flats":
                 flats = list_flats()

@@ -1,9 +1,9 @@
 {
- "version": "1.5.9",
+ "version": "1.6.0",
  "notes": {
-  "ru": "Для квартир «Без комиссии» программа сама пишет длинное объявление на польском для Otodom/OLX (заголовок, описание, оснащение, условия). Оно лежит в карточке квартиры в блоке «Текст для Otodom» с кнопкой копирования и в файле opis_otodom.txt. В Telegram не уходит.",
-  "uk": "Для квартир «Без комісії» програма сама пише довге оголошення польською для Otodom/OLX. Воно в картці квартири, блок «Текст для Otodom», з кнопкою копіювання, і у файлі opis_otodom.txt. У Telegram не надсилається.",
-  "pl": "Dla mieszkań „Bez prowizji” program sam pisze długie ogłoszenie po polsku na Otodom/OLX. Jest w karcie mieszkania w bloku „Tekst na Otodom” z przyciskiem kopiowania i w pliku opis_otodom.txt. Nie trafia do Telegrama."
+  "ru": "Уведомления теперь показывает само окно Hermea: клик по уведомлению открывает новую квартиру в поиске (или готовую квартиру), а не «Редактор скриптов». При первом клике в окне Chrome спросит разрешение на уведомления — нажми «Разрешить».",
+  "uk": "Сповіщення тепер показує саме вікно Hermea: клік відкриває нову квартиру в пошуку (або готову квартиру), а не «Редактор скриптів». При першому кліку у вікні Chrome спитає дозвіл на сповіщення — натисни «Дозволити».",
+  "pl": "Powiadomienia pokazuje teraz samo okno Hermea: kliknięcie otwiera nowe mieszkanie w wyszukiwaniu (albo gotowe mieszkanie), a nie „Edytor skryptów”. Przy pierwszym kliknięciu Chrome zapyta o zgodę na powiadomienia — kliknij „Zezwól”."
  },
  "pip": [
   "pypdf>=4",
@@ -67,7 +67,7 @@
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "13294951ca96c43190bf8db1531a9d0e0cb2057aed27fb3a80098eac7c171f7f",
+   "sha256": "5a811efc9825e8036e7c26bb2b77e7e92b4869fb5356c51a020de8291f904e3e",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "d6a4d19a458e29110f978de48f817d2d2f176c94fd6c65fb23fdfb6326075e4c",
+   "sha256": "b2e22257df38e696b0942a6ba7beb732dabc0807ce44805b102b1cf99bd5dca4",
    "exec": false
   },
   {
