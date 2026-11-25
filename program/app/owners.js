@@ -252,7 +252,7 @@ function owStats(st) {
       ${d.agreed ? `<i class="ok" style="flex:${d.agreed}"></i>` : ""}${d.called + d.refused + d.nocall ? `<i style="flex:${d.called + d.refused + d.nocall}"></i>` : ""}</div><small>${esc(wd)}</small></div>`;
   }).join("");
   const best = (st.districts || []).filter((x) => x.name !== "?").map((x) => `${esc(x.name)} ${t("st_of", { a: x.agreed, n: x.n })}`).join(" · ");
-  return `<section class="ow-stats rise">
+  return `<section class="ow-stats">
     <div class="ow-st"><b>${st.calls}</b><span>${t("st_calls")}</span></div>
     <div class="ow-st ok"><b>${T.agreed}</b><span>${t("st_agreed")}${st.rate != null ? ` · ${st.rate}%` : ""}</span></div>
     <div class="ow-st"><b>${T.refused}</b><span>${t("st_refused")}</span></div>

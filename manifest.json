@@ -1,9 +1,9 @@
 {
- "version": "1.8.0",
+ "version": "1.8.1",
  "notes": {
-  "ru": "Подбор квартир: в карточке клиента появился блок «Подходящие квартиры» по его бюджету, районам и комнатам, с отметкой новых и готовым текстом подборки на языке клиента. «Собственники» теперь и с OLX, есть статистика звонков за неделю и готовые SMS собственнику на польском. Утром одно уведомление: перезвоны, новые квартиры, сильные собственники и подбор для клиентов.",
-  "uk": "Добірка квартир: у картці клієнта з'явився блок «Підходящі квартири» за його бюджетом, районами і кімнатами, з позначкою нових і готовим текстом добірки мовою клієнта. «Власники» тепер і з OLX, є статистика дзвінків за тиждень і готові SMS власнику польською. Зранку одне сповіщення: передзвони, нові квартири, сильні власники і добірка для клієнтів.",
-  "pl": "Dobór mieszkań: w karcie klienta jest blok «Pasujące mieszkania» według budżetu, dzielnic i liczby pokoi, z oznaczeniem nowych i gotowym tekstem w języku klienta. «Właściciele» także z OLX, statystyka telefonów z tygodnia i gotowe SMS do właściciela. Rano jedno powiadomienie: oddzwonienia, nowe mieszkania, mocni właściciele i dobór dla klientów."
+  "ru": "OLX: «платит за поднятие» теперь только при платном поднятии. Статистика звонков не мигает во время обновления списка.",
+  "uk": "OLX: «платить за підняття» тепер лише при платному піднятті. Статистика дзвінків не блимає під час оновлення списку.",
+  "pl": "OLX: «płaci za podbicie» tylko przy płatnym podbiciu. Statystyka telefonów nie miga podczas odświeżania listy."
  },
  "pip": [
   "pypdf>=4",
@@ -91,7 +91,7 @@
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "559bbd6c5c2803602c618ae680afe1a4db08afc64ed7b30881710d38e3351adc",
+   "sha256": "b0bc84373e707714b358e598e70cc7c108ae2088d51b91a4827649592fc1ee75",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_owners.py",
    "src": "program/app_owners.py",
-   "sha256": "f09a1685b861037c79164f973555544ce7b418fce8bc673f09655cf8effd0612",
+   "sha256": "251f60d10862323150bf2da8b4afb8f981fd88a68297c594994aad23367a0cef",
    "exec": false
   },
   {
