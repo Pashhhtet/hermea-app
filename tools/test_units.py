@@ -185,6 +185,11 @@ a = {"why": [], "copies": {"items": got}}
 eq("копии: «уже у нас» не агентство; только улица и этаж — «похоже»",
    [w for w in app_owners.score(a, "2026-11-25")[1] if w[0].startswith("agency")], [["agency_maybe", 1]])
 a = {"why": [], "copies": {"items": [dict(next(c for c in got if not c["ours"]), how="photo")]}}
+today = dt.date.today().isoformat()
+eq("копии: проверка без фото и этажа повторяется, когда они появились",
+   [app_owners._stale(x, 3) for x in ({"copies": {"checked": today, "full": True}, "imgs": ["u"]},
+                                      {"copies": {"checked": today}, "imgs": ["u"]}, {"copies": {"checked": today}}, {})],
+   [False, True, False, True])
 eq("копии: те же фото — с агентствами работает", [w for w in app_owners.score(a, "2026-11-25")[1] if w[0].startswith("agency")], [["agency", 1]])
 otod = {"data": {"searchAds": {"items": [
     {"id": 5, "slug": "x-ID5", "isPrivateOwner": False, "areaInSquareMeters": 80, "roomsNumber": "THREE", "totalPrice": {"value": 6100},

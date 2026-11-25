@@ -163,5 +163,10 @@
   "ru": "Собственники: программа ищет ту же квартиру у агентств на Otodom и OLX. В карточке видно, работает ли собственник с агентствами, у каких агентств уже есть квартира (со ссылками) и не выставили ли её уже мы. «Те же фото» значит точно та же квартира; «улица, этаж и площадь те же» стоит сверить по ссылке. Лучшие кандидаты проверяются сами раз в день, любого можно проверить кнопкой «Найти у агентств».",
   "uk": "Власники: програма шукає ту саму квартиру в агентств на Otodom і OLX. У картці видно, чи працює власник з агентствами, в яких агентств уже є квартира (з посиланнями) і чи не виставили її вже ми. «Ті самі фото» означає точно ту саму квартиру; «вулиця, поверх і площа ті самі» варто звірити за посиланням. Найкращі кандидати перевіряються самі раз на день, будь-кого можна перевірити кнопкою «Знайти в агентств».",
   "pl": "Właściciele: program szuka tego samego mieszkania u biur na Otodom i OLX. W karcie widać, czy właściciel współpracuje z biurami, które biura już mają to mieszkanie (z linkami) i czy nie wystawiliśmy go już my. „Te same zdjęcia” oznacza na pewno to samo mieszkanie; „ta sama ulica, piętro i metraż” warto porównać przez link. Najlepsi kandydaci są sprawdzani sami raz dziennie, każdego można sprawdzić przyciskiem „Znajdź u biur”."
+ },
+ "1.12.1": {
+  "ru": "Поиск квартир собственников у агентств точнее для объявлений, собранных до обновления: при следующем сборе они проверяются заново по трём фото и этажу.",
+  "uk": "Пошук квартир власників в агентств точніший для оголошень, зібраних до оновлення: під час наступного збору вони перевіряються знову за трьома фото і поверхом.",
+  "pl": "Wyszukiwanie mieszkań właścicieli u biur jest dokładniejsze dla ogłoszeń zebranych przed aktualizacją: przy następnym zbieraniu są sprawdzane ponownie po trzech zdjęciach i piętrze."
  }
 }

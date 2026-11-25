@@ -263,4 +263,5 @@ def find(a, sess, get, pause=1.5, log=print):
             log("копии OLX:", a.get("id"), e)
     own = _hashes(sess, a.get("imgs") or ([a["img"]] if a.get("img") else []))
     items = compare(a, cands, own, lambda c: _hashes(sess, c.get("imgs")))
-    return {"checked": app_owners._today(), "items": items, "error": err if not cands else "", "n": len(cands)}
+    return {"checked": app_owners._today(), "items": items, "error": err if not cands else "", "n": len(cands),
+            "full": bool(a.get("imgs"))}            # False: у объявления ещё не было трёх фото и этажа (до 1.12)

@@ -433,7 +433,7 @@ def scan(http_factory, log=print, pause=3.5):
         # та же квартира у агентств: лучшие кандидаты, у кого не проверяли (или давно)
         with LOCK:
             cand = [a for a in DATA["ads"].values() if a.get("last_seen") == _today() and a.get("status") in ("new", None)
-                    and _stale(a.get("copies"), COPIES_TTL)]
+                    and _stale(a, COPIES_TTL)]
             cand.sort(key=lambda a: -a.get("score", 0))
             cand = cand[:COPIES_PER_DAY]
         STATE.update(phase="copies", done=0, total=len(cand))
@@ -447,9 +447,11 @@ def scan(http_factory, log=print, pause=3.5):
         STATE.update(state="idle", phase="")
 
 
-def _stale(res, ttl):
-    d = _days((res or {}).get("checked"))
-    return d is None or d > ttl
+def _stale(a, ttl):
+    """Пора искать копии снова: не искали, давно, или искали без фото и этажа (объявление собрано до 1.12)."""
+    res = a.get("copies") or {}
+    d = _days(res.get("checked"))
+    return d is None or d > ttl or (not res.get("full") and bool(a.get("imgs")))
 
 
 def _copies(a, sess, log=print, pause=3.5):
