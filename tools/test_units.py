@@ -13,6 +13,7 @@ import app_i18n  # noqa: E402
 import app_match  # noqa: E402
 import app_owners  # noqa: E402
 import app_searches  # noqa: E402
+import logos  # noqa: E402
 import otodom_text  # noqa: E402
 
 # консоль Windows (cp1252) не печатает кириллицу и польские буквы
@@ -94,6 +95,47 @@ s = {"seen": ["2"]}
 dup = [{"id": "1", "title": "Mieszkanie 2 pok", "price": 4000, "area": 45, "street": "Puławska"},
        {"id": "2", "title": "Mieszkanie 2 pok", "price": 4000, "area": 45, "street": "Puławska"}]
 eq("поиск: дубль убран, остаётся просмотренный", [x["id"] for x in app_searches._dedupe(s, dup)], ["2"])
+
+# ---------------------------------------------------------------- «Другое агентство»: поиск логотипа
+import cv2  # noqa: E402
+import numpy as np  # noqa: E402
+
+rng = np.random.default_rng(7)
+
+
+def room(seed):
+    """Разные «комнаты»: случайные стены, мебель, линии — у каждого фото свои."""
+    r = np.random.default_rng(seed)
+    im = np.full((960, 1280, 3), r.integers(150, 235, 3), np.uint8)
+    for _ in range(14):
+        x, y = int(r.integers(0, 1200)), int(r.integers(0, 900))
+        cv2.rectangle(im, (x, y), (x + int(r.integers(60, 400)), y + int(r.integers(40, 300))),
+                      tuple(int(v) for v in r.integers(30, 255, 3)), -1)
+    for _ in range(10):
+        cv2.line(im, tuple(int(v) for v in r.integers(0, 1280, 2)), tuple(int(v) for v in r.integers(0, 960, 2)),
+                 tuple(int(v) for v in r.integers(0, 255, 3)), int(r.integers(2, 8)))
+    return cv2.GaussianBlur(im, (0, 0), 1.2)
+
+
+def stamp(im):
+    ov = im.copy()
+    cv2.circle(ov, (1040, 90), 34, (255, 255, 255), -1)
+    cv2.putText(ov, "AGENCJA", (1085, 105), cv2.FONT_HERSHEY_DUPLEX, 1.1, (255, 255, 255), 3, cv2.LINE_AA)
+    return cv2.addWeighted(ov, 0.6, im, 0.4, 0)
+
+
+clean = [room(s) for s in range(5)]
+eq("логотип: на разных фото без логотипа ничего не находим", [m is None for m in logos.find_masks(clean)], [True] * 5)
+ms = logos.find_masks([stamp(i) for i in clean])
+logo = np.zeros((960, 1280), np.uint8)
+cv2.circle(logo, (1040, 90), 34, 255, -1)
+cv2.putText(logo, "AGENCJA", (1085, 105), cv2.FONT_HERSHEY_DUPLEX, 1.1, 255, 3, cv2.LINE_AA)
+m = ms[0] if ms[0] is not None else np.zeros_like(logo)
+cover = float((m[logo > 0] > 0).mean())
+extra = float(((m > 0) & (cv2.dilate(logo, np.ones((61, 61), np.uint8)) == 0)).mean())
+eq("логотип: найден почти весь (≥ 90%)", cover >= 0.9, True)
+eq("логотип: лишнего почти нет (< 0.5% фото)", extra < 0.005, True)
+eq("логотип: 2 фото мало — не ищем", logos.find_masks([stamp(i) for i in clean[:2]]), [None, None])
 
 # ---------------------------------------------------------------- переводы сервера
 for k, v in app_i18n.MSG.items():

@@ -147,16 +147,34 @@ class Lama:
         self.model = torch.jit.load(path, map_location="cpu").eval()
 
     def __call__(self, img, mask):
-        torch = self.torch
-        ys, xs = np.where(mask > 0)
-        if len(xs) == 0:
+        """Стирает всё, что отмечено в маске. Каждое пятно — отдельным кусочком с запасом вокруг,
+        чтобы не гонять нейросеть по всему фото (знак Otodom, логотипы агентств в любом месте)."""
+        if not mask.any():
             return img
+        n, lab, stats, _ = cv2.connectedComponentsWithStats((mask > 0).astype(np.uint8), 8)
+        boxes = [stats[c][:4] for c in range(1, n)]
+        res = img.copy()
         h, w = img.shape[:2]
         pad = 160
-        cx1 = min(w, xs.max() + pad)
-        cy0 = max(0, ys.min() - pad)
-        crop, mcrop = img[cy0:h, 0:cx1], mask[cy0:h, 0:cx1]
+        for x, y, bw, bh in _merge_boxes(boxes, pad):
+            x0, y0 = max(0, x - pad), max(0, y - pad)
+            x1, y1 = min(w, x + bw + pad), min(h, y + bh + pad)
+            res[y0:y1, x0:x1] = self._fill(res[y0:y1, x0:x1], mask[y0:y1, x0:x1])
+        return res
+
+    def _fill(self, crop, mcrop):
+        """Большие куски дорисовываем на уменьшенной копии (до 1024 px): в 4–6 раз быстрее,
+        а на фоне (стена, небо, пол) разница не видна. Резкость остального фото не трогаем."""
         ch, cw = crop.shape[:2]
+        s = 1024 / max(ch, cw)
+        if s < 1:
+            small = cv2.resize(crop, (int(cw * s), int(ch * s)), interpolation=cv2.INTER_AREA)
+            msmall = cv2.dilate(cv2.resize(mcrop, (small.shape[1], small.shape[0]), interpolation=cv2.INTER_AREA),
+                                np.ones((3, 3), np.uint8))
+            filled = cv2.resize(self._fill(small, msmall), (cw, ch), interpolation=cv2.INTER_CUBIC)
+            soft = cv2.GaussianBlur(mcrop.astype(np.float32) / 255, (0, 0), 2.0)[..., None]
+            return (filled * soft + crop * (1 - soft)).astype(np.uint8)
+        torch = self.torch
         ph, pw = (8 - ch % 8) % 8, (8 - cw % 8) % 8
         c = cv2.copyMakeBorder(crop, 0, ph, 0, pw, cv2.BORDER_REFLECT)
         mm = cv2.copyMakeBorder(mcrop, 0, ph, 0, pw, cv2.BORDER_REFLECT)
@@ -165,10 +183,30 @@ class Lama:
         with torch.no_grad():
             out = self.model(t, tm)[0].permute(1, 2, 0).numpy()
         out = cv2.cvtColor(np.clip(out * 255, 0, 255).astype(np.uint8), cv2.COLOR_RGB2BGR)[:ch, :cw]
-        res = img.copy()
         soft = cv2.GaussianBlur(mcrop.astype(np.float32) / 255, (0, 0), 1.5)[..., None]
-        res[cy0:h, 0:cx1] = (out * soft + crop * (1 - soft)).astype(np.uint8)
-        return res
+        return (out * soft + crop * (1 - soft)).astype(np.uint8)
+
+
+def _merge_boxes(boxes, pad):
+    """Пятна ближе 2*pad друг к другу стираем одним кусочком (буквы одного логотипа)."""
+    boxes = [list(b) for b in boxes]
+    merged = True
+    while merged and len(boxes) > 1:
+        merged = False
+        for i in range(len(boxes)):
+            for j in range(i + 1, len(boxes)):
+                a, b = boxes[i], boxes[j]
+                if (a[0] - pad < b[0] + b[2] + pad and b[0] - pad < a[0] + a[2] + pad and
+                        a[1] - pad < b[1] + b[3] + pad and b[1] - pad < a[1] + a[3] + pad):
+                    x0, y0 = min(a[0], b[0]), min(a[1], b[1])
+                    x1, y1 = max(a[0] + a[2], b[0] + b[2]), max(a[1] + a[3], b[1] + b[3])
+                    boxes[i] = [x0, y0, x1 - x0, y1 - y0]
+                    boxes.pop(j)
+                    merged = True
+                    break
+            if merged:
+                break
+    return boxes
 
 # ======================================================================= colour
 # Белый чуть тёплый (b≈+4). Яркость поднимаем умеренно: раньше всё тянулось к одной
@@ -615,11 +653,16 @@ def lama():
     return _LAMA
 
 
-def process_photo(img, plan=False, watermark=None):
-    """Одно фото: водяной знак, выравнивание, цвет, резкость, логотип -> (jpg, пометки)."""
-    if watermark == "otodom":
-        img = lama()(img, watermark_mask(img))
+def process_photo(img, plan=False, watermark=None, extra_mask=None):
+    """Одно фото: водяной знак, выравнивание, цвет, резкость, логотип -> (jpg, пометки).
+    extra_mask — логотип другого агентства (logos.find_masks), стирается вместе со знаком Otodom."""
     tags = []
+    mask = watermark_mask(img) if watermark == "otodom" else None
+    if extra_mask is not None and extra_mask.any():
+        mask = extra_mask if mask is None else cv2.bitwise_or(mask, extra_mask)
+        tags.append("логотип агентства убран")
+    if mask is not None:
+        img = lama()(img, mask)
     if not plan:
         img, how = quality.straighten(img)
         if how == "ok":
@@ -649,8 +692,18 @@ def _kitchen_first(done, clf):
         print("    кухню на фото не нашёл — порядок как есть")
 
 
-def process_listing(sess, url, progress=None, no_fee=False):
-    """progress(событие, **данные) — для окна приложения (Hermea.app); в консоли не нужен."""
+def _agency_masks(imgs, plans):
+    """Кнопка «Другое агентство»: где на фото логотип агентства (общий для всех фото объявления)."""
+    import logos
+    masks = logos.find_masks(imgs, skip=[i for i, p in enumerate(plans) if p])
+    if not any(m is not None for m in masks):
+        print("    логотип агентства не нашёл (нужно хотя бы 3 фото с ним в одном месте)")
+    return masks
+
+
+def process_listing(sess, url, progress=None, no_fee=False, agency=False):
+    """progress(событие, **данные) — для окна приложения (Hermea.app); в консоли не нужен.
+    agency=True — объявление другого агентства: найти и стереть их логотип на всех фото."""
     def emit(ev, **kw):
         if progress:
             progress(ev, **kw)
@@ -662,27 +715,47 @@ def process_listing(sess, url, progress=None, no_fee=False):
     seen, total, done = set(), len(info["images"]), []
     emit("listing", info=info, out=out, total=total, existed=existed)
     clf = room_classifier()
-    for k, im in enumerate(info["images"], 1):
-        emit("photo_start", k=k, total=total)
+
+    def fetch(k, im):
+        """Скачать одно фото -> (k, im, img, plan) или None."""
         try:
             data = download(sess, im["url"])
         except Exception as e:
             print(f"    ✗ фото {k}: {e}")
-            continue
+            return None
         if data in seen:          # одинаковые фото в объявлении
-            continue
+            return None
         seen.add(data)
         img = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR)
         if img is None or min(img.shape[:2]) < 200:
-            continue
+            return None
         ext = (re.search(r"\.(webp|jpe?g|png)", im["url"].lower()) or [None, "jpg"])[1]
         open(os.path.join(orig, f"{k:02d}.{ext}"), "wb").write(data)
-        plan = bool(im.get("plan")) or is_floor_plan(img)
+        return k, im, img, bool(im.get("plan")) or is_floor_plan(img), f"{k:02d}.{ext}"
+
+    if agency:                   # логотип ищем по всем фото сразу, поэтому сначала скачиваем все
+        got = [g for g in (fetch(k, im) for k, im in enumerate(info["images"], 1)) if g]
+        masks = _agency_masks([g[2] for g in got], [g[3] for g in got])
+        queue = [(g, m) for g, m in zip(got, masks)]
+    else:
+        queue = ((k, im) for k, im in enumerate(info["images"], 1))
+    for item in queue:
+        if agency:
+            (k, im, img, plan, src), extra = item
+            emit("photo_start", k=k, total=total)
+        else:
+            k, im = item
+            emit("photo_start", k=k, total=total)
+            got = fetch(k, im)
+            if not got:
+                continue
+            _, _, img, plan, src = got
+            extra = None
         label, kitchen = (None, 0.0) if plan else clf.classify(img)
         if not clf.ok and str(im.get("room") or "").upper() == "KITCHEN":   # подсказка Otodom
             label, kitchen = "kitchen", 1.0
-        jpg, tags = process_photo(img, plan, info.get("watermark"))
-        done.append({"jpg": jpg, "label": label, "kitchen": kitchen, "src": f"{k:02d}.{ext}"})
+        jpg, tags = process_photo(img, plan, info.get("watermark"), extra)
+        done.append({"jpg": jpg, "label": label, "kitchen": kitchen, "src": src})
         if label == "kitchen":
             tags.append("кухня")
         emit("photo", k=k, n=len(done), total=total, jpg=done[-1]["jpg"], label=label)
@@ -754,8 +827,9 @@ def local_folder(name):
     return path
 
 
-def process_local(name, files, progress=None, no_fee=False):
-    """Свои фото (с телефона после показа): та же обработка, без водяного знака и без описания с сайта."""
+def process_local(name, files, progress=None, no_fee=False, agency=False):
+    """Свои фото (с телефона после показа): та же обработка, без водяного знака и без описания с сайта.
+    agency=True — фото от другого агентства: найти и стереть их логотип."""
     def emit(ev, **kw):
         if progress:
             progress(ev, **kw)
@@ -766,22 +840,31 @@ def process_local(name, files, progress=None, no_fee=False):
     total, done = len(files), []
     emit("listing", info={"price": None, "rent": None, "deposit": None}, out=out, total=total, existed=False)
     clf = room_classifier()
-    for k, path in enumerate(files, 1):
-        emit("photo_start", k=k, total=total)
+
+    def load(k, path):
         img = read_photo_file(path)
         if img is None or min(img.shape[:2]) < 200:
             print(f"    ✗ фото {k}: не открывается")
-            continue
+            return None
         h, w = img.shape[:2]
         if max(h, w) > 2560:                # фото с телефона огромные — уменьшаем до 2560
             s = 2560 / max(h, w)
             img = cv2.resize(img, (int(w * s), int(h * s)), interpolation=cv2.INTER_AREA)
+        return img
+
+    imgs = [load(k, p) for k, p in enumerate(files, 1)] if agency else None
+    masks = _agency_masks(imgs, [im is not None and is_floor_plan(im) for im in imgs]) if agency else None
+    for k, path in enumerate(files, 1):
+        emit("photo_start", k=k, total=total)
+        img = imgs[k - 1] if agency else load(k, path)
+        if img is None:
+            continue
         ext = os.path.splitext(path)[1].lower() or ".jpg"
         src = f"{k:02d}{ext}"
         shutil.copyfile(path, os.path.join(orig, src))
         plan = is_floor_plan(img)
         label, kitchen = (None, 0.0) if plan else clf.classify(img)
-        jpg, tags = process_photo(img, plan, None)
+        jpg, tags = process_photo(img, plan, None, masks[k - 1] if agency else None)
         done.append({"jpg": jpg, "label": label, "kitchen": kitchen, "src": src})
         emit("photo", k=k, n=len(done), total=total, jpg=jpg, label=label)
         print(f"    фото {len(done)}/{total}", flush=True)

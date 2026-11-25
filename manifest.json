@@ -1,9 +1,9 @@
 {
- "version": "1.9.0",
+ "version": "1.10.0",
  "notes": {
-  "ru": "Порядок в коде и защита от ошибок: Hermea больше не закрывается сама после сна Мака, старые копии обновлений не копятся, неверный запрос не роняет программу. Окно разложено по понятным файлам, перед каждым обновлением программа сама проверяет все вкладки и переводы. Кнопки «Откуда лид» больше не вылезают за край.",
-  "uk": "Лад у коді й захист від помилок: Hermea більше не закривається сама після сну Mac, старі копії оновлень не накопичуються, неправильний запит не валить програму. Вікно розкладено по зрозумілих файлах, перед кожним оновленням програма сама перевіряє всі вкладки й переклади. Кнопки «Звідки лід» більше не вилазять за край.",
-  "pl": "Porządek w kodzie i ochrona przed błędami: Hermea nie zamyka się już sama po uśpieniu Maca, stare kopie aktualizacji się nie gromadzą, błędne zapytanie nie zawiesza programu. Okno podzielone na czytelne pliki, przed każdą aktualizacją program sam sprawdza wszystkie zakładki i tłumaczenia. Przyciski «Skąd lead» nie wychodzą już poza ramkę."
+  "ru": "Новый переключатель «Другое агентство» рядом с «Без комиссии»: программа сама находит логотип агентства, который стоит на всех фото объявления, и стирает его. Работает и для ссылок, и для своих фото, нужно хотя бы 3 фото.",
+  "uk": "Новий перемикач «Інша агенція» поруч із «Без комісії»: програма сама знаходить логотип агенції, який стоїть на всіх фото оголошення, і стирає його. Працює і для посилань, і для своїх фото, потрібно хоча б 3 фото.",
+  "pl": "Nowy przełącznik «Inna agencja» obok «Bez prowizji»: program sam znajduje logo agencji, które jest na wszystkich zdjęciach ogłoszenia, i je usuwa. Działa dla linków i własnych zdjęć, potrzebne co najmniej 3 zdjęcia."
  },
  "pip": [
   "pypdf>=4",
@@ -79,13 +79,13 @@
   {
    "path": "app/i18n.js",
    "src": "program/app/i18n.js",
-   "sha256": "8b6548dc5a833e35986b38d898e328b3ee6456f0f451f8bd61a46859d3ee6605",
+   "sha256": "3747114e44d98ab1a59d6a2dd21a5dcf79d5636678a3bca0d7dd34711aa9b5e2",
    "exec": false
   },
   {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "edfbb6daec2b27d38d6603f1d5b0c5e11a46484bfb28bb3889d2730a06e2d4c7",
+   "sha256": "c7536f70f9c4db33930d55802ca421cb66fe6fd6983caed65856d6478d8199e5",
    "exec": false
   },
   {
@@ -121,7 +121,7 @@
   {
    "path": "app/photo.js",
    "src": "program/app/photo.js",
-   "sha256": "9eaa266eb4e51d6c587216b017165c89b4ba7ba99b32d567a332c00f28a31230",
+   "sha256": "30b81f32c4541528b71f1aee10c1c1d0a1e78b69135a191c4cbb2a745ae30e8f",
    "exec": false
   },
   {
@@ -199,7 +199,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "b72ee19b54e00b4599c93573157b48215cfdab9aeeb1ae01a8aede0fe6cb12b8",
+   "sha256": "51bd80bd8fb976d0c3f3b199bdbd888d4bc82fad95f28616e1ec5f2c72f70c6c",
    "exec": false
   },
   {
@@ -229,7 +229,7 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "ddc0ef5f15e97ac0471b675ad72770dc0a782a5855de07eca67b883b390cac75",
+   "sha256": "8baf3353823ef21be079fe2b58177ac59da34827fbbaaa2e7e8e7379c57f367b",
    "exec": false
   },
   {
@@ -242,6 +242,12 @@
    "path": "logo.png",
    "src": "program/logo.png",
    "sha256": "26555592fcfd48c84fde9e08297715de43cbbbfb405fcd39cbe9c75cb4ccbe4d",
+   "exec": false
+  },
+  {
+   "path": "logos.py",
+   "src": "program/logos.py",
+   "sha256": "60aa1f038ba3bb0842999bedbdb457c41fb761cba396cf6f1089716fefa4dce9",
    "exec": false
   },
   {
@@ -277,7 +283,7 @@
   {
    "path": "КАРТА_КОДА.md",
    "src": "program/КАРТА_КОДА.md",
-   "sha256": "354a047b5f62daf5fc42b8695790e32d5227b45eb860e72ea1cb7e5460bf6379",
+   "sha256": "5d9ee3b459f7028fd93459bc641ab52db92944b21dcfb67b6b8a38b52872d2c0",
    "exec": false
   },
   {

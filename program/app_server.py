@@ -243,9 +243,10 @@ class Cancelled(Exception):
 
 
 class Job:
-    def __init__(self, url, telegram, kind="url", files=None, title="", upload_dir=None, no_fee=False):
+    def __init__(self, url, telegram, kind="url", files=None, title="", upload_dir=None, no_fee=False, agency=False):
         self.id = secrets.token_hex(4)
         self.no_fee = bool(no_fee)    # «без комиссии» — строка сверху в описании
+        self.agency = bool(agency)    # «другое агентство» — стереть их логотип на фото
         self.kind = kind             # url — объявление с сайта; local — свои фото
         self.files = files or []
         self.title = title
@@ -278,7 +279,8 @@ class Job:
                 "f": os.path.basename(self.out) if self.out else None,
                 "facts": self.facts, "error": self.error, "tg": self.tg, "tg_error": self.tg_error,
                 "telegram": self.telegram, "log": self.log[-6:], "started": self.started,
-                "finished": self.finished, "thumbs": len(self.thumbs), "no_fee": self.no_fee}
+                "finished": self.finished, "thumbs": len(self.thumbs), "no_fee": self.no_fee,
+                "agency": self.agency}
 
 
 def facts_from_info(i):
@@ -413,9 +415,11 @@ def run_job(job):
             except Exception as e:
                 log("pending:", e)
         if job.kind == "local":
-            out, n = hermea.process_local(job.title, job.files, progress=progress, no_fee=job.no_fee)
+            out, n = hermea.process_local(job.title, job.files, progress=progress, no_fee=job.no_fee,
+                                         agency=job.agency)
         else:
-            out, n = hermea.process_listing(session(), hermea.clean_url(job.url), progress=progress, no_fee=job.no_fee)
+            out, n = hermea.process_listing(session(), hermea.clean_url(job.url), progress=progress,
+                                           no_fee=job.no_fee, agency=job.agency)
         job.out, job.n, job.name = out, n, os.path.basename(out)
         if job.kind == "url":
             add_to_links(job.url)
@@ -522,7 +526,7 @@ def extract_links(text):
     return urls
 
 
-def create_jobs(text, force, telegram, no_fee=False):
+def create_jobs(text, force, telegram, no_fee=False, agency=False):
     urls = extract_links(text)
     if not urls:
         return {"error": tr("no_links")}
@@ -541,7 +545,7 @@ def create_jobs(text, force, telegram, no_fee=False):
         if not force and cu in done:
             dups.append({"url": u, "f": find_flat_by_url(u), "active": False})
             continue
-        j = Job(u, telegram, no_fee=no_fee)
+        j = Job(u, telegram, no_fee=no_fee, agency=agency)
         with LOCK:
             JOBS.append(j)
         Q.put(j)
@@ -564,14 +568,14 @@ def save_upload(uid, name, data):
     return n
 
 
-def create_local(uid, title, telegram, no_fee=False):
+def create_local(uid, title, telegram, no_fee=False, agency=False):
     if not UPLOAD_RE.match(uid or ""):
         raise PermissionError("upload id")
     d = os.path.join(UPLOAD_ROOT, uid)
     files = sorted(os.path.join(d, n) for n in os.listdir(d)) if os.path.isdir(d) else []
     if not files:
         return {"error": tr("upload_none")}
-    j = Job("", telegram, kind="local", files=files, title=(title or "").strip()[:120], upload_dir=d, no_fee=no_fee)
+    j = Job("", telegram, kind="local", files=files, title=(title or "").strip()[:120], upload_dir=d, no_fee=no_fee, agency=agency)
     with LOCK:
         JOBS.append(j)
     Q.put(j)
@@ -1014,7 +1018,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True})
             if path == "/api/create":
                 tg = bool(body.get("telegram", SETTINGS.get("telegram", True)))
-                return self._send(200, create_jobs(body.get("text", ""), bool(body.get("force")), tg, bool(body.get("no_fee"))))
+                return self._send(200, create_jobs(body.get("text", ""), bool(body.get("force")), tg, bool(body.get("no_fee")),
+                                                    bool(body.get("agency"))))
             if path in ("/api/cancel", "/api/remove"):
                 job = next((j for j in JOBS if j.id == body.get("id")), None)
                 if not job:
@@ -1048,7 +1053,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, SETTINGS)
             if path == "/api/create_local":
                 tg = bool(body.get("telegram", SETTINGS.get("telegram", True)))
-                return self._send(200, create_local(body.get("u", ""), body.get("name", ""), tg, bool(body.get("no_fee"))))
+                return self._send(200, create_local(body.get("u", ""), body.get("name", ""), tg, bool(body.get("no_fee")),
+                                                     bool(body.get("agency"))))
             if path == "/api/search_add":
                 url = (body.get("url") or "").strip()
                 if not app_searches.is_search_url(url):

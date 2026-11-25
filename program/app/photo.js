@@ -191,6 +191,7 @@ function drawJob(j) {
   }
   $("#jTitle").textContent = j.name ? nice(j.name).title : (j.status === "queued" ? t("waiting") : (j.kind === "local" ? (j.title || t("own_title")) : t("st_listing")));
   if (j.no_fee) $("#jTitle").insertAdjacentHTML("beforeend", `<span class="nofee-tag">${esc(t("no_fee"))}</span>`);
+  if (j.agency) $("#jTitle").insertAdjacentHTML("beforeend", `<span class="nofee-tag">${esc(t("agency"))}</span>`);
   $("#jSub").textContent = j.kind === "local" ? t("own_title") : (j.name ? shortUrl(j.url) : j.url);
   $("#jSteps").innerHTML = stepsHtml(j);
   $("#jFacts").innerHTML = factsHtml(j.facts);
@@ -478,11 +479,12 @@ async function create(text, force) {
   const go = $("#go");
   go.disabled = true;
   try {
-    const r = await api("/api/create", { text, force: !!force, telegram: $("#tgSend").checked, no_fee: $("#noFee").checked });
+    const r = await api("/api/create", { text, force: !!force, telegram: $("#tgSend").checked, no_fee: $("#noFee").checked, agency: $("#agency").checked });
     if (r.error) throw new Error(r.error);
     if (r.search) { showSearchOffer(r.search); return; }
     if (r.added && r.added.length) {
       $("#noFee").checked = false;          // «без комиссии» — только для этих ссылок
+      $("#agency").checked = false;         // «другое агентство» — тоже
       if (link.value.trim() === text.trim()) { link.value = ""; fitLink(); }
       toast(r.added.length === 1 ? t("started") : t("added_n", { n: r.added.length, links: plural(r.added.length, "links") }));
       const busy = S.st && (S.st.jobs || []).some((j) => j.status === "running");
@@ -595,9 +597,10 @@ async function uploadOwn() {
       const r = await fetch(`/api/upload?u=${uid}&n=${encodeURIComponent(f.name)}`, { method: "POST", headers: { "X-Hermea": T }, body: f });
       if (!r.ok) { let m = "HTTP " + r.status; try { m = (await r.json()).error || m; } catch (e) {} throw new Error(m); }
     }
-    const r = await api("/api/create_local", { u: uid, name: own.name || "", telegram: $("#tgSend").checked, no_fee: $("#noFee").checked });
+    const r = await api("/api/create_local", { u: uid, name: own.name || "", telegram: $("#tgSend").checked, no_fee: $("#noFee").checked, agency: $("#agency").checked });
     if (r.error) throw new Error(r.error);
     $("#noFee").checked = false;
+    $("#agency").checked = false;
     S.own = null;
     $("#notice").hidden = true;
     toast(t("started"));
