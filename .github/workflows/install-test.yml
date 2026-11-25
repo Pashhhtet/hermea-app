@@ -21,7 +21,12 @@ jobs:
         shell: powershell
         run: |
           $root = Join-Path "${{ runner.temp }}" "Hermea Photo"
-          & (Join-Path $root "_program\.venv\Scripts\python.exe") tools\ci_smoke.py $root
+          $py = Join-Path $root "_program\.venv\Scripts\python.exe"
+          & $py tools\ci_smoke.py $root
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & $py tools\test_units.py
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & $py tools\test_api.py
           if ($LASTEXITCODE -ne 0) { exit 1 }
           if (-not (Test-Path ([Environment]::GetFolderPath("Desktop") + "\Hermea.lnk"))) { throw "no shortcut" }
   macos:
@@ -37,7 +42,10 @@ jobs:
         run: curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/install.sh | bash
       - name: Smoke test
         run: |
-          "$RUNNER_TEMP/Hermea Photo/_program/.venv/bin/python" tools/ci_smoke.py "$RUNNER_TEMP/Hermea Photo"
+          PY="$RUNNER_TEMP/Hermea Photo/_program/.venv/bin/python"
+          "$PY" tools/ci_smoke.py "$RUNNER_TEMP/Hermea Photo"
+          "$PY" tools/test_units.py
+          "$PY" tools/test_api.py
           test -x "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/MacOS/Hermea"
           test -f "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/Info.plist"
           plutil -lint "$RUNNER_TEMP/Hermea Photo/Hermea.app/Contents/Info.plist"

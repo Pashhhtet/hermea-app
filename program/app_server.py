@@ -1,7 +1,26 @@
-"""Сервер окна Hermea «Обработка фото» (запускается из hermea_app.py).
+"""Сервер окна Hermea (запускается из hermea_app.py).
 
 Только для этого компьютера: слушает 127.0.0.1, каждый запрос проверяется секретным ключом.
-Совместимо с Python 3.9.
+Совместимо с Python 3.9. Карта всего кода: КАРТА_КОДА.md рядом с этим файлом.
+
+Разделы этого файла (ищи по «# =====»):
+    вывод программы · настройки · Telegram · задания (обработка фото по ссылке и своих фото)
+    поиски · клиенты и договор · утро и фоновые проверки · HTTP (все адреса окна) · подбор · запуск
+
+Адреса окна (класс Handler):
+    GET  /                      страница окна (index.html с ключом и настройками)
+    GET  /app/<файл>            скрипты, стили, шрифты интерфейса
+    GET  /api/state             очередь заданий, Telegram, обновления, перезвоны на сегодня (окно спрашивает раз в 1–2 с)
+    GET  /api/flats, /api/flat  список готовых квартир и одна квартира;  /img — фото и превью;  /live — кадры в работе
+    GET  /api/search            один «Слежу за поиском»
+    GET  /api/svk               СВК за период
+    GET  /api/clients, /api/client, /api/match   клиенты, один клиент, подбор квартир клиенту
+    GET  /api/market, /api/owners, /api/calls    рынок, собственники (+ статистика звонков), перезвоны
+    POST /api/create, /api/create_local, /api/upload, /api/dismiss     задания на обработку фото
+    POST /api/settings, /api/opis, /api/telegram, /api/flush, /api/tgcheck, /api/open
+    POST /api/search_add | _check | _seen | _hide | _remove
+    POST /api/svk, /api/client, /api/contract_template, /api/match, /api/calls, /api/owners, /api/market_refresh
+    POST /api/update_check, /api/update_apply, /api/ping, /api/bye, /api/quit
 """
 import io
 import json
@@ -19,8 +38,6 @@ from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
-import cv2
-import numpy as np
 
 import hermea
 import app_i18n
@@ -33,17 +50,19 @@ import app_owners
 import app_calls
 import app_match
 import app_update
+import app_flats
+from app_flats import (safe_join, natural_key, flat_photos, read_meta, write_meta, read_opis, tail_value,  # noqa: F401
+                       parse_facts, list_flats, flat_detail, find_flat_by_url, today_stats, thumb_bytes, small_jpg)
 from app_i18n import tr
 
 PROG = hermea.PROG
 ROOT = hermea.ROOT
-KV = os.path.realpath(os.path.join(ROOT, "Квартиры"))
+KV = app_flats.KV
 UI_DIR = os.path.join(PROG, "app")
 PORT_FILE = os.path.join(PROG, ".app_port")
 SETTINGS_FILE = os.path.join(PROG, "app_settings.json")
-META = ".hermea.json"
 IDLE_EXIT = 180
-IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
+IMG_EXT = app_flats.IMG_EXT
 
 TOKEN = os.environ.get("HERMEA_TOKEN") or secrets.token_urlsafe(18)   # после обновления ключ тот же
 SRV = None
@@ -55,7 +74,6 @@ CURRENT = None            # задание, которое обрабатыва�
 LAST_SEEN = time.time()
 START_AT = time.time()
 CLOSED_AT = 0.0           # окно закрыли (страница прислала «пока»)
-FLATS_VERSION = 1
 TG = {"state": "checking", "key": "tg_checking", "hint_key": "", "bot": "", "detail": ""}
 SETTINGS = {"telegram": True, "theme": "auto", "lang": "ru", "scale": 100, "agent_name": "", "agent_level": 30}
 UPLOAD_ROOT = os.path.join(__import__("tempfile").gettempdir(), "hermea_uploads")
@@ -124,199 +142,6 @@ def save_settings():
         json.dump(SETTINGS, open(SETTINGS_FILE, "w", encoding="utf-8"), ensure_ascii=False)
     except Exception as e:
         log("settings:", e)
-
-
-# ======================================================================= квартиры
-def safe_join(base, rel):
-    p = os.path.realpath(os.path.join(base, rel))
-    if p != base and not p.startswith(base + os.sep):
-        raise PermissionError("путь вне папки")
-    return p
-
-
-def natural_key(name):
-    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", name)]
-
-
-def flat_photos(path):
-    """Готовые фото квартиры: hermea/p1_hermea.jpg… или (ручная обработка) просто фото в папке."""
-    ready = os.path.join(path, "hermea")
-    if os.path.isdir(ready):
-        names = [n for n in os.listdir(ready) if n.lower().endswith(IMG_EXT) and not n.startswith(".")]
-        return ["hermea/" + n for n in sorted(names, key=natural_key)]
-    names = [n for n in os.listdir(path) if n.lower().endswith(IMG_EXT) and not n.startswith(".")]
-    return sorted(names, key=natural_key)
-
-
-def read_meta(path):
-    try:
-        return json.load(open(os.path.join(path, META), encoding="utf-8"))
-    except Exception:
-        return {}
-
-
-def write_meta(path, **upd):
-    m = read_meta(path)
-    m.update(upd)
-    try:
-        json.dump(m, open(os.path.join(path, META), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    except Exception as e:
-        log("meta:", e)
-
-
-def read_opis(path):
-    p = os.path.join(path, "opis.txt")
-    if not os.path.exists(p):
-        return None, ""
-    txt = hermea.read_text(p)
-    if "\n---\n" in txt:
-        body, tail = txt.split("\n---\n", 1)
-    else:
-        body, tail = txt, ""
-    return body.strip("\n"), tail
-
-
-def tail_value(tail, key):
-    m = re.search(r"(?m)^" + re.escape(key) + r":\s*(.+)$", tail or "")
-    return m.group(1).strip() if m else ""
-
-
-def parse_facts(body):
-    facts = []
-    if not body:
-        return facts
-    for key, label in (("Оренда", "Аренда"), ("Адмін. платіж", "Czynsz"), ("Разом", "Всего"), ("Застава", "Залог")):
-        m = re.search(re.escape(key) + r":\s*([^\n]+)", body)
-        if m and m.group(1).strip() not in ("—", "-", ""):
-            facts.append({"label": label, "value": m.group(1).strip(), "main": key == "Разом"})
-    return facts
-
-
-_FLATS_CACHE = {"key": None, "data": None}
-
-
-def list_flats():
-    if not os.path.isdir(KV):
-        return []
-    try:
-        names = [n for n in os.listdir(KV) if not n.startswith((".", "_")) and os.path.isdir(os.path.join(KV, n))]
-    except OSError:
-        return []
-    key = (FLATS_VERSION, tuple(sorted((n, os.stat(os.path.join(KV, n)).st_mtime) for n in names)))
-    if _FLATS_CACHE["key"] == key:
-        return _FLATS_CACHE["data"]
-    out = []
-    for n in names:
-        p = os.path.join(KV, n)
-        try:
-            photos = flat_photos(p)
-            meta = read_meta(p)
-            when = os.stat(p).st_mtime
-            if meta.get("created"):
-                try:
-                    when = time.mktime(time.strptime(meta["created"], "%Y-%m-%d %H:%M"))
-                except Exception:
-                    pass
-            body, tail = read_opis(p)
-            url = meta.get("url") or tail_value(tail, "Оригинал")
-            out.append({"f": n, "name": n, "count": len(photos),
-                        "cover": f"{n}/{photos[0]}" if photos else None,
-                        "when": when, "url": url,
-                        "manual": "ручная обработка" in n})
-        except Exception as e:
-            log("flat", n, e)
-    out.sort(key=lambda x: -x["when"])
-    _FLATS_CACHE.update(key=key, data=out)
-    return out
-
-
-def flat_detail(name):
-    p = safe_join(KV, name)
-    if not os.path.isdir(p):
-        raise FileNotFoundError("папки уже нет")
-    meta = read_meta(p)
-    mp = meta.get("photos") or {}
-    items = []
-    for rel in flat_photos(p):
-        base = os.path.basename(rel)
-        src = mp.get(base)
-        orig = None
-        if src and os.path.exists(os.path.join(p, "oryginal", src)):
-            orig = f"{name}/oryginal/{src}"
-        items.append({"f": f"{name}/{rel}", "orig": orig, "name": base})
-    body, tail = read_opis(p)
-    url = meta.get("url") or tail_value(tail, "Оригинал")
-    oto = None
-    try:
-        oto = open(os.path.join(p, "opis_otodom.txt"), encoding="utf-8").read()
-    except Exception:
-        pass
-    return {"f": name, "name": name, "photos": items, "opis": body, "has_opis": body is not None, "otodom": oto,
-            "facts": parse_facts(body), "url": url, "site": meta.get("site") or tail_value(tail, "Сайт"),
-            "telegram": meta.get("telegram"), "created": meta.get("created"), "kind": meta.get("kind")}
-
-
-def find_flat_by_url(url):
-    cu = hermea.clean_url(url)
-    for f in list_flats():
-        if f.get("url") and hermea.clean_url(f["url"]) == cu:
-            return f["f"]
-    return None
-
-
-def today_stats(flats):
-    t0 = time.mktime(time.strptime(time.strftime("%Y-%m-%d"), "%Y-%m-%d"))
-    today = [f for f in flats if f["when"] >= t0]
-    return {"flats": len(today), "photos": sum(f["count"] for f in today)}
-
-
-# ======================================================================= картинки
-_THUMBS = OrderedDict()
-
-
-def thumb_bytes(path, w):
-    st = os.stat(path)
-    key = (path, st.st_mtime, w)
-    with LOCK:
-        if key in _THUMBS:
-            _THUMBS.move_to_end(key)
-            return _THUMBS[key]
-    data = np.fromfile(path, np.uint8)
-    flag = cv2.IMREAD_COLOR
-    try:
-        from PIL import Image
-        side = max(Image.open(path).size)
-        for f, fl in ((8, cv2.IMREAD_REDUCED_COLOR_8), (4, cv2.IMREAD_REDUCED_COLOR_4), (2, cv2.IMREAD_REDUCED_COLOR_2)):
-            if side / f >= w * 1.05:
-                flag = fl
-                break
-    except Exception:
-        pass
-    img = cv2.imdecode(data, flag)
-    if img is None:
-        raise ValueError("не картинка")
-    h, wd = img.shape[:2]
-    if max(h, wd) > w:
-        k = w / max(h, wd)
-        img = cv2.resize(img, (max(1, int(wd * k)), max(1, int(h * k))), interpolation=cv2.INTER_AREA)
-    ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 86])
-    b = buf.tobytes()
-    with LOCK:
-        _THUMBS[key] = b
-        while len(_THUMBS) > 500:
-            _THUMBS.popitem(last=False)
-    return b
-
-
-def small_jpg(jpg, w=560):
-    img = cv2.imdecode(np.frombuffer(jpg, np.uint8), cv2.IMREAD_REDUCED_COLOR_2)
-    if img is None:
-        return jpg
-    h, wd = img.shape[:2]
-    if max(h, wd) > w:
-        k = w / max(h, wd)
-        img = cv2.resize(img, (int(wd * k), int(h * k)), interpolation=cv2.INTER_AREA)
-    return cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 84])[1].tobytes()
 
 
 # ======================================================================= Telegram
@@ -555,7 +380,7 @@ def friendly(e):
 
 
 def run_job(job):
-    global CURRENT, FLATS_VERSION
+    global CURRENT
     job.status, job.step, job.started = "running", "listing", time.time()
     CURRENT = job
     log("▶", job.url or job.title)
@@ -634,7 +459,7 @@ def run_job(job):
         job.finished = time.time()
         CURRENT = None
         with LOCK:
-            FLATS_VERSION += 1
+            app_flats.STATE["version"] += 1
 
 
 def remove_partial(job, always=False):
@@ -817,6 +642,7 @@ def client_op(body):
     return {"client": c, "svk": svk_events(ev)}
 
 
+# ======================================================================= утро и фоновые проверки
 def calls_notify(n, names):
     notify(tr("calls_title", n=n), ", ".join(names), {"mode": "owners", "calls": 1})
 
@@ -966,7 +792,7 @@ def state():
                                      or (j.finished and time.time() - j.finished < 3600))
                 and not (j.status == "error" and key(j) in ok_urls)][-12:]
     return {"busy": busy(), "jobs": jobs, "tg": tg_public(), "settings": SETTINGS, "pending": pending_list(),
-            "today": today_stats(flats), "flats_version": FLATS_VERSION, "warm": WARM["state"],
+            "today": today_stats(flats), "flats_version": app_flats.STATE["version"], "warm": WARM["state"],
             "searches": app_searches.summary(), "update": update_public(), "version": app_update.local_version(),
             "svk_touched": app_svk.today_touched(), "notes": NOTES[-10:], "calls_due": app_calls.due_count()}
 
@@ -1052,7 +878,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, state())
             if path == "/api/flats":
                 flats = list_flats()
-                return self._send(200, {"flats": flats, "version": FLATS_VERSION, "today": today_stats(flats)})
+                return self._send(200, {"flats": flats, "version": app_flats.STATE["version"], "today": today_stats(flats)})
             if path == "/api/search":
                 d = app_searches.detail((q.get("id") or [""])[0])
                 return self._send(200, d) if d else self._send(404, {"error": tr("search_not_found")})
@@ -1318,6 +1144,11 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(403, {"error": tr("no_access")})
         except (BrokenPipeError, ConnectionResetError):
             pass
+        except (ValueError, KeyError) as e:           # неверный запрос от окна: ответ 400, программа в порядке
+            try:
+                return self._send(400, {"error": friendly(e)})
+            except Exception:
+                pass
         except Exception as e:
             traceback.print_exc()
             try:
@@ -1326,6 +1157,7 @@ class Handler(BaseHTTPRequestHandler):
                 pass
 
 
+# ======================================================================= закрытие, подбор, запуск
 def shutdown():
     log("выход")
     try:
@@ -1365,12 +1197,19 @@ def match_new_counts():
 
 
 def watchdog():
-    """Закрываемся, когда окна нет и работы нет: сразу после закрытия окна или через 3 минуты тишины."""
+    """Закрываемся, когда окна нет и работы нет: сразу после закрытия окна или через 3 минуты тишины.
+    Сон компьютера тишиной не считается: после пробуждения окну даём время снова отозваться."""
+    global LAST_SEEN
+    prev = time.time()
     while True:
         time.sleep(2)
+        now = time.time()
+        if now - prev > 30:              # часы прыгнули: компьютер спал, а не окно молчало
+            log(f"компьютер спал {int(now - prev)} с — жду окно")
+            LAST_SEEN = now
+        prev = now
         if busy():
             continue
-        now = time.time()
         closed = CLOSED_AT and LAST_SEEN < CLOSED_AT and now - CLOSED_AT > 4
         if closed or now - LAST_SEEN > IDLE_EXIT:
             shutdown()
@@ -1408,14 +1247,15 @@ def serve(open_window_fn=None, preferred_port=47615, running_instance=None):
     sys.stdout = Tee(sys.__stdout__)
     log(f"Hermea: окно на порту {PORT}")
     WORKER.start()
-    threading.Thread(target=tg_check, daemon=True).start()
     threading.Thread(target=watchdog, daemon=True).start()
-    threading.Thread(target=app_searches.loop, args=(search_session, on_search_new, log), daemon=True).start()
-    threading.Thread(target=update_loop, daemon=True).start()
-    threading.Thread(target=svk_reminder_loop, daemon=True).start()
-    threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
-    threading.Thread(target=app_owners.loop, args=(search_session, log), daemon=True).start()
-    threading.Thread(target=digest_loop, daemon=True).start()
+    if not os.environ.get("HERMEA_OFFLINE"):          # автотесты: без сети и фоновых проверок
+        threading.Thread(target=tg_check, daemon=True).start()
+        threading.Thread(target=app_searches.loop, args=(search_session, on_search_new, log), daemon=True).start()
+        threading.Thread(target=update_loop, daemon=True).start()
+        threading.Thread(target=svk_reminder_loop, daemon=True).start()
+        threading.Thread(target=app_market.loop, args=(search_session, log), daemon=True).start()
+        threading.Thread(target=app_owners.loop, args=(search_session, log), daemon=True).start()
+        threading.Thread(target=digest_loop, daemon=True).start()
     url = f"http://127.0.0.1:{PORT}/?t={TOKEN}"
     if open_window_fn:
         threading.Thread(target=open_window_fn, args=(url,), daemon=True).start()

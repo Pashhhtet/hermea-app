@@ -1,9 +1,9 @@
 {
- "version": "1.8.1",
+ "version": "1.9.0",
  "notes": {
-  "ru": "OLX: «платит за поднятие» теперь только при платном поднятии. Статистика звонков не мигает во время обновления списка.",
-  "uk": "OLX: «платить за підняття» тепер лише при платному піднятті. Статистика дзвінків не блимає під час оновлення списку.",
-  "pl": "OLX: «płaci za podbicie» tylko przy płatnym podbiciu. Statystyka telefonów nie miga podczas odświeżania listy."
+  "ru": "Порядок в коде и защита от ошибок: Hermea больше не закрывается сама после сна Мака, старые копии обновлений не копятся, неверный запрос не роняет программу. Окно разложено по понятным файлам, перед каждым обновлением программа сама проверяет все вкладки и переводы. Кнопки «Откуда лид» больше не вылезают за край.",
+  "uk": "Лад у коді й захист від помилок: Hermea більше не закривається сама після сну Mac, старі копії оновлень не накопичуються, неправильний запит не валить програму. Вікно розкладено по зрозумілих файлах, перед кожним оновленням програма сама перевіряє всі вкладки й переклади. Кнопки «Звідки лід» більше не вилазять за край.",
+  "pl": "Porządek w kodzie i ochrona przed błędami: Hermea nie zamyka się już sama po uśpieniu Maca, stare kopie aktualizacji się nie gromadzą, błędne zapytanie nie zawiesza programu. Okno podzielone na czytelne pliki, przed każdą aktualizacją program sam sprawdza wszystkie zakładki i tłumaczenia. Przyciski «Skąd lead» nie wychodzą już poza ramkę."
  },
  "pip": [
   "pypdf>=4",
@@ -41,6 +41,12 @@
    "exec": false
   },
   {
+   "path": "app/base.css",
+   "src": "program/app/base.css",
+   "sha256": "1994eb09c83a85b0b65ad4cba306c9e462ca199ef72da0c05aa278f1690f9cea",
+   "exec": false
+  },
+  {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
    "sha256": "88c10ed5c4dc6f64fbb3c68ac533b492be8f2480eb6908e11ef303f6bf73d903",
@@ -49,7 +55,13 @@
   {
    "path": "app/clients.js",
    "src": "program/app/clients.js",
-   "sha256": "2be056e52cf6c1095864b2249cc0a037becf4d2d7f26d4ea15fa2ca64894980e",
+   "sha256": "8082190d8de9810b21267decfb4a434aed9cbee1bd134822c4ee2808cf2c7390",
+   "exec": false
+  },
+  {
+   "path": "app/core.js",
+   "src": "program/app/core.js",
+   "sha256": "85ae66a7fc1b237762cbfd75457ed8040a58d731cb40107a05623e7a21789409",
    "exec": false
   },
   {
@@ -65,9 +77,15 @@
    "exec": false
   },
   {
+   "path": "app/i18n.js",
+   "src": "program/app/i18n.js",
+   "sha256": "8b6548dc5a833e35986b38d898e328b3ee6456f0f451f8bd61a46859d3ee6605",
+   "exec": false
+  },
+  {
    "path": "app/index.html",
    "src": "program/app/index.html",
-   "sha256": "2631e87c11c67979157febb4e8404fd0fc448174f2b8270265ae83e52bb451ec",
+   "sha256": "edfbb6daec2b27d38d6603f1d5b0c5e11a46484bfb28bb3889d2730a06e2d4c7",
    "exec": false
   },
   {
@@ -95,6 +113,18 @@
    "exec": false
   },
   {
+   "path": "app/photo.css",
+   "src": "program/app/photo.css",
+   "sha256": "9ae8b8bfb036cfd4e6dd990a78228a829b69ca633dfaec7990a7c09c8bf87ec9",
+   "exec": false
+  },
+  {
+   "path": "app/photo.js",
+   "src": "program/app/photo.js",
+   "sha256": "9eaa266eb4e51d6c587216b017165c89b4ba7ba99b32d567a332c00f28a31230",
+   "exec": false
+  },
+  {
    "path": "app/svk.css",
    "src": "program/app/svk.css",
    "sha256": "2e9bca0e48f07e8abe379f88ba00c63a0832048a8529401bfff4eec3cbf34703",
@@ -115,7 +145,7 @@
   {
    "path": "app_calls.py",
    "src": "program/app_calls.py",
-   "sha256": "5e94c0b1bc0c42bac983337b5274a520657b12dc0db9a69e4277524bcbeb08ee",
+   "sha256": "8acd9fda35c4edd399a97989df4ce01a9115fc0df34504b39a6a637e3646649c",
    "exec": false
   },
   {
@@ -128,6 +158,12 @@
    "path": "app_contract.py",
    "src": "program/app_contract.py",
    "sha256": "73093d53d1d6ac5f338a2655f4c17414f9f54fd8388c5e0230c89aff59e0ef6f",
+   "exec": false
+  },
+  {
+   "path": "app_flats.py",
+   "src": "program/app_flats.py",
+   "sha256": "a5bf4e824f076f9c1224eca0076a8be031e794365d6676253a50b1c12dd29ec3",
    "exec": false
   },
   {
@@ -151,7 +187,7 @@
   {
    "path": "app_owners.py",
    "src": "program/app_owners.py",
-   "sha256": "251f60d10862323150bf2da8b4afb8f981fd88a68297c594994aad23367a0cef",
+   "sha256": "dd2f03c6e8e9fab844fb8050e0ab3865ef098d004ea4f4bb634bb98c4b5f89d8",
    "exec": false
   },
   {
@@ -163,7 +199,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "0790adbc102e444ec5381e9001a140941810b95b935486e6ad4e8647253293ef",
+   "sha256": "b72ee19b54e00b4599c93573157b48215cfdab9aeeb1ae01a8aede0fe6cb12b8",
    "exec": false
   },
   {
@@ -175,7 +211,7 @@
   {
    "path": "app_update.py",
    "src": "program/app_update.py",
-   "sha256": "e84378b5ee2c82c04da0d7939e630d14f75b280b65ff585f908ca85796e0c7d5",
+   "sha256": "cf1ceb51ee70e735f0a2f7163ac059934fefe9fa2df9db0ce1ea895ca0031bdd",
    "exec": false
   },
   {
@@ -193,13 +229,13 @@
   {
    "path": "hermea.py",
    "src": "program/hermea.py",
-   "sha256": "662837806e0cd9ed9d05840f4f7f84ea8bd1a6085b2c729771357abb6ad69d4d",
+   "sha256": "ddc0ef5f15e97ac0471b675ad72770dc0a782a5855de07eca67b883b390cac75",
    "exec": false
   },
   {
    "path": "hermea_app.py",
    "src": "program/hermea_app.py",
-   "sha256": "79a4301ce1eac7cd44adfd4ee723f7793c0c28f11d5b424e2ddf0f31bcdf327b",
+   "sha256": "30f7b7c168b08da7ef78a87c400962e0ffb9d5e073258acb1c98040560814e9b",
    "exec": false
   },
   {
@@ -217,7 +253,7 @@
   {
    "path": "quality.py",
    "src": "program/quality.py",
-   "sha256": "6e3e139ff8930fd900dce24c35023cc958e4f75c4fa5aee122e0d1ad11748133",
+   "sha256": "44d1a70d43e16788e824eab50d65f8c3b3e3bef27e7de0cb36e89d3e7ea5be79",
    "exec": false
   },
   {
@@ -236,6 +272,12 @@
    "path": "КАК ПОЛЬЗОВАТЬСЯ.txt",
    "src": "program/КАК ПОЛЬЗОВАТЬСЯ.txt",
    "sha256": "6362ef37c6e2f72b89a454963d6bfb017787f3ae369ba3b899f75fc18bbb443c",
+   "exec": false
+  },
+  {
+   "path": "КАРТА_КОДА.md",
+   "src": "program/КАРТА_КОДА.md",
+   "sha256": "354a047b5f62daf5fc42b8695790e32d5227b45eb860e72ea1cb7e5460bf6379",
    "exec": false
   },
   {

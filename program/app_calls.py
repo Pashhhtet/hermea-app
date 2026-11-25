@@ -213,21 +213,3 @@ def public():
     with LOCK:
         items = [dict(x, phone_pretty=pretty_phone(x.get("phone", ""))) for x in DATA["items"]]
     return {"items": items, "today": today().isoformat(), "due": due_count()}
-
-
-def loop(notify, log):
-    """Утром (9:30) — одно напоминание со списком, кому сегодня перезвонить."""
-    while True:
-        try:
-            now = dt.datetime.now()
-            d = now.date().isoformat()
-            if (now.hour, now.minute) >= REMIND_AT and DATA.get("notified") != d:
-                lst = due()
-                if lst:
-                    names = [(x.get("title") or x.get("street") or pretty_phone(x.get("phone", "")))[:40] for x in lst[:4]]
-                    notify(len(lst), names)
-                DATA["notified"] = d
-                _save()
-        except Exception as e:
-            log("перезвоны:", e)
-        time.sleep(60)

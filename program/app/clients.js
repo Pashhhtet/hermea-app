@@ -459,7 +459,6 @@ function fillTpl(text, vals) {
   });
   return { out, missing: [...missing] };
 }
-const VAR_LABEL = { v_address: "v_address", v_date: "v_date", v_time: "time", v_price: "price", v_link: "v_link" };
 function drawMessages(body) {
   const c = CLS.c || {};
   const lang = CLS.tplLang || c.lang || "ua";

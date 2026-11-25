@@ -138,5 +138,10 @@
   "ru": "OLX: «платит за поднятие» теперь только при платном поднятии. Статистика звонков не мигает во время обновления списка.",
   "uk": "OLX: «платить за підняття» тепер лише при платному піднятті. Статистика дзвінків не блимає під час оновлення списку.",
   "pl": "OLX: «płaci za podbicie» tylko przy płatnym podbiciu. Statystyka telefonów nie miga podczas odświeżania listy."
+ },
+ "1.9.0": {
+  "ru": "Порядок в коде и защита от ошибок: Hermea больше не закрывается сама после сна Мака, старые копии обновлений не копятся, неверный запрос не роняет программу. Окно разложено по понятным файлам, перед каждым обновлением программа сама проверяет все вкладки и переводы. Кнопки «Откуда лид» больше не вылезают за край.",
+  "uk": "Лад у коді й захист від помилок: Hermea більше не закривається сама після сну Mac, старі копії оновлень не накопичуються, неправильний запит не валить програму. Вікно розкладено по зрозумілих файлах, перед кожним оновленням програма сама перевіряє всі вкладки й переклади. Кнопки «Звідки лід» більше не вилазять за край.",
+  "pl": "Porządek w kodzie i ochrona przed błędami: Hermea nie zamyka się już sama po uśpieniu Maca, stare kopie aktualizacji się nie gromadzą, błędne zapytanie nie zawiesza programu. Okno podzielone na czytelne pliki, przed każdą aktualizacją program sam sprawdza wszystkie zakładki i tłumaczenia. Przyciski «Skąd lead» nie wychodzą już poza ramkę."
  }
 }

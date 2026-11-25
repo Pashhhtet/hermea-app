@@ -122,6 +122,18 @@ def _missing_pip(specs):
     return miss
 
 
+def prune_backups(keep=3):
+    """Копии файлов до обновления (_backup) нужны, чтобы откатиться; хватает трёх последних."""
+    root = os.path.join(PROG, "_backup")
+    try:
+        dirs = sorted((d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))),
+                      key=lambda d: os.path.getmtime(os.path.join(root, d)))
+    except OSError:
+        return
+    for d in dirs[:-keep]:
+        shutil.rmtree(os.path.join(root, d), ignore_errors=True)
+
+
 def apply(log=print):
     """Скачивает и ставит обновление. Возвращает новую версию; перезапуск делает вызывающий."""
     c = conf()
@@ -160,6 +172,7 @@ def apply(log=print):
             subprocess.run([sys.executable, "-m", "pip", "install", "-q"] + miss, timeout=3600, check=True)
         with open(os.path.join(PROG, "VERSION"), "w", encoding="utf-8") as fh:
             fh.write(str(m.get("version")) + "\n")
+        prune_backups()
         STATE.update(state="restarting", version=m.get("version"))
         return m.get("version")
     except Exception as e:

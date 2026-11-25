@@ -8,7 +8,8 @@
 
 * `program/` — содержимое папки `_program`
 * `bundle/` — содержимое `Hermea.app`
-* новая версия: поменять файлы, дописать заметки в `tools/notes.json`, запустить `python3 tools/build_manifest.py X.Y.Z`, закоммитить.
+* новая версия: поменять файлы, дописать заметки в `tools/notes.json`, запустить `python3 tools/build_manifest.py X.Y.Z` (сначала сам прогоняет все проверки `tools/check.py`), закоммитить.
+* что где лежит в коде — `program/КАРТА_КОДА.md`; правила работы с проектом — `CLAUDE.md`.
 
 Токен Telegram, модели и личные данные (`telegram.txt`, `app_*.json`, `*.pt`) сюда не попадают.
 

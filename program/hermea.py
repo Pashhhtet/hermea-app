@@ -409,7 +409,7 @@ def _save_chat(chat):
 def tg_setup():
     token, chat = tg_config()
     if not os.path.exists(TG_CONF):
-        print(f"Telegram: выключен — не нашёл файл telegram.txt (искал рядом с программой).")
+        print("Telegram: выключен — не нашёл файл telegram.txt (искал рядом с программой).")
         return None, None
     if not token:
         print(f"Telegram: выключен — в telegram.txt пустая строка TOKEN= ({TG_CONF})")

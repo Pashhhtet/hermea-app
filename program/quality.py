@@ -6,7 +6,6 @@ sharpen(img)           — резкость только по яркости, б
 Совместимо с Python 3.9.
 """
 import math
-import os
 
 import cv2
 import numpy as np
