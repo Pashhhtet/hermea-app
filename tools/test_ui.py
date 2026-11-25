@@ -13,6 +13,13 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import test_api  # noqa: E402
 
+# консоль Windows (cp1252) не печатает кириллицу и польские буквы
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 OUT = "/tmp/hermea_ui"
 
 

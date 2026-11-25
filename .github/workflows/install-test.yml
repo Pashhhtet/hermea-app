@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["install.ps1", "install.sh", "tools/ci_smoke.py", ".github/workflows/install-test.yml", "program/**"]
+    paths: ["install.ps1", "install.sh", "tools/**", ".github/workflows/install-test.yml", "program/**"]
 jobs:
   windows:
     runs-on: windows-latest

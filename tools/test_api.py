@@ -15,6 +15,13 @@ import time
 import urllib.error
 import urllib.request
 
+# консоль Windows (cp1252) не печатает кириллицу и польские буквы
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), "program")
 SKIP = {".venv", "__pycache__", "models", "_backup", "templates", "_test_color"}
@@ -49,7 +56,8 @@ def make_root():
     os.makedirs(os.path.join(flat, "hermea"))
     for k in range(2):
         img = np.full((300, 400, 3), 120 + k * 40, np.uint8)
-        cv2.imwrite(os.path.join(flat, "hermea", f"p{k + 1}_hermea.jpg"), img)
+        # cv2.imwrite на Windows не понимает русские буквы в пути — пишем байты сами
+        open(os.path.join(flat, "hermea", f"p{k + 1}_hermea.jpg"), "wb").write(cv2.imencode(".jpg", img)[1].tobytes())
     open(os.path.join(flat, "opis.txt"), "w", encoding="utf-8").write(
         "Квартира на Мокотуві\nОренда: 3 800 zł\nРазом: 4 300 zł\n\n---\nОригинал: https://www.otodom.pl/pl/oferta/test-ID4TEST\n")
     json.dump({"created": time.strftime("%Y-%m-%d %H:%M"), "url": "https://www.otodom.pl/pl/oferta/test-ID4TEST"},
@@ -70,7 +78,8 @@ def make_root():
 def start():
     """Тестовая папка + запущенный сервер -> (root, процесс, адрес, ключ)."""
     root, prog = make_root()
-    env = dict(os.environ, HERMEA_OFFLINE="1", HERMEA_PORT=str(free_port()), PYTHONDONTWRITEBYTECODE="1")
+    env = dict(os.environ, HERMEA_OFFLINE="1", HERMEA_PORT=str(free_port()), PYTHONDONTWRITEBYTECODE="1",
+               PYTHONIOENCODING="utf-8")
     p = subprocess.Popen([sys.executable, os.path.join(prog, "hermea_app.py"), "--no-window"], cwd=prog, env=env,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     port_file = os.path.join(prog, ".app_port")

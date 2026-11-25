@@ -15,6 +15,13 @@ import app_owners  # noqa: E402
 import app_searches  # noqa: E402
 import otodom_text  # noqa: E402
 
+# консоль Windows (cp1252) не печатает кириллицу и польские буквы
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 FAILS = []
 
 

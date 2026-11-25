@@ -10,6 +10,13 @@ import shutil
 import subprocess
 import sys
 
+# консоль Windows (cp1252) не печатает кириллицу и польские буквы
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 PY = sys.executable
