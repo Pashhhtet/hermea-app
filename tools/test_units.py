@@ -9,6 +9,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "program"))
 
 import app_calls  # noqa: E402
+import app_copies  # noqa: E402
 import app_i18n  # noqa: E402
 import app_match  # noqa: E402
 import app_owners  # noqa: E402
@@ -139,6 +140,64 @@ extra = float(((m > 0) & (cv2.dilate(logo, np.ones((61, 61), np.uint8)) == 0)).m
 eq("логотип: найден почти весь (≥ 90%)", cover >= 0.9, True)
 eq("логотип: лишнего почти нет (< 0.5% фото)", extra < 0.005, True)
 eq("логотип: 2 фото мало — не ищем", logos.find_masks([stamp(i) for i in clean[:2]]), [None, None])
+
+
+# ---------------------------------------------------------------- та же квартира у агентств
+yy, xx = np.mgrid[0:240, 0:320]
+pic = np.zeros((240, 320, 3))
+pic[..., 2], pic[..., 1], pic[..., 0] = (xx * 7 + yy * 3) % 256, (xx * yy) % 256, ((xx ^ yy) * 5) % 256
+# то же значение считает окно браузера, на котором подбирали порог (проверено вручную)
+eq("копии: хеш фото как при подборе порога", app_copies.dhash_array(pic),
+   "552c0aaaaaaaaa355555555550caaaaaaaaaaa55555555551aaaaaaaaaa9e555")
+room = np.zeros((480, 640, 3), np.uint8)
+rng = np.random.default_rng(1)
+for _ in range(30):
+    c = tuple(int(v) for v in rng.integers(0, 255, 3))
+    cv2.rectangle(room, tuple(int(v) for v in rng.integers(0, 640, 2)), tuple(int(v) for v in rng.integers(0, 640, 2)), c, -1)
+room = cv2.GaussianBlur(room, (9, 9), 0)
+h0 = app_copies.dhash(cv2.imencode(".jpg", cv2.resize(room, (320, 240)), [cv2.IMWRITE_JPEG_QUALITY, 85])[1].tobytes())
+copy = room.copy()
+cv2.putText(copy, "AGENCJA", (420, 460), cv2.FONT_HERSHEY_DUPLEX, 1.2, (255, 255, 255), 2)     # копия с логотипом
+h1 = app_copies.dhash(cv2.imencode(".jpg", cv2.resize(copy, (320, 240)), [cv2.IMWRITE_JPEG_QUALITY, 60])[1].tobytes())
+h2 = app_copies.dhash(cv2.imencode(".jpg", cv2.resize(cv2.flip(room, 0), (320, 240)))[1].tobytes())
+eq("копии: то же фото с логотипом агентства — близко", app_copies.distance(h0, h1) <= app_copies.PHOTO_MAX, True)
+eq("копии: другое фото — далеко", app_copies.distance(h0, h2) > app_copies.PHOTO_MAX + 20, True)
+eq("копии: улица без «ul.», номера и диакритики", app_copies.street_key("ul. Bukowińskiej 22"), "bukowinskiej")
+eq("копии: та же улица в другом падеже и без имени", (app_copies.same_street("ul. Bukowińska", "Bukowińskiej 22"),
+   app_copies.same_street("ul. Jana Pawła Woronicza", "Woronicza 15"), app_copies.same_street("Kolska", "Kolejowa"),
+   app_copies.same_street("", "Kolska")), (True, True, False, None))
+eq("копии: ссылка на маленькое фото", app_copies.small("https://x.olxcdn.com/v1/f/image;s=640x480"), "https://x.olxcdn.com/v1/f/image;s=320x240")
+own = {"id": "1", "district": "Mokotów", "rooms": "3", "area": 80, "price": 6000, "street": "ul. Bukowińska", "floor": "SEVENTH"}
+eq("копии: поиск Otodom с фильтрами", app_copies.otodom_url(dict(own, district="Praga-Południe")),
+   "https://www.otodom.pl/pl/wyniki/wynajem/mieszkanie/mazowieckie/warszawa/warszawa/warszawa/praga--poludnie"
+   "?limit=72&roomsNumber=%5BTHREE%5D&areaMin=79&areaMax=81&priceMin=5100&priceMax=6900")
+eq("копии: поиск OLX среди бизнеса", "owner_type=business" in app_copies.olx_url(own) and "filter_enum_rooms%5B0%5D=three" in app_copies.olx_url(own), True)
+cands = [dict(id="a", src="otodom", url="ua", agency="A", price=6200, area=80, rooms="3", street="Bukowińska 22", floor="SEVENTH", district="Mokotów"),
+         dict(id="b", src="otodom", url="ub", agency="B", price=5900, area=80, rooms="3", street="Bukowińska", floor="SECOND", district="Mokotów"),
+         dict(id="c", src="otodom", url="uc", agency="C", price=6000, area=80, rooms="3", street="Puławska", floor="SEVENTH", district="Mokotów"),
+         dict(id="d", src="olx", url="ud", agency="Hermea Real Estate", price=6000, area=80, rooms="3", street="", floor="", district="Mokotów"),
+         dict(id="e", src="olx", url="ue", agency="E", price=6000, area=80, rooms="3", street="", floor="", district="Wola")]
+ph = {"a": [h2], "b": [h2], "c": [h0], "d": [h1], "e": [h0]}
+got = app_copies.compare(own, cands, [h0], lambda c: ph[c["id"]])
+eq("копии: улица+этаж+площадь или фото; чужая улица, другой этаж и другой район — нет",
+   sorted((c["url"], c["how"], c["ours"]) for c in got), [("ua", "place", False), ("ud", "photo", True)])
+a = {"why": [], "copies": {"items": got}}
+eq("копии: «уже у нас» не агентство; только улица и этаж — «похоже»",
+   [w for w in app_owners.score(a, "2026-11-25")[1] if w[0].startswith("agency")], [["agency_maybe", 1]])
+a = {"why": [], "copies": {"items": [dict(next(c for c in got if not c["ours"]), how="photo")]}}
+eq("копии: те же фото — с агентствами работает", [w for w in app_owners.score(a, "2026-11-25")[1] if w[0].startswith("agency")], [["agency", 1]])
+otod = {"data": {"searchAds": {"items": [
+    {"id": 5, "slug": "x-ID5", "isPrivateOwner": False, "areaInSquareMeters": 80, "roomsNumber": "THREE", "totalPrice": {"value": 6100},
+     "floorNumber": "SEVENTH", "agency": {"name": "Two Steps"}, "images": [{"url": "https://i/1;s=184x138"}],
+     "location": {"address": {"street": {"name": "ul. Bukowińska"}}}},
+    {"id": 6, "slug": "y-ID6", "isPrivateOwner": True}]}}}
+po = app_copies.parse_otodom(otod)
+eq("копии: из поиска Otodom только агентства", [(c["id"], c["agency"], c["floor"], c["street"]) for c in po], [("5", "Two Steps", "SEVENTH", "Bukowińska")])
+ol = app_copies.parse_olx({"data": [
+    {"id": 9, "url": "u9", "params": [P("price", {"value": 6000}), P("m", {"key": "80"}), P("rooms", {"key": "three"})],
+     "location": {"district": {"name": "Mokotów"}}, "user": {"name": "Biuro"}, "photos": [{"link": "https://i/{width}x{height}"}]},
+    {"id": 10, "external_url": "https://www.otodom.pl/pl/oferta/z-ID1"}]})
+eq("копии: из OLX без копий Otodom", [(c["id"], c["price"], c["area"], c["rooms"]) for c in ol], [("olx-9", 6000, 80, "3")])
 
 # ---------------------------------------------------------------- переводы сервера
 for k, v in app_i18n.MSG.items():

@@ -26,6 +26,11 @@ ru: {
   ow_obj: "Если возражает",
   w_days: "{n} дн. на сайте", w_old: "объявлению {n} мес., выставлено снова", w_drop: "цену снизили на {n} zł", w_relisted: "перевыставлено",
   w_pushed: "платит за поднятие", w_promoted: "платная реклама", w_above: "дороже рынка на {n}%", w_photos: "всего {n} фото",
+  w_agency: "у агентств: {n}", w_agency_maybe: "похоже, у агентств: {n}", ag_maybe: "Похоже, эта квартира есть у агентств: та же улица, этаж и площадь, но фото другие. Сверь по ссылке", ag_title: "Агентства", ag_yes: "С агентствами работает: эта квартира уже есть у агентств", ag_no: "Агентства не хочет: пишет «без посредников»",
+  ag_pos: "Пишет, что агенты приветствуются", ag_none: "У агентств эту квартиру не нашли (Otodom и OLX)", ag_unk: "У агентств ещё не искали",
+  ag_check: "Найти у агентств", ag_again: "Проверить ещё раз", ag_checking: "Ищу на Otodom и OLX…", ag_err: "Сайт не ответил, попробуй позже",
+  ag_photo: "фото совпали", ag_place: "улица, этаж и площадь те же, фото другие", ag_ours: "уже у нас", ag_checked: "проверено {d}",
+  ag_note: "Копия у агентства не всегда значит договор с собственником: бывает, объявления копируют без спроса.", ow_copies_run: "Ищу у агентств: {n} из {t}…",
   w_neg: "пишет «без посредников»", w_pos: "агенты приветствуются", w_empty: "давно пустует", w_short: "короткое описание", w_others: "{n} объявл. у владельца", w_many: "{n} объявлений: похоже на компанию",
 },
 uk: {
@@ -51,6 +56,11 @@ uk: {
   ow_obj: "Якщо заперечує",
   w_days: "{n} дн. на сайті", w_old: "оголошенню {n} міс., виставлено знову", w_drop: "ціну знизили на {n} zł", w_relisted: "перевиставлено",
   w_pushed: "платить за підняття", w_promoted: "платна реклама", w_above: "дорожче ринку на {n}%", w_photos: "лише {n} фото",
+  w_agency: "в агентств: {n}", w_agency_maybe: "схоже, в агентств: {n}", ag_maybe: "Схоже, ця квартира є в агентств: та сама вулиця, поверх і площа, але фото інші. Звір за посиланням", ag_title: "Агентства", ag_yes: "З агентствами працює: ця квартира вже є в агентств", ag_no: "Агентств не хоче: пише «без посередників»",
+  ag_pos: "Пише, що агентів запрошує", ag_none: "В агентств цю квартиру не знайшли (Otodom і OLX)", ag_unk: "В агентств ще не шукали",
+  ag_check: "Знайти в агентств", ag_again: "Перевірити ще раз", ag_checking: "Шукаю на Otodom і OLX…", ag_err: "Сайт не відповів, спробуй пізніше",
+  ag_photo: "фото збігаються", ag_place: "вулиця, поверх і площа ті самі, фото інші", ag_ours: "вже в нас", ag_checked: "перевірено {d}",
+  ag_note: "Копія в агентства не завжди означає договір із власником: буває, оголошення копіюють без дозволу.", ow_copies_run: "Шукаю в агентств: {n} з {t}…",
   w_neg: "пише «без посередників»", w_pos: "агентів запрошують", w_empty: "давно пустує", w_short: "короткий опис", w_others: "{n} оголош. у власника", w_many: "{n} оголошень: схоже на компанію",
 },
 pl: {
@@ -76,12 +86,17 @@ pl: {
   ow_obj: "Jeśli ma obiekcje",
   w_days: "{n} dni na portalu", w_old: "ogłoszenie ma {n} mies., wystawione ponownie", w_drop: "cena obniżona o {n} zł", w_relisted: "wystawione ponownie",
   w_pushed: "płaci za podbicie", w_promoted: "płatna promocja", w_above: "{n}% drożej niż rynek", w_photos: "tylko {n} zdjęć",
+  w_agency: "u biur: {n}", w_agency_maybe: "chyba u biur: {n}", ag_maybe: "Chyba to mieszkanie mają biura: ta sama ulica, piętro i metraż, ale inne zdjęcia. Porównaj przez link", ag_title: "Biura", ag_yes: "Współpracuje z biurami: to mieszkanie mają już biura", ag_no: "Nie chce biur: pisze „bez pośredników”",
+  ag_pos: "Pisze, że biura mile widziane", ag_none: "Nie znaleziono tego mieszkania u biur (Otodom i OLX)", ag_unk: "Jeszcze nie sprawdzono u biur",
+  ag_check: "Znajdź u biur", ag_again: "Sprawdź ponownie", ag_checking: "Szukam na Otodom i OLX…", ag_err: "Portal nie odpowiedział, spróbuj później",
+  ag_photo: "te same zdjęcia", ag_place: "ta sama ulica, piętro i metraż, inne zdjęcia", ag_ours: "już u nas", ag_checked: "sprawdzono {d}",
+  ag_note: "Kopia u biura nie zawsze oznacza umowę z właścicielem: zdarza się, że ogłoszenia są kopiowane bez zgody.", ow_copies_run: "Szukam u biur: {n} z {t}…",
   w_neg: "pisze „bez pośredników”", w_pos: "biura mile widziane", w_empty: "długo stoi puste", w_short: "krótki opis", w_others: "{n} ogłosz. właściciela", w_many: "{n} ogłoszeń: raczej firma",
 },
 };
 Object.assign(L.ru, OW_L.ru); Object.assign(L.uk, OW_L.uk); Object.assign(L.pl, OW_L.pl);
 
-const OW = { data: null, filter: "new", district: "", q: "", shown: 40, open: "", timer: 0, price: "" };
+const OW = { data: null, filter: "new", district: "", q: "", shown: 40, open: "", timer: 0, price: "", agBusy: "" };
 try { OW.price = localStorage.getItem("hermea_ow_price") || ""; } catch (e) {}
 const OW_PRICES = ["", "0-4000", "0-6000", "0-8000", "8000-999999"];
 try { OW.filter = localStorage.getItem("hermea_ow_filter") || "new"; } catch (e) {}
@@ -104,9 +119,9 @@ async function ownersOpen(quiet) {
 function owWhy(w) {
   const [k, v] = w;
   const txt = k === "days" ? t("w_days", { n: v }) : k === "old" ? t("w_old", { n: v }) : k === "drop" ? t("w_drop", { n: zl(v) })
-    : k === "above" ? t("w_above", { n: v }) : k === "photos" ? t("w_photos", { n: v }) : k === "others" ? t("w_others", { n: v }) : k === "many" ? t("w_many", { n: v })
+    : k === "above" ? t("w_above", { n: v }) : k === "photos" ? t("w_photos", { n: v }) : k === "others" ? t("w_others", { n: v }) : k === "many" ? t("w_many", { n: v }) : k === "agency" ? t("w_agency", { n: v }) : k === "agency_maybe" ? t("w_agency_maybe", { n: v })
     : t("w_" + k);
-  const cls = k === "neg" ? "bad" : k === "pos" || k === "empty" || k === "drop" ? "good" : "";
+  const cls = k === "neg" ? "bad" : k === "pos" || k === "empty" || k === "drop" || k === "agency" ? "good" : "";
   return `<span class="ow-why ${cls}">${esc(txt)}</span>`;
 }
 
@@ -188,7 +203,7 @@ function drawOwners(first) {
   if (!box || !d) return;
   const st = d.state || {};
   const run = st.state === "running";
-  const runTxt = run ? (st.phase === "detail" ? t("ow_reading", { n: st.done, t: st.total }) : st.phase === "olx" ? t("ow_olx_run", { n: st.done, t: st.total }) : t("ow_running", { n: st.done, t: st.total || 18 })) : t("ow_refresh");
+  const runTxt = run ? (st.phase === "detail" ? t("ow_reading", { n: st.done, t: st.total }) : st.phase === "olx" ? t("ow_olx_run", { n: st.done, t: st.total }) : st.phase === "copies" ? t("ow_copies_run", { n: st.done, t: st.total }) : t("ow_running", { n: st.done, t: st.total || 18 })) : t("ow_refresh");
   const dd = (s) => (s ? parseIso(s).toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "long" }) : "");
   if (OW.filter === "calls") return drawCalls(first);
   if (!d.last_scan && !d.items.length) {
@@ -261,6 +276,29 @@ function owStats(st) {
     ${best ? `<p class="ow-best">${t("st_best")} ${best}</p>` : ""}
   </section>`;
 }
+// та же квартира у агентств: итог «работает ли с агентствами» и ссылки на копии
+function owOurs(a) { return ((a.copies || {}).items || []).some((c) => c.ours && c.how === "photo"); }
+function owAgency(a) {
+  const cp = a.copies, items = (cp && cp.items) || [], det = a.detail || {};
+  const busy = OW.agBusy === a.id;
+  const other = items.filter((c) => !c.ours);
+  let v, cls = "";
+  if (other.some((c) => c.how === "photo")) { v = t("ag_yes"); cls = "good"; }
+  else if (other.length) v = t("ag_maybe");
+  else if (det.neg) { v = t("ag_no"); cls = "bad"; }
+  else if (det.pos) { v = t("ag_pos"); cls = "good"; }
+  else v = cp ? t("ag_none") : t("ag_unk");
+  const when = cp && cp.checked ? t("ag_checked", { d: parseIso(cp.checked).toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "long" }) }) : "";
+  const list = items.map((c) => `<li><button class="text-btn" type="button" data-act="agurl" data-url="${esc(c.url)}">${esc(c.agency || (c.src === "olx" ? "OLX" : "Otodom"))}</button>${c.src === "olx" ? `<i class="ow-src">OLX</i>` : ""}
+    <span>${c.price ? zl(c.price) + " zł" : ""}</span><span class="hint">${esc(t(c.how === "photo" ? "ag_photo" : "ag_place"))}</span>${c.ours && c.how === "photo" ? `<i class="ow-ours">${t("ag_ours")}</i>` : ""}</li>`).join("");
+  return `<section class="ow-ag">
+    <h4>${t("ag_title")}${when ? ` <small>${esc(when)}</small>` : ""}</h4>
+    <p class="ow-ag-v ${cls}">${esc(v)}</p>
+    ${list ? `<ul class="ow-ag-list">${list}</ul><p class="ow-ag-note">${t("ag_note")}</p>` : ""}
+    <button class="btn sm" type="button" data-act="copies" ${busy ? "disabled" : ""}>${esc(busy ? t("ag_checking") : cp ? t("ag_again") : t("ag_check"))}</button>
+  </section>`;
+}
+
 function owRow(a) {
   const s = a.score || 0, heat = owHeat(s);
   const open = OW.open === a.id;
@@ -278,7 +316,7 @@ function owRow(a) {
       <div class="ow-score" title="${t("ow_" + heat)}"><b>${s}</b><i style="--k:${s / 100}"></i></div>
       ${a.img ? `<img class="ow-img" src="${esc(a.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="ow-img"></div>`}
       <div class="ow-info">
-        <div class="ow-t"><b>${esc(a.district || "")}${a.street ? ", " + esc(a.street) : ""}</b><span>${esc([rooms, a.area ? Math.round(a.area) + " м²" : ""].filter(Boolean).join(" · "))}</span>${a.src === "olx" ? `<i class="ow-src">OLX</i>` : ""}${a.gone ? `<em>${t("ow_gone")}</em>` : ""}</div>
+        <div class="ow-t"><b>${esc(a.district || "")}${a.street ? ", " + esc(a.street) : ""}</b><span>${esc([rooms, a.area ? Math.round(a.area) + " м²" : ""].filter(Boolean).join(" · "))}</span>${a.src === "olx" ? `<i class="ow-src">OLX</i>` : ""}${owOurs(a) ? `<i class="ow-ours">${t("ag_ours")}</i>` : ""}${a.gone ? `<em>${t("ow_gone")}</em>` : ""}</div>
         ${a.src === "olx" && a.title ? `<div class="cl-sub">${esc(a.title)}</div>` : ""}
         <div class="ow-p"><span class="fact">${zl(a.total || a.price)} zł</span>${mk}${a.name ? `<span class="hint">${esc(a.name)}</span>` : ""}</div>
         <div class="ow-whys">${(a.why || []).map(owWhy).join("")}</div>
@@ -294,6 +332,7 @@ function owRow(a) {
         ${smsBox(a, a.id)}</div>
       <div class="ow-side">
         ${a.detail && a.detail.snippet ? `<p class="ow-snip">${esc(a.detail.snippet.replace(/[.\s…]+$/, ""))}…</p>` : ""}
+        ${owAgency(a)}
         <h4>${t("ow_obj")}</h4>
         <dl class="ow-obj">${owObjections().map(([q2, r]) => `<dt>${esc(q2)}</dt><dd>${esc(r)}</dd>`).join("")}</dl>
         <textarea class="pop-in ow-note" data-note="${esc(a.id)}" rows="2" placeholder="${esc(t("ow_note"))}">${esc(a.note || "")}</textarea>
@@ -311,6 +350,17 @@ async function owClick(e) {
     const k = act.dataset.act;
     if (k === "url") return api("/api/open", { what: "url", url: a.url }).catch((err) => toast(err.message, true));
     if (k === "script") { OW.open = OW.open === id ? "" : id; return drawOwners(); }
+    if (k === "agurl") return api("/api/open", { what: "url", url: act.dataset.url }).catch((err) => toast(err.message, true));
+    if (k === "copies") {
+      if (OW.agBusy) return;
+      OW.agBusy = id; drawOwners();
+      try {
+        const r = await api("/api/owners", { op: "copies", id });
+        Object.assign(a, { copies: r.copies, score: r.score, why: r.why });
+        if (r.copies && r.copies.error && !(r.copies.items || []).length) toast(t("ag_err"), true);
+      } catch (err) { toast(err.message, true); }
+      OW.agBusy = ""; return drawOwners();
+    }
     if (k === "copy") {
       try { await navigator.clipboard.writeText(owScript(a)); toast(t("ow_copied")); } catch (err) { toast(err.message, true); }
       return;

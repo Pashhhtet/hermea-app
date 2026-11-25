@@ -20,6 +20,7 @@
     POST /api/settings, /api/opis, /api/telegram, /api/flush, /api/tgcheck, /api/open
     POST /api/search_add | _check | _seen | _hide | _remove
     POST /api/svk, /api/client, /api/contract_template, /api/match, /api/calls, /api/owners, /api/market_refresh
+         (/api/owners op: scan | status | copies — та же квартира у агентств)
     POST /api/update_check, /api/update_apply, /api/ping, /api/bye, /api/quit
 """
 import io
@@ -1018,6 +1019,15 @@ class Handler(BaseHTTPRequestHandler):
                     except (KeyError, ValueError):
                         return self._send(404, {"error": tr("owner_not_found")})
                     return self._send(200, {"ok": True})
+                if op == "copies":                   # та же квартира у агентств (по кнопке)
+                    if os.environ.get("HERMEA_OFFLINE"):
+                        return self._send(503, {"error": "offline"})
+                    try:
+                        res = app_owners.check_copies(body.get("id"), search_session, log)
+                    except KeyError:
+                        return self._send(404, {"error": tr("owner_not_found")})
+                    a = app_owners.DATA["ads"].get(str(body.get("id"))) or {}
+                    return self._send(200, {"copies": res, "score": a.get("score"), "why": a.get("why")})
                 return self._send(400, {"error": "op"})
             if path == "/api/ping":
                 return self._send(200, {"ok": True})

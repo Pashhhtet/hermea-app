@@ -82,6 +82,11 @@ def main():
             pg.screenshot(path=f"{OUT}/5_owners.png")
             if len(pg.query_selector_all(".ow-row, #owList > li")) < 2:
                 errors.append("собственники не показались")
+            pg.click('.ow-row[data-id="1"] [data-act=script]')
+            pg.wait_for_timeout(500)
+            pg.screenshot(path=f"{OUT}/5b_owner_agencies.png")
+            if len(pg.query_selector_all(".ow-ag-list li")) != 2:
+                errors.append("копии у агентств не показались")
             pg.keyboard.press("Control+2")
             pg.wait_for_timeout(500)
             if "СВК" not in pg.title():

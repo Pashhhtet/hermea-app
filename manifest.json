@@ -1,9 +1,9 @@
 {
- "version": "1.11.0",
+ "version": "1.12.0",
  "notes": {
-  "ru": "В запросе клиента новое поле «Комнаты». У полей запроса есть выпадающие списки (комнаты, тип, районы, кто будет жить, животные, срок и другие), но можно вписать и своё. Районы из списка добавляются через запятую. Подбор квартир учитывает комнаты в первую очередь.",
-  "uk": "У запиті клієнта нове поле «Кімнати». У полів запиту є випадні списки (кімнати, тип, райони, хто житиме, тварини, термін та інші), але можна вписати й своє. Райони зі списку додаються через кому. Добірка квартир враховує кімнати в першу чергу.",
-  "pl": "W zapytaniu klienta nowe pole «Pokoje». Pola zapytania mają listy rozwijane (pokoje, rodzaj, dzielnice, kto zamieszka, zwierzęta, okres i inne), ale można wpisać własne. Dzielnice z listy dodają się po przecinku. Dobór mieszkań uwzględnia liczbę pokoi w pierwszej kolejności."
+  "ru": "Собственники: программа ищет ту же квартиру у агентств на Otodom и OLX. В карточке видно, работает ли собственник с агентствами, у каких агентств уже есть квартира (со ссылками) и не выставили ли её уже мы. «Те же фото» значит точно та же квартира; «улица, этаж и площадь те же» стоит сверить по ссылке. Лучшие кандидаты проверяются сами раз в день, любого можно проверить кнопкой «Найти у агентств».",
+  "uk": "Власники: програма шукає ту саму квартиру в агентств на Otodom і OLX. У картці видно, чи працює власник з агентствами, в яких агентств уже є квартира (з посиланнями) і чи не виставили її вже ми. «Ті самі фото» означає точно ту саму квартиру; «вулиця, поверх і площа ті самі» варто звірити за посиланням. Найкращі кандидати перевіряються самі раз на день, будь-кого можна перевірити кнопкою «Знайти в агентств».",
+  "pl": "Właściciele: program szuka tego samego mieszkania u biur na Otodom i OLX. W karcie widać, czy właściciel współpracuje z biurami, które biura już mają to mieszkanie (z linkami) i czy nie wystawiliśmy go już my. „Te same zdjęcia” oznacza na pewno to samo mieszkanie; „ta sama ulica, piętro i metraż” warto porównać przez link. Najlepsi kandydaci są sprawdzani sami raz dziennie, każdego można sprawdzić przyciskiem „Znajdź u biur”."
  },
  "pip": [
   "pypdf>=4",
@@ -103,13 +103,13 @@
   {
    "path": "app/owners.css",
    "src": "program/app/owners.css",
-   "sha256": "d01bdbda06bca0127875e4f13f41c872154f1712038d10c58e797ab2b7c2ae95",
+   "sha256": "e6a4a36f1c9721cb4a0dd7f57de50755ac9912c34aa3995a694a70622720d6c2",
    "exec": false
   },
   {
    "path": "app/owners.js",
    "src": "program/app/owners.js",
-   "sha256": "b0bc84373e707714b358e598e70cc7c108ae2088d51b91a4827649592fc1ee75",
+   "sha256": "5b2d04c7b237c4cc0c2d58871a26a8c9dcb73be88e68c426a89ef6c5ad645a65",
    "exec": false
   },
   {
@@ -161,6 +161,12 @@
    "exec": false
   },
   {
+   "path": "app_copies.py",
+   "src": "program/app_copies.py",
+   "sha256": "c9b24cae9a747c6c95e6d8bde18e0c41fa3a810ba734460c57956047168648b6",
+   "exec": false
+  },
+  {
    "path": "app_flats.py",
    "src": "program/app_flats.py",
    "sha256": "a5bf4e824f076f9c1224eca0076a8be031e794365d6676253a50b1c12dd29ec3",
@@ -187,7 +193,7 @@
   {
    "path": "app_owners.py",
    "src": "program/app_owners.py",
-   "sha256": "dd2f03c6e8e9fab844fb8050e0ab3865ef098d004ea4f4bb634bb98c4b5f89d8",
+   "sha256": "0862848ef204be77753108fc096e431c4e796a5c3cbd97e4ff5b4ed30819d9c6",
    "exec": false
   },
   {
@@ -199,7 +205,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "f3b03a165c3b54e3bab1d60224d6ce5d57dc8c70b52facea7aaac27049954186",
+   "sha256": "482b63f8993da6251bf95ab94ca5df8bc499cc83b2e59abb79586d96cb5cd5d5",
    "exec": false
   },
   {
@@ -283,7 +289,7 @@
   {
    "path": "КАРТА_КОДА.md",
    "src": "program/КАРТА_КОДА.md",
-   "sha256": "5d9ee3b459f7028fd93459bc641ab52db92944b21dcfb67b6b8a38b52872d2c0",
+   "sha256": "e92dac8fc19f99e1d817c41144da55f8c8e838ff1b90b3758b81b1b9cb6cb8b9",
    "exec": false
   },
   {

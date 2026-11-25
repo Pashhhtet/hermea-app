@@ -158,5 +158,10 @@
   "ru": "В запросе клиента новое поле «Комнаты». У полей запроса есть выпадающие списки (комнаты, тип, районы, кто будет жить, животные, срок и другие), но можно вписать и своё. Районы из списка добавляются через запятую. Подбор квартир учитывает комнаты в первую очередь.",
   "uk": "У запиті клієнта нове поле «Кімнати». У полів запиту є випадні списки (кімнати, тип, райони, хто житиме, тварини, термін та інші), але можна вписати й своє. Райони зі списку додаються через кому. Добірка квартир враховує кімнати в першу чергу.",
   "pl": "W zapytaniu klienta nowe pole «Pokoje». Pola zapytania mają listy rozwijane (pokoje, rodzaj, dzielnice, kto zamieszka, zwierzęta, okres i inne), ale można wpisać własne. Dzielnice z listy dodają się po przecinku. Dobór mieszkań uwzględnia liczbę pokoi w pierwszej kolejności."
+ },
+ "1.12.0": {
+  "ru": "Собственники: программа ищет ту же квартиру у агентств на Otodom и OLX. В карточке видно, работает ли собственник с агентствами, у каких агентств уже есть квартира (со ссылками) и не выставили ли её уже мы. «Те же фото» значит точно та же квартира; «улица, этаж и площадь те же» стоит сверить по ссылке. Лучшие кандидаты проверяются сами раз в день, любого можно проверить кнопкой «Найти у агентств».",
+  "uk": "Власники: програма шукає ту саму квартиру в агентств на Otodom і OLX. У картці видно, чи працює власник з агентствами, в яких агентств уже є квартира (з посиланнями) і чи не виставили її вже ми. «Ті самі фото» означає точно ту саму квартиру; «вулиця, поверх і площа ті самі» варто звірити за посиланням. Найкращі кандидати перевіряються самі раз на день, будь-кого можна перевірити кнопкою «Знайти в агентств».",
+  "pl": "Właściciele: program szuka tego samego mieszkania u biur na Otodom i OLX. W karcie widać, czy właściciel współpracuje z biurami, które biura już mają to mieszkanie (z linkami) i czy nie wystawiliśmy go już my. „Te same zdjęcia” oznacza na pewno to samo mieszkanie; „ta sama ulica, piętro i metraż” warto porównać przez link. Najlepsi kandydaci są sprawdzani sami raz dziennie, każdego można sprawdzić przyciskiem „Znajdź u biur”."
  }
 }

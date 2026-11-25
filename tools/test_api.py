@@ -70,7 +70,10 @@ def make_root():
     olx = dict(ad, id="olx-2", url="https://www.olx.pl/d/oferta/b-ID2.html", src="olx", street="", district="Wola",
                total=4100, price=3700, detail={"desc_len": 400, "neg": False, "pos": False, "checked": today, "others": 0,
                                                "snippet": "Mieszkanie", "free_from": "", "deposit": None, "owner_id": ""})
-    json.dump({"ads": {"1": dict(ad, id="1"), "olx-2": olx}, "last_scan": today},
+    copies = {"checked": today, "items": [
+        {"src": "otodom", "url": "https://www.otodom.pl/pl/oferta/c-ID3", "agency": "Two Steps Agency", "price": 4100, "how": "photo", "dist": 18, "ours": False},
+        {"src": "olx", "url": "https://www.olx.pl/d/oferta/d-ID4.html", "agency": "Biuro Test", "price": 4000, "how": "place", "dist": 95, "ours": False}]}
+    json.dump({"ads": {"1": dict(ad, id="1", copies=copies), "olx-2": olx}, "last_scan": today},
               open(os.path.join(prog, "app_owners.json"), "w", encoding="utf-8"))
     return root, prog
 
@@ -171,6 +174,8 @@ def main():
         s, r = req("/api/owners", {"op": "status", "id": "1", "status": "agreed", "note": "50%"})
         check("owners status", s == 200, str(r)[:200])
         check("owners stats", req("/api/owners")[1]["stats"]["total"]["agreed"] == 1)
+        s, r = req("/api/owners", {"op": "copies", "id": "1"})
+        check("owners copies: без сети не ходим на сайты", s == 503, str(r)[:200])
         s, r = req("/api/calls", {"op": "add", "text": "+48 535 016 721 завтра перезвонить"})
         check("calls add", s == 200, str(r)[:200])
         s, c = req("/api/calls")

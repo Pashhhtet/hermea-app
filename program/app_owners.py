@@ -15,6 +15,7 @@ import re
 import threading
 import time
 
+import app_copies
 import app_market
 import app_searches
 
@@ -32,6 +33,8 @@ OLX_PAGES = 20           # OLX отдаёт не больше 1000 объявл�
 OLX_ROOMS = {"one": "1", "two": "2", "three": "3", "four": "4"}
 DETAIL_PER_DAY = 45      # сколько страниц объявлений открываем за проход (лучшие кандидаты)
 DETAIL_TTL = 7           # дней — потом текст перечитываем
+COPIES_PER_DAY = 40      # сколько объявлений за проход проверяем на копии у агентств (лучшие кандидаты)
+COPIES_TTL = 3           # дней — потом ищем копии снова (агентства выставляют позже собственника)
 GONE_KEEP = 45           # снятые объявления храним столько дней (чтобы узнать повторную публикацию)
 STATUSES = ("new", "called", "nocall", "agreed", "refused", "hidden")
 CALL_STATUSES = ("called", "nocall", "agreed", "refused")
@@ -107,6 +110,8 @@ def parse_list(html):
                 photos=x.get("totalPossibleImages") or len(x.get("images") or []),
                 name=((x.get("advertOwner") or {}).get("name") or "").strip(),
                 slug=x.get("slug") or "",
+                floor=x.get("floorNumber") or "",
+                imgs=[im.get("url") for im in (x.get("images") or []) if isinstance(im, dict) and im.get("url")][:3],
             )
             out.append(i)
         except Exception:
@@ -164,7 +169,8 @@ def parse_olx(data, today=None):
                 "created": created, "pushed": refreshed if refreshed and refreshed > created else "",
                 "promoted": bool(promo.get("top_ad") or promo.get("highlighted") or promo.get("urgent")),
                 "photos": len(photos), "name": ((ad.get("user") or {}).get("name") or "").strip(),
-                "slug": "", "tags": ["pets"] if pets in ("tak", "yes") else [],
+                "slug": "", "tags": ["pets"] if pets in ("tak", "yes") else [], "floor": "",
+                "imgs": [p.get("link") for p in photos if p.get("link")][:3],
                 "_user": str((ad.get("user") or {}).get("id") or ""), "_desc": desc,
             })
         except Exception:
@@ -275,6 +281,13 @@ def score(a, today=None):
             why.append(["others", n + 1])
         elif n >= 5:                      # много объявлений — скорее всего компания со своими условиями
             why.append(["many", n + 1])
+    cp = [c for c in ((a.get("copies") or {}).get("items") or []) if not c.get("ours")]
+    sure = [c for c in cp if c.get("how") == "photo"]
+    if sure:                              # те же фото у агентств — с агентами работает
+        pts += 10
+        why.append(["agency", len(sure)])
+    elif cp:                              # совпали только улица, этаж и площадь — агент сверит по ссылке
+        why.append(["agency_maybe", len(cp)])
     return max(0, min(100, pts)), why
 
 
@@ -315,7 +328,8 @@ def merge(items, today=None):
                     if old[0].get("status") not in (None, "new"):
                         a["status"], a["note"] = old[0]["status"], old[0].get("note", "")
             for k in ("title", "url", "img", "price", "rent", "total", "area", "rooms", "district", "sub",
-                      "street", "created", "pushed", "promoted", "photos", "name", "slug", "tags", "src"):
+                      "street", "created", "pushed", "promoted", "photos", "name", "slug", "tags", "src",
+                      "floor", "imgs"):
                 a[k] = i.get(k)
             if i.get("_detail"):                       # OLX: описание пришло вместе со списком
                 a["detail"] = i["_detail"]
@@ -416,8 +430,55 @@ def scan(http_factory, log=print, pause=3.5):
             STATE["done"] += 1
             time.sleep(pause)
         _save()
+        # та же квартира у агентств: лучшие кандидаты, у кого не проверяли (или давно)
+        with LOCK:
+            cand = [a for a in DATA["ads"].values() if a.get("last_seen") == _today() and a.get("status") in ("new", None)
+                    and _stale(a.get("copies"), COPIES_TTL)]
+            cand.sort(key=lambda a: -a.get("score", 0))
+            cand = cand[:COPIES_PER_DAY]
+        STATE.update(phase="copies", done=0, total=len(cand))
+        for a in cand:
+            if not _copies(a, sess, log, pause):
+                break
+            STATE["done"] += 1
+            time.sleep(pause)
+        _save()
     finally:
         STATE.update(state="idle", phase="")
+
+
+def _stale(res, ttl):
+    d = _days((res or {}).get("checked"))
+    return d is None or d > ttl
+
+
+def _copies(a, sess, log=print, pause=3.5):
+    """Ищет ту же квартиру у агентств и пересчитывает оценку. -> False, если сайт начал отказывать."""
+    try:
+        res = app_copies.find(a, sess, _get, pause=pause, log=log)
+    except Exception as e:                # ошибка в поиске копий не должна ломать сбор собственников
+        log("копии:", a.get("id"), e)
+        return True
+    if "HTTP 4" in (res.get("error") or ""):
+        return False
+    with LOCK:
+        a["copies"] = res
+        a["score"], a["why"] = score(a)
+    return True
+
+
+def check_copies(ad_id, http_factory, log=print):
+    """Проверка одного объявления по кнопке. -> результат (copies)."""
+    with LOCK:
+        a = DATA["ads"].get(str(ad_id))
+    if not a:
+        raise KeyError(ad_id)
+    res = app_copies.find(a, http_factory(), _get, pause=1.0, log=log)
+    with LOCK:
+        a["copies"] = res
+        a["score"], a["why"] = score(a)
+        _save()
+    return res
 
 
 def loop(http_factory, log):
@@ -442,6 +503,7 @@ def public(limit=200):
     live.sort(key=lambda a: (a.get("status") == "hidden", -(a.get("score") or 0)))
     for a in live:
         a.pop("prices", None)
+        a.pop("imgs", None)
         a["gone"] = a.get("last_seen") != DATA.get("last_scan")
     counts = {s: sum(1 for a in ads if a.get("status") == s) for s in STATUSES}
     return {"items": live[:limit], "total": len(live), "counts": counts, "last_scan": DATA.get("last_scan"),
