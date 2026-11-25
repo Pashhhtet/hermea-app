@@ -1,9 +1,9 @@
 {
- "version": "1.10.0",
+ "version": "1.10.1",
  "notes": {
-  "ru": "Новый переключатель «Другое агентство» рядом с «Без комиссии»: программа сама находит логотип агентства, который стоит на всех фото объявления, и стирает его. Работает и для ссылок, и для своих фото, нужно хотя бы 3 фото.",
-  "uk": "Новий перемикач «Інша агенція» поруч із «Без комісії»: програма сама знаходить логотип агенції, який стоїть на всіх фото оголошення, і стирає його. Працює і для посилань, і для своїх фото, потрібно хоча б 3 фото.",
-  "pl": "Nowy przełącznik «Inna agencja» obok «Bez prowizji»: program sam znajduje logo agencji, które jest na wszystkich zdjęciach ogłoszenia, i je usuwa. Działa dla linków i własnych zdjęć, potrzebne co najmniej 3 zdjęcia."
+  "ru": "Повторный клик по значку Hermea больше не открывает новое окно: уже открытое окно разворачивается и выходит на передний план. На Маке при первом разе система может спросить разрешение управлять Chrome — нажми «Разрешить».",
+  "uk": "Повторний клік по значку Hermea більше не відкриває нове вікно: уже відкрите вікно розгортається й виходить на передній план. На Mac першого разу система може спитати дозвіл керувати Chrome — натисни «Дозволити».",
+  "pl": "Ponowne kliknięcie ikony Hermea nie otwiera już nowego okna: otwarte okno rozwija się i wychodzi na wierzch. Na Macu za pierwszym razem system może zapytać o zgodę na sterowanie Chrome — kliknij «Zezwól»."
  },
  "pip": [
   "pypdf>=4",
@@ -199,7 +199,7 @@
   {
    "path": "app_server.py",
    "src": "program/app_server.py",
-   "sha256": "51bd80bd8fb976d0c3f3b199bdbd888d4bc82fad95f28616e1ec5f2c72f70c6c",
+   "sha256": "f3b03a165c3b54e3bab1d60224d6ce5d57dc8c70b52facea7aaac27049954186",
    "exec": false
   },
   {
@@ -235,7 +235,7 @@
   {
    "path": "hermea_app.py",
    "src": "program/hermea_app.py",
-   "sha256": "30f7b7c168b08da7ef78a87c400962e0ffb9d5e073258acb1c98040560814e9b",
+   "sha256": "395c4c428d8ff7b03c419b3cdbffeecbc7ab52ab75889630cad968613fba74de",
    "exec": false
   },
   {

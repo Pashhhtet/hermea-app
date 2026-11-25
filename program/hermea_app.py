@@ -62,6 +62,77 @@ def open_window(url):
         webbrowser.open(url)
 
 
+# заголовок окна всегда содержит «Hermea —» (например «(2) Hermea — Собственники»)
+WINDOW_MARK = "Hermea \u2014"
+FOCUS_MAC = """
+set mark to "%s"
+repeat with appRef in {"Google Chrome", "Microsoft Edge", "Brave Browser", "Chromium"}
+  set appName to contents of appRef
+  if application appName is running then
+    tell application appName
+      repeat with w in windows
+        if title of w contains mark then
+          try
+            set minimized of w to false
+          end try
+          set index of w to 1
+          activate
+          return "ok"
+        end if
+      end repeat
+    end tell
+  end if
+end repeat
+return "none"
+"""
+
+
+def window_is_open(url):
+    """Спросить работающую программу, открыто ли её окно сейчас (в том числе свёрнутое)."""
+    try:
+        base, token = url.split("/?t=")
+        with NO_PROXY.open(f"{base}/api/window?t={token}", timeout=1.5) as r:
+            import json
+            return bool(json.loads(r.read()).get("open"))
+    except Exception:
+        return False
+
+
+def focus_window():
+    """Повторный клик по значку: развернуть уже открытое окно Hermea и вывести вперёд. -> True, если нашли."""
+    try:
+        if sys.platform == "darwin":
+            r = subprocess.run(["osascript", "-e", FOCUS_MAC % WINDOW_MARK], capture_output=True, text=True, timeout=8)
+            return r.stdout.strip() == "ok"
+        if os.name == "nt":
+            import ctypes
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
+            found = []
+
+            @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+            def each(hwnd, _):
+                if user32.IsWindowVisible(hwnd):
+                    n = user32.GetWindowTextLengthW(hwnd)
+                    buf = ctypes.create_unicode_buffer(n + 1)
+                    user32.GetWindowTextW(hwnd, buf, n + 1)
+                    if WINDOW_MARK in buf.value:
+                        found.append(hwnd)
+                        return False
+                return True
+
+            user32.EnumWindows(each, 0)
+            if not found:
+                return False
+            h = found[0]
+            user32.ShowWindow(h, 9 if user32.IsIconic(h) else 5)     # 9 — развернуть свёрнутое, 5 — показать
+            user32.SetForegroundWindow(h)
+            return True
+    except Exception:
+        pass
+    return False
+
+
 def running_instance():
     """Если окно-сервер уже запущен — вернуть его адрес (второй экземпляр не нужен)."""
     try:
@@ -140,7 +211,8 @@ def main():
     move_out_of_desktop(restarted)
     url = None if restarted else running_instance()
     if url:
-        if "--no-window" not in sys.argv:
+        # программа уже работает: показываем её окно, а новое открываем, только если окна нет
+        if "--no-window" not in sys.argv and not (window_is_open(url) and focus_window()):
             open_window(url)
         return
     rotate_log()

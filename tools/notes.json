@@ -148,5 +148,10 @@
   "ru": "Новый переключатель «Другое агентство» рядом с «Без комиссии»: программа сама находит логотип агентства, который стоит на всех фото объявления, и стирает его. Работает и для ссылок, и для своих фото, нужно хотя бы 3 фото.",
   "uk": "Новий перемикач «Інша агенція» поруч із «Без комісії»: програма сама знаходить логотип агенції, який стоїть на всіх фото оголошення, і стирає його. Працює і для посилань, і для своїх фото, потрібно хоча б 3 фото.",
   "pl": "Nowy przełącznik «Inna agencja» obok «Bez prowizji»: program sam znajduje logo agencji, które jest na wszystkich zdjęciach ogłoszenia, i je usuwa. Działa dla linków i własnych zdjęć, potrzebne co najmniej 3 zdjęcia."
+ },
+ "1.10.1": {
+  "ru": "Повторный клик по значку Hermea больше не открывает новое окно: уже открытое окно разворачивается и выходит на передний план. На Маке при первом разе система может спросить разрешение управлять Chrome — нажми «Разрешить».",
+  "uk": "Повторний клік по значку Hermea більше не відкриває нове вікно: уже відкрите вікно розгортається й виходить на передній план. На Mac першого разу система може спитати дозвіл керувати Chrome — натисни «Дозволити».",
+  "pl": "Ponowne kliknięcie ikony Hermea nie otwiera już nowego okna: otwarte okno rozwija się i wychodzi na wierzch. Na Macu za pierwszym razem system może zapytać o zgodę na sterowanie Chrome — kliknij «Zezwól»."
  }
 }

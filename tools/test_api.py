@@ -180,6 +180,11 @@ def main():
         check("calls delete", req("/api/calls", {"op": "delete", "id": k})[0] == 200)
         check("ping", req("/api/ping", {})[0] == 200)
         check("неизвестный адрес 404", req("/api/nothing")[0] == 404)
+        s, w = req("/api/window")
+        check("окно открыто (для повторного клика по значку)", s == 200 and w.get("open") is True, str(w))
+        check("окно без ключа 403", req("/api/window", token=False)[0] == 403)
+        req("/api/bye", {})
+        check("после закрытия окна — закрыто", req("/api/window")[1].get("open") is False)
     finally:
         try:
             req("/api/quit", {})

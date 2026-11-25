@@ -855,6 +855,11 @@ class Handler(BaseHTTPRequestHandler):
             path = u.path
             if path == "/api/hello":
                 return self._send(200, b"hermea" if self._token_ok(q) else b"no", "text/plain")
+            if path == "/api/window":           # открыто ли окно (для повторного клика по значку); окно не «трогаем»
+                if not self._token_ok(q):
+                    return self._send(403, {"error": "token"})
+                closed = CLOSED_AT and LAST_SEEN < CLOSED_AT
+                return self._send(200, {"open": bool(not closed and time.time() - LAST_SEEN < 150)})
             if path.startswith("/app/"):
                 name = os.path.basename(path)
                 fp = os.path.join(UI_DIR, name)
