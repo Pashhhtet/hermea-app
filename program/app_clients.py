@@ -13,7 +13,7 @@ import time
 FILE = None
 LOCK = threading.RLock()
 TEXT = ("name", "phone", "email", "address", "id_doc", "pesel", "lang", "source", "package", "status",
-        "type", "location", "area", "parking", "budget", "residents", "children", "pets", "move_in", "term",
+        "type", "rooms", "location", "area", "parking", "budget", "residents", "children", "pets", "move_in", "term",
         "income", "okazjonalny", "must", "not_considered", "extra", "notes", "lost_reason", "commission")
 STATUSES = ("new", "search", "shows", "contract", "deal", "lost")
 

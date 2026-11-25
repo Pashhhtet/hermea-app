@@ -64,6 +64,16 @@ def main():
             pg.screenshot(path=f"{OUT}/3_client.png")
             if not pg.query_selector("#clMatch .mt-row"):
                 errors.append("подбор не показал квартиры")
+            # поле «Комнаты» со списком: выбор «3 комнаты» убирает двушки из подбора
+            if not pg.query_selector('input[data-f=rooms][list="dl-rooms"]') or len(pg.query_selector_all("#dl-rooms option")) < 5:
+                errors.append("нет поля «Комнаты» со списком")
+            pg.fill("input[data-f=rooms]", "3 комнаты")
+            pg.wait_for_timeout(1800)
+            if pg.query_selector("#clMatch .mt-row"):
+                errors.append("подбор не учёл комнаты")
+            pg.fill("input[data-f=rooms]", "2 комнаты")
+            pg.wait_for_timeout(1800)
+            pg.screenshot(path=f"{OUT}/3b_client_rooms.png")
             pg.click("#modes [data-mode=market]")
             pg.wait_for_timeout(900)
             pg.screenshot(path=f"{OUT}/4_market.png")

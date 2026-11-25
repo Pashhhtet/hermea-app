@@ -32,7 +32,7 @@ ALIASES = {
 }
 PRAGA = r"\bpraga\b|\bпраг[аиуе]\b"           # просто «Прага» — обе Праги
 WORD_ROOMS = [
-    (r"kawalerk|студи|studio|однок[оі]м|одноком|1[\s-]*(к|ком|кім|pok)|однуш", {"1"}),
+    (r"kawalerk|кавалерк|студи|studio|однок[оі]м|одноком|1[\s-]*(к|ком|кім|pok)|однуш", {"1"}),
     (r"двух|двух?к[оі]м|двок[іо]м|dwupok|dwa\s+pok|2[\s-]*(к|ком|кім|pok)|двушк", {"2"}),
     (r"тр[её]х|тр[ьи]ох|trzypok|trzy\s+pok|3[\s-]*(к|ком|кім|pok)|трешк|трёшк", {"3"}),
     (r"четыр|чотир|czterop|4[\s-]*(к|ком|кім|pok)", {"4"}),
@@ -90,7 +90,8 @@ def criteria(c):
     area = _int(c.get("area"))
     if area and area > 400:
         area = None
-    text_rooms = " ".join(str(c.get(k) or "") for k in ("type",))
+    # отдельное поле «Комнаты»; если пусто — пробуем понять из «Типа объекта» («двушка», «kawalerka»)
+    text_rooms = str(c.get("rooms") or "").strip() or str(c.get("type") or "")
     return {
         "budget": budget, "area": area,
         "rooms": sorted(rooms_of(text_rooms)),

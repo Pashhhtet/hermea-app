@@ -178,3 +178,8 @@ html[data-theme="dark"] .k-me .num { color: #9A7A35; }
   .mt-img { width: 72px; height: 54px; }
   .mt-acts { grid-column: 2 / -1; }
 }
+
+/* поля с выпадающим списком подсказок: стрелка видна всегда */
+.fld input.has-list { padding-right: 6px; }
+.fld input.has-list::-webkit-calendar-picker-indicator { opacity: .55; cursor: pointer; }
+.fld input.has-list:hover::-webkit-calendar-picker-indicator { opacity: .9; }

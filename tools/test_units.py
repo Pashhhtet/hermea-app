@@ -62,6 +62,9 @@ pool = [{"id": "a", "url": "https://x/a", "total": 4300, "rooms": "2", "district
         {"id": "d", "url": "https://x/d", "total": 4000, "rooms": "3", "district": "Mokotów", "area": 60}]
 r = app_match.match({"budget": "4500", "location": "Мокотув", "type": "2 комнаты"}, [(pool[:2], "market"), (pool[2:], "owner")])
 eq("подбор: дубль одной квартиры один раз, версия собственника", [i["id"] for i in r["items"]], ["c"])
+eq("комнаты: кавалерка по-русски", app_match.rooms_of("Кавалерка"), {"1"})
+eq("комнаты: поле «Комнаты» важнее типа", app_match.criteria({"rooms": "2–3 кімнати", "type": "kawalerka"})["rooms"], ["2", "3"])
+eq("комнаты: без поля — из типа", app_match.criteria({"type": "двушка"})["rooms"], ["2"])
 eq("подбор: без запроса", app_match.match({"name": "x"}, [(pool, "market")])["empty"], "need")
 eq("подбор: просмотренное не показываем",
    app_match.match({"budget": "4500", "viewed": [{"link": "https://x/c"}], "match_skip": ["a"]}, [(pool, "owner")])["total"], 1)

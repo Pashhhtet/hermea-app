@@ -122,6 +122,11 @@ pl: {
 },
 };
 Object.assign(L.ru, CL.ru); Object.assign(L.uk, CL.uk); Object.assign(L.pl, CL.pl);
+// списки для полей запроса: можно выбрать или вписать своё
+Object.assign(L.ru, {"f_rooms": "Комнаты", "l_rooms": ["Кавалерка", "1 комната", "2 комнаты", "3 комнаты", "4+ комнаты", "1–2 комнаты", "2–3 комнаты"], "l_type": ["Квартира", "Кавалерка", "Апартаменты", "Дом", "Комната"], "l_term": ["12 месяцев", "6 месяцев", "от 1 года", "долгосрочно"], "l_residents": ["1 человек", "пара", "семья с ребёнком", "2 друга", "3+ человека"], "l_pets": ["нет", "кот", "маленькая собака", "большая собака"], "l_children": ["нет", "1 ребёнок", "2 ребёнка"], "l_move_in": ["сразу", "с 1 числа", "через 2 недели", "гибко"], "l_income": ["umowa o pracę", "B2B / ФОП", "студент", "своя фирма"], "f_pick": "выбери или впиши своё", "l_location": ["Mokotów", "Wola", "Śródmieście", "Ochota", "Żoliborz", "Bielany", "Bemowo", "Ursynów", "Wilanów", "Praga-Południe", "Praga-Północ", "Targówek", "Białołęka", "Włochy", "Ursus", "Wawer", "Wesoła", "Rembertów"]});
+Object.assign(L.uk, {"f_rooms": "Кімнати", "l_rooms": ["Кавалерка", "1 кімната", "2 кімнати", "3 кімнати", "4+ кімнати", "1–2 кімнати", "2–3 кімнати"], "l_type": ["Квартира", "Кавалерка", "Апартаменти", "Будинок", "Кімната"], "l_term": ["12 місяців", "6 місяців", "від 1 року", "довгостроково"], "l_residents": ["1 особа", "пара", "сім'я з дитиною", "2 друзі", "3+ особи"], "l_pets": ["немає", "кіт", "маленький собака", "великий собака"], "l_children": ["немає", "1 дитина", "2 дитини"], "l_move_in": ["одразу", "з 1 числа", "через 2 тижні", "гнучко"], "l_income": ["umowa o pracę", "B2B / ФОП", "студент", "своя фірма"], "f_pick": "вибери або впиши своє", "l_location": ["Mokotów", "Wola", "Śródmieście", "Ochota", "Żoliborz", "Bielany", "Bemowo", "Ursynów", "Wilanów", "Praga-Południe", "Praga-Północ", "Targówek", "Białołęka", "Włochy", "Ursus", "Wawer", "Wesoła", "Rembertów"]});
+Object.assign(L.pl, {"f_rooms": "Pokoje", "l_rooms": ["Kawalerka", "1 pokój", "2 pokoje", "3 pokoje", "4+ pokoje", "1–2 pokoje", "2–3 pokoje"], "l_type": ["Mieszkanie", "Kawalerka", "Apartament", "Dom", "Pokój"], "l_term": ["12 miesięcy", "6 miesięcy", "od 1 roku", "długoterminowo"], "l_residents": ["1 osoba", "para", "rodzina z dzieckiem", "2 znajomych", "3+ osoby"], "l_pets": ["brak", "kot", "mały pies", "duży pies"], "l_children": ["brak", "1 dziecko", "2 dzieci"], "l_move_in": ["od zaraz", "od 1. dnia miesiąca", "za 2 tygodnie", "elastycznie"], "l_income": ["umowa o pracę", "B2B", "student", "własna firma"], "f_pick": "wybierz lub wpisz swoje", "l_location": ["Mokotów", "Wola", "Śródmieście", "Ochota", "Żoliborz", "Bielany", "Bemowo", "Ursynów", "Wilanów", "Praga-Południe", "Praga-Północ", "Targówek", "Białołęka", "Włochy", "Ursus", "Wawer", "Wesoła", "Rembertów"]});
+
 // подбор квартир
 Object.assign(L.ru, {
   mt_title: "Подходящие квартиры", mt_of: "{n} из {t}", mt_refresh: "Обновить", mt_new: "новая", mt_owner: "собственник", mt_agency: "агентство",
@@ -259,6 +264,12 @@ function inp(f, label, opts) {
       `<button type="button" data-v="${val}" aria-pressed="${String(v) === String(val)}">${esc(txt)}</button>`).join("")}</div></label>`;
   }
   if (opts.area) return `<label class="fld ${opts.cls || ""}"><span>${esc(label)}</span><textarea data-f="${f}" rows="2">${esc(v)}</textarea></label>`;
+  if (opts.list) {        // выпадающий список подсказок, но вписать можно что угодно
+    const items = (L[LANG] || L.ru)["l_" + f] || [];
+    return `<label class="fld ${opts.cls || ""}"><span>${esc(label)}</span><input data-f="${f}" list="dl-${f}" value="${esc(v)}"
+      placeholder="${esc(t("f_pick"))}" autocomplete="off" class="has-list"${opts.multi ? " data-multi=\"1\"" : ""}>
+      <datalist id="dl-${f}">${items.map((x) => `<option value="${esc(x)}"></option>`).join("")}</datalist></label>`;
+  }
   return `<label class="fld ${opts.cls || ""}"><span>${esc(label)}</span><input data-f="${f}" type="${opts.type || "text"}" value="${esc(v)}" ${opts.ph ? `placeholder="${esc(opts.ph)}"` : ""} autocomplete="off"></label>`;
 }
 function drawMain(first) {
@@ -319,7 +330,7 @@ function drawCard(body) {
       <section class="cl-card"><h3>${t("g_contact")}</h3><div class="flds">
         ${inp("name", t("f_name"), { cls: "w2" })}${inp("phone", t("f_phone"), { type: "tel" })}${inp("email", t("f_email"), { type: "email" })}
         ${inp("lang", t("f_lang"), { seg: [["ua", "UA"], ["ru", "RU"], ["pl", "PL"]] })}
-        ${inp("source", t("f_source"), { seg: [["direct", t("src_direct")], ["agents", t("src_agents")], ["duty", t("src_duty")]] })}
+        ${inp("source", t("f_source"), { cls: "w2", seg: [["direct", t("src_direct")], ["agents", t("src_agents")], ["duty", t("src_duty")]] })}
         <div class="w2" id="clLost" ${c.status === "lost" ? "" : "hidden"}>${inp("lost_reason", t("f_lost"))}</div>
       </div></section>
       <section class="cl-card"><h3>${t("g_contract")}</h3><div class="flds">
@@ -329,10 +340,11 @@ function drawCard(body) {
           <button class="text-btn" type="button" id="clDelete">${t("delete")}</button></div>
       </div></section>
       <section class="cl-card w-full"><h3>${t("g_request")}</h3><div class="flds three">
-        ${inp("type", t("f_type"))}${inp("location", t("f_location"))}${inp("budget", t("f_budget"), { type: "number" })}
-        ${inp("area", t("f_area"), { type: "number" })}${inp("residents", t("f_residents"))}${inp("move_in", t("f_move_in"))}
-        ${inp("children", t("f_children"))}${inp("pets", t("f_pets"))}${inp("term", t("f_term"))}
-        ${inp("parking", t("f_parking"), { seg: yn })}${inp("okazjonalny", t("f_okaz"), { seg: [["yes", t("yes")], ["no", t("no")]] })}${inp("income", t("f_income"))}
+        ${inp("type", t("f_type"), { list: 1 })}${inp("rooms", t("f_rooms"), { list: 1 })}${inp("location", t("f_location"), { list: 1, multi: 1 })}
+        ${inp("budget", t("f_budget"), { type: "number" })}${inp("area", t("f_area"), { type: "number" })}${inp("residents", t("f_residents"), { list: 1 })}
+        ${inp("move_in", t("f_move_in"), { list: 1 })}${inp("children", t("f_children"), { list: 1 })}${inp("pets", t("f_pets"), { list: 1 })}
+        ${inp("term", t("f_term"), { list: 1 })}
+        ${inp("parking", t("f_parking"), { seg: yn })}${inp("okazjonalny", t("f_okaz"), { seg: [["yes", t("yes")], ["no", t("no")]] })}${inp("income", t("f_income"), { list: 1 })}
         ${inp("must", t("f_must"), { area: true })}${inp("not_considered", t("f_not"), { area: true })}${inp("extra", t("f_extra"), { area: true })}
         ${inp("notes", t("f_notes"), { area: true, cls: "w3" })}
       </div></section>
@@ -341,7 +353,19 @@ function drawCard(body) {
     </div>`;
   drawViewed();
   loadMatch();
-  body.querySelectorAll("[data-f]").forEach((el) => el.addEventListener("input", () => setField(el.dataset.f, el.value)));
+  body.querySelectorAll("[data-f]").forEach((el) => {
+    el.dataset.prev = el.value;
+    el.addEventListener("input", (e) => {
+      // районы: выбор из списка добавляется через запятую, а не заменяет уже вписанное
+      if (el.dataset.multi && e.inputType === "insertReplacementText" && el.dataset.prev.trim()) {
+        const prev = el.dataset.prev.replace(/[,\s]+$/, "");
+        if (!prev.split(/\s*,\s*/).includes(el.value)) el.value = `${prev}, ${el.value}`;
+        else el.value = prev;
+      }
+      el.dataset.prev = el.value;
+      setField(el.dataset.f, el.value);
+    });
+  });
   body.querySelectorAll("[data-seg]").forEach((sg) => sg.addEventListener("click", (e) => {
     const b = e.target.closest("[data-v]");
     if (!b) return;
@@ -405,7 +429,7 @@ async function flushSave() {
     svkToast(r.svk);
     const s = $("#clSaved"); if (s) s.textContent = t("saved");
     refreshListItem();
-    if (["budget", "location", "type", "area", "parking", "pets", "must"].some((k) => k in data)) loadMatch();
+    if (["budget", "location", "type", "rooms", "area", "parking", "pets", "must"].some((k) => k in data)) loadMatch();
   } catch (e) { toast(e.message, true); }
 }
 function refreshListItem() {

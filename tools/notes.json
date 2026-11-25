@@ -153,5 +153,10 @@
   "ru": "Повторный клик по значку Hermea больше не открывает новое окно: уже открытое окно разворачивается и выходит на передний план. На Маке при первом разе система может спросить разрешение управлять Chrome — нажми «Разрешить».",
   "uk": "Повторний клік по значку Hermea більше не відкриває нове вікно: уже відкрите вікно розгортається й виходить на передній план. На Mac першого разу система може спитати дозвіл керувати Chrome — натисни «Дозволити».",
   "pl": "Ponowne kliknięcie ikony Hermea nie otwiera już nowego okna: otwarte okno rozwija się i wychodzi na wierzch. Na Macu za pierwszym razem system może zapytać o zgodę na sterowanie Chrome — kliknij «Zezwól»."
+ },
+ "1.11.0": {
+  "ru": "В запросе клиента новое поле «Комнаты». У полей запроса есть выпадающие списки (комнаты, тип, районы, кто будет жить, животные, срок и другие), но можно вписать и своё. Районы из списка добавляются через запятую. Подбор квартир учитывает комнаты в первую очередь.",
+  "uk": "У запиті клієнта нове поле «Кімнати». У полів запиту є випадні списки (кімнати, тип, райони, хто житиме, тварини, термін та інші), але можна вписати й своє. Райони зі списку додаються через кому. Добірка квартир враховує кімнати в першу чергу.",
+  "pl": "W zapytaniu klienta nowe pole «Pokoje». Pola zapytania mają listy rozwijane (pokoje, rodzaj, dzielnice, kto zamieszka, zwierzęta, okres i inne), ale można wpisać własne. Dzielnice z listy dodają się po przecinku. Dobór mieszkań uwzględnia liczbę pokoi w pierwszej kolejności."
  }
 }

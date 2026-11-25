@@ -1,9 +1,9 @@
 {
- "version": "1.10.1",
+ "version": "1.11.0",
  "notes": {
-  "ru": "Повторный клик по значку Hermea больше не открывает новое окно: уже открытое окно разворачивается и выходит на передний план. На Маке при первом разе система может спросить разрешение управлять Chrome — нажми «Разрешить».",
-  "uk": "Повторний клік по значку Hermea більше не відкриває нове вікно: уже відкрите вікно розгортається й виходить на передній план. На Mac першого разу система може спитати дозвіл керувати Chrome — натисни «Дозволити».",
-  "pl": "Ponowne kliknięcie ikony Hermea nie otwiera już nowego okna: otwarte okno rozwija się i wychodzi na wierzch. Na Macu za pierwszym razem system może zapytać o zgodę na sterowanie Chrome — kliknij «Zezwól»."
+  "ru": "В запросе клиента новое поле «Комнаты». У полей запроса есть выпадающие списки (комнаты, тип, районы, кто будет жить, животные, срок и другие), но можно вписать и своё. Районы из списка добавляются через запятую. Подбор квартир учитывает комнаты в первую очередь.",
+  "uk": "У запиті клієнта нове поле «Кімнати». У полів запиту є випадні списки (кімнати, тип, райони, хто житиме, тварини, термін та інші), але можна вписати й своє. Райони зі списку додаються через кому. Добірка квартир враховує кімнати в першу чергу.",
+  "pl": "W zapytaniu klienta nowe pole «Pokoje». Pola zapytania mają listy rozwijane (pokoje, rodzaj, dzielnice, kto zamieszka, zwierzęta, okres i inne), ale można wpisać własne. Dzielnice z listy dodają się po przecinku. Dobór mieszkań uwzględnia liczbę pokoi w pierwszej kolejności."
  },
  "pip": [
   "pypdf>=4",
@@ -49,13 +49,13 @@
   {
    "path": "app/clients.css",
    "src": "program/app/clients.css",
-   "sha256": "88c10ed5c4dc6f64fbb3c68ac533b492be8f2480eb6908e11ef303f6bf73d903",
+   "sha256": "b5d666483c36e0677a6186f62f31e693bf181b001d011f09bf16f9a652b56116",
    "exec": false
   },
   {
    "path": "app/clients.js",
    "src": "program/app/clients.js",
-   "sha256": "8082190d8de9810b21267decfb4a434aed9cbee1bd134822c4ee2808cf2c7390",
+   "sha256": "2d68569e685838aa3a747646b65a24ad6b61cf58db947b41c00494123a89a0c9",
    "exec": false
   },
   {
@@ -151,7 +151,7 @@
   {
    "path": "app_clients.py",
    "src": "program/app_clients.py",
-   "sha256": "3fb56dc1aa597f83192a620801d9e9d823f2f0fff3e73b5ebf7f547ab425d907",
+   "sha256": "2a318f0ab495a289b39a3a03ef20a85a3afa61c23b81a9b952c9445098636b2b",
    "exec": false
   },
   {
@@ -181,7 +181,7 @@
   {
    "path": "app_match.py",
    "src": "program/app_match.py",
-   "sha256": "957e281ad97582e2f7d19ed5f9c06f6ba125ca5c785a5278a9d173c34254bdfc",
+   "sha256": "a52e23f4a90681006a11cf3b5cfe06d44b3429dbdb0e281a3139f0f9dd17c756",
    "exec": false
   },
   {
